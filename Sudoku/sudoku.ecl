@@ -12,7 +12,7 @@ solve(Name) :-
 sudoku(Sudoku):-
     dim(Sudoku,[N2,N2]),
     N is integer(sqrt(N2)),
-    Sudoku[1..N2,1..N2] :: 1..9,
+    Sudoku[1..N2,1..N2] :: 1..N2,
     ( for(I,1,N2), param(Sudoku,N2) do
         Row is Sudoku[I,1..N2],
         alldifferent(Row),
