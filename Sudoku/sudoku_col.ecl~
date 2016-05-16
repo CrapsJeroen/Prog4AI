@@ -13,8 +13,9 @@ solve(Name):-
 sudoku(Sudoku):-
   dim(Sudoku,[N2,N2]),
   N is integer(sqrt(N2)),
-  ( for(I,1,N2), param(N2,Sudoku)  do
-      Col is Sudoku[1..N2,I],
+  transpose(Sudoku,TSudoku),
+  ( for(I,1,N2), param(N2,TSudoku)  do
+      nth1(I,TSudoku,Col),
       permutation([1..N2],Col)
   ),
   ( for(I,1,N2), param(N2,Sudoku) do

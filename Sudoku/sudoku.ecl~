@@ -40,9 +40,8 @@ print_board(Board) :-
 
 array_list(A, L) :- A =.. [[]|L].
 
-lists2matrix(Lists, Matrix) :-
+list2matrix(Lists, Matrix) :-
     ( foreach(List,Lists), foreach(Row,Temp) do
         array_list(Row, List)
     ),
-    % list of arrays to array of arrays
     array_list(Matrix, Temp).
