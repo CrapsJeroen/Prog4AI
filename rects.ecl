@@ -19,15 +19,16 @@ no_intersect_list([Rect|Rects]) :-
 	),
 	no_intersect_list(Rects).
 
-no_intersect_rect(rect(_,c(X1A,Y1A),s(W1,H1)), rect(_,c(X2A,Y2A),s(W2,H2))) :-
-	X1B #= X1A+W1-1,
-	Y1B #= Y1A+H1-1,
-	X2B #= X2A+W2-1,
-	Y2B #= Y2A+H2-1,
-	X1A #< X2B,
-	X2A #> X1B,
-	Y1A #< Y2B,
-	Y2A #> Y1B.
+no_intersect_rect(rect(_,c(XA1,YA1),s(W1,H1)), rect(_,c(XB1,YB1),s(W2,H2))) :-
+	XA2 #= XA1+W1-1,
+	YA2 #= YA1+H1-1,
+	XB2 #= XB1+W2-1,
+	YB2 #= YB1+H2-1,
+	(XA1 #> XB2;
+	XA2 #< XB1;
+	YA1 #> YB2;
+	YA2 #< YB1
+	).
 
 fill_known(Board, problem(_, XDim, YDim, Points)) :-
 	dim(Board, [YDim,XDim]),
