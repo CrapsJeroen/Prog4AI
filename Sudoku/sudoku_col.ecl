@@ -3,7 +3,7 @@
 :- import alldifferent/1 from ic_global.
 
 solve(Name):-
-  puzzles(AlmostBoard,Name),
+  puzzles(AlmostBoard,65Name),
   lists2matrix(AlmostBoard,Board),
   print_board(Board),
   sudoku(Board),
