@@ -1,12 +1,14 @@
+:- lib(fd),lib(util),lib(lists).
 %%% problem(tiny, 3, 3, [(1,1,4), (3,1,2), (2,3,3)]).
-
+%%% solve(Rects, [(1,1,4), (3,1,2), (2,3,3)]).
+%%% ID=helmut, problem(ID, W, B, Hints), time(solve(Rects, W, B, Hints)), show(W, B, Hints, Rects, ascii).
 is_of_size(Size, s(A,B)):-
 	A :: 1..Size,
 	B :: 1..Size,
 	Size #= A * B.
 
-solve(Rects, Points):-
-	fill_known(Board, problem(tiny,3,3,Points)),
+solve(Rects, Width, Height, Points):-
+	fill_known(Board,Width,Height,Points),
 	(foreach(Point,Points), param(Board), foreach(R,Rects) do
 		findall(X,fit_rect(Board, Point, X),[R])
 	),
@@ -30,10 +32,11 @@ no_intersect_rect(rect(_,c(XA1,YA1),s(W1,H1)), rect(_,c(XB1,YB1),s(W2,H2))) :-
 	YA2 #< YB1
 	).
 
-fill_known(Board, problem(_, XDim, YDim, Points)) :-
+fill_known(Board,XDim, YDim, Points) :-
 	dim(Board, [YDim,XDim]),
 	N is length(Points),
-	Board[1..XDim,1..YDim] :: [1..5],
+	Max is XDim * YDim,
+	Board[1..XDim,1..YDim] :: [1..Max],
 	(foreach((X,Y,_),Points), for(I,1,N), param(Board) do
 		I is Board[Y,X]
 	).
@@ -66,6 +69,8 @@ is_in_board(Board, c(X,Y)) :-
 	Y :: 1..YDim.
 
 is_in_rect(c(X,Y), c(XR,YR), s(W,H)) :-
+	XR #> 0,
+	YR #> 0,
 	XMax #= XR+W-1,
 	YMax #= YR+H-1,
 	X #=< XMax,
