@@ -2,8 +2,18 @@
 :- include(puzzles).
 :- include(print).
 
-solve(Rects, Name):-
-        problem(Name,W,H,Points),
+solveAll:-
+	problem(Name, _, _, _),
+	solve(Name).
+
+solve(Name):-
+	problem(Name, W, H, Points),
+	writeln(Name),
+	time(solve(W, H, Points, Rects)),
+	show(W, H, Points, Rects),
+	!.
+
+solve(W,H,Points,Rects):-
 	create_rectangles(W,H,Points,Rects),
         rect_to_struct(Rects,Structs),
 	disjoint2(Structs),
@@ -11,11 +21,10 @@ solve(Rects, Name):-
                 true
         ),
         flatten(List,FlatList),
-        labeling(FlatList),
-        show(W, H, Points, Rects).
+        search(FlatList,0,anti_first_fail,indomain,complete,[]).
 
 rect_to_struct([],[]).
-rect_to_struct([rect(c(I,J),c(X,Y),s(W,H))|Rects],[rect{x:X,y:Y,w:W,h:H}|Structs]):-
+rect_to_struct([rect(c(_,_),c(X,Y),s(W,H))|Rects],[rect{x:X,y:Y,w:W,h:H}|Structs]):-
         rect_to_struct(Rects,Structs).
 
 inside(c(X,Y),s(W,H),c(I,J)) :-
