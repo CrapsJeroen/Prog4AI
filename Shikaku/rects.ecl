@@ -1,7 +1,7 @@
-:- lib(fd),lib(util),lib(lists).
+:- lib(fd),lib(util),lib(lists),lib(listut).
 %%% problem(tiny, 3, 3, [(1,1,4), (3,1,2), (2,3,3)]).
 %%% solve(Rects, [(1,1,4), (3,1,2), (2,3,3)]).
-%%% ID=helmut, problem(ID, W, B, Hints), time(solve(Rects, W, B, Hints)), show(W, B, Hints, Rects, ascii).
+%%% ID=tiny, problem(ID, W, B, Hints), time(solve(Rects, W, B, Hints)), show(W, B, Hints, Rects, ascii).
 is_of_size(Size, s(A,B)):-
 	A :: 1..Size,
 	B :: 1..Size,
@@ -9,10 +9,13 @@ is_of_size(Size, s(A,B)):-
 
 solve(Rects, Width, Height, Points):-
 	fill_known(Board,Width,Height,Points),
-	(foreach(Point,Points), param(Board), foreach(R,Rects) do
-		findall(X,fit_rect(Board, Point, X),[R])
-	),
-	no_intersect_list(Rects).
+	%%% findall(X,(member(Point,Points),fit_rect(Board, Point, X, Points)),Rects),
+	
+	%%%(foreach(Point,Points), param(Board), foreach(R,Rects) do
+	%%%	findall(X,fit_rect(Board, Point, X),[R])
+	%%%),
+	iterate_rect(Board, Points, [], Rects).
+	%%% no_intersect_list(Rects).
 
 no_intersect_list([_]).
 no_intersect_list([Rect|Rects]) :-
@@ -21,6 +24,15 @@ no_intersect_list([Rect|Rects]) :-
 	),
 	no_intersect_list(Rects).
 
+iterate_rect(Board, [Point|Points], CheckRects, [Rect|OutRects])	:-
+	fit_rect(Board, Point, Rect),
+	(foreach(R, CheckRects), param(Rect) do
+		no_intersect_rect(Rect,R)	
+	),
+	iterate_rect(Board, Points,[Rect|CheckRects], OutRects).
+	
+iterate_rect(_,[],_,_).
+	
 no_intersect_rect(rect(_,c(XA1,YA1),s(W1,H1)), rect(_,c(XB1,YB1),s(W2,H2))) :-
 	XA2 #= XA1+W1-1,
 	YA2 #= YA1+H1-1,
@@ -45,6 +57,7 @@ fit_rect(Board, (XVal,YVal,Val), rect(c(XVal, YVal), TopLeft, Size)) :-
 	is_of_size(Val, Size),
 	is_in_rect(c(XVal,YVal), TopLeft, Size),
 	rect_fits_on_board(Board, TopLeft, Size).
+
 	
 create_list(Points, List):-
 	length(Points,N),
