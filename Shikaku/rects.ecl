@@ -1,4 +1,6 @@
-:- lib(fd),lib(util),lib(lists),lib(listut).
+:- lib(gfd).
+:- lib(util),lib(lists),lib(listut).
+:- include(puzzles).
 %%% problem(tiny, 3, 3, [(1,1,4), (3,1,2), (2,3,3)]).
 %%% solve(Rects, [(1,1,4), (3,1,2), (2,3,3)]).
 %%% ID=tiny, problem(ID, W, B, Hints), time(solve(Rects, W, B, Hints)), show(W, B, Hints, Rects, ascii).
@@ -7,15 +9,26 @@ is_of_size(Size, s(A,B)):-
 	B :: 1..Size,
 	Size #= A * B.
 
-solve(Rects, Width, Height, Points):-
+solve(Rects, Name):-
+        problem(Name,Width,Height,Points),
 	fill_known(Board,Width,Height,Points),
-	%%% findall(X,(member(Point,Points),fit_rect(Board, Point, X, Points)),Rects),
-	
-	%%%(foreach(Point,Points), param(Board), foreach(R,Rects) do
-	%%%	findall(X,fit_rect(Board, Point, X),[R])
-	%%%),
-	iterate_rect(Board, Points, [], Rects).
-	%%% no_intersect_list(Rects).
+	(fromto(Points,[(A,B,Val)|Tail],Tail,[]), param(Board), foreach(R,Rects) do
+                Point = (A,B,Val),
+		fit_rect(Board, Point, rect(c(A,B),TopLeft,Size)),
+                outsides(TopLeft,Size,Tail),
+                R = rect(c(A,B),TopLeft,Size)
+	),
+        rect_to_struct(Rects,Structs),
+	disjoint2(Structs),
+        (foreach(rect(X,Y,W,H,_),Structs), foreach([X,Y,W,H],List) do
+                true
+        ),
+        flatten(List,FlatList),
+        labeling(FlatList).
+
+rect_to_struct([],[]).
+rect_to_struct([rect(c(X,Y),c(I,J),s(W,H))|Rects],[rect{x:X,y:Y,w:W,h:H}|Structs]):-
+        rect_to_struct(Rects,Structs).
 
 no_intersect_list([_]).
 no_intersect_list([Rect|Rects]) :-
@@ -24,11 +37,12 @@ no_intersect_list([Rect|Rects]) :-
 	),
 	no_intersect_list(Rects).
 
-iterate_rect(Board, [Point|Points], CheckRects, [Rect|OutRects])	:-
+iterate_rect(Board, [Point|Points], CheckRects, [rec(_,C,S)|OutRects])	:-
 	fit_rect(Board, Point, Rect),
-	(foreach(R, CheckRects), param(Rect) do
-		no_intersect_rect(Rect,R)	
+	(foreach(R, CheckRects), param(rec(_,C,S)) do
+		no_intersect_rect(rec(_,C,S),R)	
 	),
+        %%% no_contain_points(Points,C,S),
 	iterate_rect(Board, Points,[Rect|CheckRects], OutRects).
 	
 iterate_rect(_,[],_,_).
@@ -43,6 +57,14 @@ no_intersect_rect(rect(_,c(XA1,YA1),s(W1,H1)), rect(_,c(XB1,YB1),s(W2,H2))) :-
 	YA1 #> YB2;
 	YA2 #< YB1
 	).
+
+outsides(c(X,Y),s(W,H),Points) :-
+        (foreach((I,J,_),Points), param(X,Y,W,H) do
+                outside(c(X,Y),s(W,H),c(I,J))
+        ).
+
+outside(c(X,Y),s(W,H),c(I,J)):-
+        I #< X ; J #< Y ; I #>=X+W ; J #>= Y+H.
 
 fill_known(Board,XDim, YDim, Points) :-
 	dim(Board, [YDim,XDim]),
