@@ -4,31 +4,32 @@
 
 solve(Name):-
   puzzles(AlmostBoard,Name),
-  lists2matrix(AlmostBoard,Board),
+  lists2cols(AlmostBoard,Board),
   print_board(Board),
   sudoku(Board),
   labeling(Board),
   print_board(Board).
 
 sudoku(Sudoku):-
-  dim(Sudoku,[N2,N2]),
+  length(Sudoku,[N2]),
   N is integer(sqrt(N2)),
   ( for(I,1,N2), param(N2,Sudoku)  do
-      Col is Sudoku[1..N2,I],
-      permutation([1..N2],Col)
+      Row is Sudoku[I],
+      permutation([1..N2],Row)
   ),
   ( for(I,1,N2), param(N2,Sudoku) do
-    ( for(J,1,N2), param(N2,I,Sudoku), foreach(E,Row) do
-        Col is Sudoku[1..N2,J],
-        selectElement(E,I,Col)
+    ( for(J,1,N2), param(N2,I,Sudoku), foreach(E,Col) do
+        Row is Sudoku[J],
+        selectElement(E,I,Row)
     ),
-    alldifferent(Row)
+    alldifferent(Col)
   ),
   ( multifor([I,J],0,(N-1)), param(N,Sudoku) do
       ( multifor([K,L],1,N), param(N,I,J,Sudoku), foreach(B,Block) do
           R is (I*N)+K,
           C is (J*N)+L,
-          B is Sudoku[R,C]
+          Row is Sudoku[R],
+          selectElement(B,C,Row)
       ),
       alldifferent(Block)
   ).
@@ -43,15 +44,21 @@ selectElement(E,I,[_|Tail]):-
   selectElement(E,J,Tail).
 
 print_board(Board) :-
-	dim(Board, [N,N]),
+	length(Board,N),
 	( for(I,1,N), param(Board,N) do
 	    ( for(J,1,N), param(Board,I) do
-		X is Board[I,J],
-		( var(X) -> write("  _") ; printf(" %2d", [X]) )
+		    Row is Board[I],
+        selectElement(X,J,Row),
+		    ( var(X) -> write("  _") ; printf(" %2d", [X]) )
 	    ), nl
 	), nl.
 
 array_list(A, L) :- A =.. [[]|L].
+
+lists2rows(Lists,Rows) :-
+  ( foreach(List,Lists), foreach(Row,Rows) do
+      array_list(Row,List)
+  ).
 
 lists2matrix(Lists, Matrix) :-
     ( foreach(List,Lists), foreach(Row,Temp) do

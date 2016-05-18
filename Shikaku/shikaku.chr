@@ -1,0 +1,34 @@
+:- use_module(library(chr)).
+:- [puzzles].
+:- chr_constraint alldifferent(?list(int)).
+:- chr_constraint
+
+
+solve(N) <=> puzzle(N), makeDomain(P,Rect), constraint(P), enum(P).
+
+puzzle(N) <=> problem(N,Width,Height,P), domain(Width,Height), makeRectangles(P,R).
+
+makeRectangles([],_).
+makeRectangles([(I,J,V)|Ps],[R|Rs]) :-
+  ,
+  makeRectangles(Ps,Rs).
+
+generate @ point(I,J,V) ==> W*H is V |
+
+outsideDom @ domain(Width,Height) \ rect(I,J,X,Y,W,H) <=> X2 is X+W, Y2 is Y+H,
+            X =< 0, Y =< 0,
+            X > X2, Y > Y2 | true.
+
+removeDuplicates @ rect(I,J,X,Y,W,H) \ rect(I,J,X,Y,W,H) <=> true.
+
+outside @ point(I,J,_) \ rect(I2,J2,X,Y,W,H) <=>
+            X2 is X+W, Y2 is Y+H, I \== I2, J \== J2, I >= X, J >= Y, I < X2, J < Y2 | true.
+
+overlaps @ rect(_,_,XA,YA,WA,HA), rect(_,_,XB,YB,WB,HB) <=>
+            XA2 is XA+WA-1, XB2 is XB+WB-1,
+            YA2 is YA+HA-1, YB2 is YB+HB-1,
+            XA < XB2, XA2 > XB,
+            YA < YB2, YA2 > YB | fail.
+
+%%%% goal(Z), elem(X), elem(Y) ==> T is X*Y, Z == T | s(X,Y).
+%%%% s(X,X) \ s(X,X) <=> true.
