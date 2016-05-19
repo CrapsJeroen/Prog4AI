@@ -4,14 +4,26 @@
 :- chr_constraint
 
 
-solve(N) <=> puzzle(N), makeDomain(P,Rect), constraint(P), enum(P).
-
-puzzle(N) <=> problem(N,Width,Height,P), domain(Width,Height), makeRectangles(P,R).
+solve(N) <=> problem(N,Width,Height,P), makeDomains(Width,Height,Rs), constraint(Ps,Rs), enum(Rs).
 
 makeRectangles([],_).
 makeRectangles([(I,J,V)|Ps],[R|Rs]) :-
   ,
   makeRectangles(Ps,Rs).
+
+%Deletes all impossible starting points from the second rectangle in case the first is correct.
+no_overlap(rect(I1,J1,X1,_,W1,H1),rect(I2,J2,X2,_,_,_)), X1 in [V] \ X2 in LX <=>
+  X0 is V+W1-1, subtract(LX,[V..X0],LX0), LX \== LX0 | X2 in LX0.
+no_overlap(rect(I1,J1,_,Y1,W1,H1),rect(I2,J2,_,Y2,_,_)), Y1 in [V] \ Y2 in LY <=>
+  Y0 is V+H1-1, subtract(LY,[V..Y0],LY0), LY \== LY0 | Y2 in LY0.
+
+makeDomains(W,H,Rs) :- generateList(1,W,DomX),generateList(1,H,DomY), makeDomain(Rs,DomX,DomY).
+makeDomain([],_,_).
+makeDomain([rect(I,J,X,Y,W,H)|Rs],DomX,DomY) :-
+  X in DomX, Y in DomY, makeDomain(Rs,DomX,DomY).
+
+generateList(N,N,[N]).
+generateList(M,N,[M|T]) :- M < N, M1 is M+1, generateList(M1,N,T).
 
 generate @ point(I,J,V) ==> W*H is V |
 
