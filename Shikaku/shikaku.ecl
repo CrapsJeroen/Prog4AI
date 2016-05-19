@@ -15,13 +15,13 @@ solve(Name):-
 
 solve(W,H,Points,Rects):-
 	create_rectangles(W,H,Points,Rects),
-        rect_to_struct(Rects,Structs),
+	rect_to_struct(Rects,Structs),
 	disjoint2(Structs),
-        (foreach(rect(X,Y,W,H,_),Structs), foreach([X,Y,W,H],List) do
-                true
-        ),
-        flatten(List,FlatList),
-        search(FlatList,0,anti_first_fail,indomain,complete,[]).
+  (foreach(rect(X,Y,W,H,_),Structs), foreach([X,Y,W,H],List) do
+  	true
+  ),
+  flatten(List,FlatList),
+  search(FlatList,0,anti_first_fail,indomain,complete,[]).
 
 rect_to_struct([],[]).
 rect_to_struct([rect(c(_,_),c(X,Y),s(W,H))|Rects],[rect{x:X,y:Y,w:W,h:H}|Structs]):-

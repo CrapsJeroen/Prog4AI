@@ -1,0 +1,19 @@
+\section{Task 1: Sudoku}\label{sec:sudoku}
+\subsection{Viewpoint}
+
+In this section we will discuss an alternative viewpoint to the original Sudoku problem in which differs from the classical viewpoint. The classical viewpoint for Sudoku states that all numbers in a row must be different, that all numbers in a column must be different, and that all numbers in a block must be different. We can define the Sudoku problem as follows: \\
+
+\begin{center}
+\textbf{Variables}: $ x_{1,1},x_{1,2},\cdots,x_{i,i},x_{i,i+1},\cdots,x_{n,n} \in [1,2,\cdots,n]$\\
+\textbf{Constraints}: $\bigwedge \limits_{i=1} \limits^{n} \bigwedge \limits_{j=1} \limits^{n} \bigwedge \limits_{k=1} \limits^{n} x_{i,j} \neq x_{i,k}$
+\end{center}
+
+Another way to look at the problem is to group all numbers in a collumn together in a list. Now we can define an entire column at once as a permutation on the sequential list of the entire domain.
+By doing so the constraint that all elements in a certain column must be different is already satisfied from the beginning.
+
+\begin{center}
+\textbf{Variables}: $ x_{1},x_{2},\cdots,x_{n} \in [[1,2,\cdots,n],\cdots]$\\
+\textbf{Constraints}: 
+\end{center}
+
+\subsubsection{•}

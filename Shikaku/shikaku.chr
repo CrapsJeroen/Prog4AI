@@ -1,0 +1,46 @@
+:- use_module(library(chr)).
+:- [puzzles].
+:- chr_constraint alldifferent(?list(int)).
+:- chr_constraint
+
+
+solve(N) <=> problem(N,Width,Height,P), makeDomains(Width,Height,Rs), constraint(Ps,Rs), enum(Rs).
+
+makeRectangles([],_).
+makeRectangles([(I,J,V)|Ps],[R|Rs]) :-
+  ,
+  makeRectangles(Ps,Rs).
+
+%Deletes all impossible starting points from the second rectangle in case the first is correct.
+no_overlap(rect(I1,J1,X1,_,W1,H1),rect(I2,J2,X2,_,_,_)), X1 in [V] \ X2 in LX <=>
+  X0 is V+W1-1, subtract(LX,[V..X0],LX0), LX \== LX0 | X2 in LX0.
+no_overlap(rect(I1,J1,_,Y1,W1,H1),rect(I2,J2,_,Y2,_,_)), Y1 in [V] \ Y2 in LY <=>
+  Y0 is V+H1-1, subtract(LY,[V..Y0],LY0), LY \== LY0 | Y2 in LY0.
+
+makeDomains(W,H,Rs) :- generateList(1,W,DomX),generateList(1,H,DomY), makeDomain(Rs,DomX,DomY).
+makeDomain([],_,_).
+makeDomain([rect(I,J,X,Y,W,H)|Rs],DomX,DomY) :-
+  X in DomX, Y in DomY, makeDomain(Rs,DomX,DomY).
+
+generateList(N,N,[N]).
+generateList(M,N,[M|T]) :- M < N, M1 is M+1, generateList(M1,N,T).
+
+generate @ point(I,J,V) ==> W*H is V |
+
+outsideDom @ domain(Width,Height) \ rect(I,J,X,Y,W,H) <=> X2 is X+W, Y2 is Y+H,
+            X =< 0, Y =< 0,
+            X > X2, Y > Y2 | true.
+
+removeDuplicates @ rect(I,J,X,Y,W,H) \ rect(I,J,X,Y,W,H) <=> true.
+
+outside @ point(I,J,_) \ rect(I2,J2,X,Y,W,H) <=>
+            X2 is X+W, Y2 is Y+H, I \== I2, J \== J2, I >= X, J >= Y, I < X2, J < Y2 | true.
+
+overlaps @ rect(_,_,XA,YA,WA,HA), rect(_,_,XB,YB,WB,HB) <=>
+            XA2 is XA+WA-1, XB2 is XB+WB-1,
+            YA2 is YA+HA-1, YB2 is YB+HB-1,
+            XA < XB2, XA2 > XB,
+            YA < YB2, YA2 > YB | fail.
+
+%%%% goal(Z), elem(X), elem(Y) ==> T is X*Y, Z == T | s(X,Y).
+%%%% s(X,X) \ s(X,X) <=> true.
