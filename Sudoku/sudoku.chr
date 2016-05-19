@@ -2,27 +2,35 @@
 :- use_module(library(lists)).
 :- op(700,xfx,'in').
 :- [sudex_toledo].
-:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, search/0, permute/1, show/2.
+:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, search/0, permute/1, show/0, show/2, clean/0.
 
 solve(Name) <=> 
     puzzles(Raw,Name),
     length(Raw,N),
     dom(N),
     import(Raw,1),
+	show,
     search,
     !,
-    show(1,1).
+    show,
+	clean.
     
  
 solveAll:-
     puzzles(_,Name),
-    write(Name), write("\r\n"),
+    write(Name), nl,
     time(solve(Name)).
+
+solveAllAuto:-
+	time((solveAll,fail; true)).
        
-dom(N) \ show(Row,Col) <=> Col > N | NRow is Row + 1, write("\r\n"), show(NRow,1).
-dom(N), show(Row,_) <=> Row > N | true.
-known(Row,Col,Val), show(Row,Col) <=> write(Val), write(" "), Col1 is Col+1, show(Row,Col1). 
-    
+show <=> nl, show(1,1).
+dom(N) \ show(Row,Col) <=> Col > N | NRow is Row + 1, nl, show(NRow,1).
+dom(N) \ show(Row,_) <=> Row > N | true.
+known(Row,Col,Val) \ show(Row,Col) <=> format('~10r ',Val), Col1 is Col+1, show(Row,Col1).
+show(Row,Col) <=> format('. '), Col1 is Col+1, show(Row,Col1).
+clean \ known(_,_,_) <=> true.
+clean, dom(_) <=> true.    
     
 import([],_) <=> true.
 import([CRow|Rows],Y) <=>
