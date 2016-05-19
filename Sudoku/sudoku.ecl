@@ -1,4 +1,5 @@
 :- lib(ic).
+:- [sudex_toledo].
 :- import alldifferent/1 from ic_global.
 
 solve(Name) :-
@@ -37,8 +38,6 @@ print_board(Board) :-
 		( var(X) -> write("  _") ; printf(" %2d", [X]) )
 	    ), nl
 	), nl.
-
-array_list(A, L) :- A =.. [[]|L].
 
 lists2matrix(Lists, Matrix) :-
     ( foreach(List,Lists), foreach(Row,Temp) do

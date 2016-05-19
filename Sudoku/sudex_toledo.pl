@@ -1,4 +1,5 @@
 puzzles(P,verydifficult) :- verydifficult(P).
+puzzles(P,veryeasy) :- veryeasy(P).
 puzzles(P,expert) :- expert(P).
 puzzles(P,lambda) :- lambda(P).
 puzzles(P,hard17) :- hard17(P).
@@ -35,6 +36,20 @@ puzzles(P,sudowiki_nb49):- sudowiki_nb49(P).
 	 
 
 */	
+veryeasy(P) :- P = 
+	[[8,2,7,1,5,4,3,9,6],
+	[9,6,5,3,2,7,1,4,8],
+	[3,4,1,6,8,9,7,5,2],
+
+	[5,9,3,4,6,8,2,7,1],
+	[4,7,2,5,1,3,6,8,9],
+	[6,1,8,9,7,2,4,3,5],
+	
+	[7,8,6,2,3,5,_,_,_],
+	[1,5,4,7,9,6,_,_,_],
+	[2,3,9,8,4,1,_,_,_]].
+
+
 verydifficult(P) :- P = 
 	[[_,_,8,7,_,_,_,_,6],
 	[4,_,_,_,_,9,_,_,_],
