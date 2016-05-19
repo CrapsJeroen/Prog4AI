@@ -2,11 +2,14 @@
 :- use_module(library(lists)).
 :- op(700,xfx,'in').
 :- [sudex_toledo].
-:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3.
+:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, phase2/0.
 
 solve(Name) <=> 
-    puzzles(Raw,Name), 
-    import(Raw,1).
+    puzzles(Raw,Name),
+    length(Raw,N),
+    dom(N),
+    import(Raw,1),
+    phase2.
     
     
 import([],_) <=> true.
@@ -20,6 +23,18 @@ import_row([CVal|Vals],Y,X) <=>
 import_row([CVal|Vals],Y,X) <=>
     var(CVal), upto(9,L), option(X,Y,L), X1 is X + 1, import_row(Vals,Y,X1). 
 
+%% ROW Constraints
+phase2, known(X,_,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
+
+%% COL Constraints
+phase2, known(_,Y,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
+
+%% BLOCK Constraints
+phase2, known(X,Y,V), dom(N2) \ option(X1,Y1,L) <=> 
+        N is integer(sqrt(N2)),
+        XB is (X-1)//N, YB is (Y-1)//N,
+        X1B is (X1-1)//N, Y1B is (Y1-1)//N,
+        XB == X1B, YB == Y1B | delete(L,V,NL), option(X,Y,NL).
 
 option(_,_,[]) <=> fail.
 option(X,Y,[X1]) <=> known(X,Y,X1).
