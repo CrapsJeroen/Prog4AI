@@ -2,15 +2,24 @@
 :- use_module(library(lists)).
 :- op(700,xfx,'in').
 :- [sudex_toledo].
-:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, phase2/0.
+:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, phase2/0, show/2.
 
 solve(Name) <=> 
     puzzles(Raw,Name),
     length(Raw,N),
     dom(N),
     import(Raw,1),
-    phase2.
-    
+    phase2,
+    show(1,1).
+ 
+solveAll:-
+    puzzles(_,Name),
+    write(Name), write("\r\n"),
+    time(solve(Name)).
+       
+dom(N) \ show(Row,Col) <=> Col > N | NRow is Row + 1, write("\r\n"), show(NRow,1).
+dom(N), show(Row,_) <=> Row > N | true.
+known(Row,Col,Val), show(Row,Col) <=> write(Val), write(" "), Col1 is Col+1, show(Row,Col1). 
     
 import([],_) <=> true.
 import([CRow|Rows],Y) <=>
