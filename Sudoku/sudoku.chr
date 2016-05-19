@@ -1,40 +1,61 @@
 :- use_module(library(chr)).
+:- use_module(library(lists)).
+:- op(700,xfx,'in').
 :- [sudex_toledo].
-:- chr_constraint solve/1.
-:- chr_constraint readElem/3.
-:- chr_constraint dom/1.
-:- chr_constraint assigned/3.
-:- chr_constraint derp/3
+:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, search/0, permute/1.
 
-solve(Name) <=> puzzles(Board,Name), makedomain(Board), sudoku(1,Board).
+solve(Name) <=> 
+    puzzles(Raw,Name),
+    length(Raw,N),
+    dom(N),
+    import(Raw,1),
+    search.
+    
+    
+import([],_) <=> true.
+import([CRow|Rows],Y) <=>
+    import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
 
-sudoku(_,[]).
-sudoku(N,[R|Rs]) :- readRow(N,1,R), N1 is N+1, sudoku(N1,Rs).
+import_row([],_,_) <=> true.
+import_row([CVal|Vals],Y,X) <=> 
+    nonvar(CVal) | known(Y,X,CVal), X1 is X + 1, import_row(Vals,Y,X1).
+    
+import_row([CVal|Vals],Y,X) <=>
+    var(CVal), upto(9,L), option(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1). 
 
-readRow(_,_,[]).
-readRow(X,N,[E|Es]) :- readElem(X,N,E), N1 is N+1, readRow(X,N1,Es).
-
-readElem(X,Y,V) <=> nonvar(V) | assigned(X,Y,V).
-readElem(_,_,_) <=> true.
+option(_,_,[]) <=> fail.
 
 %% ROW Constraints
-assigned(X,_,V) \ derp(X,Y,L) <=> member(V,L) | delete(L,V,NL), derp(X,Y,NL).
+known(X,_,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
 
 %% COL Constraints
-assigned(_,Y,V) \ derp(X,Y,L) <=> member(V,L) | delete(L,V,NL), derp(X,Y,NL).
+known(_,Y,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
 
 %% BLOCK Constraints
-assigned(X,Y,V), dom(N) \ derp(X1,Y1,L) <=> 
+known(X,Y,V), dom(N2) \ option(X1,Y1,L) <=> member(V,L),
+        N is integer(sqrt(N2)),
         XB is (X-1)//N, YB is (Y-1)//N,
-        X1B is (X1-1)//N, Y1B is (Y1-1)//N,
-        XB == X1B, YB == Y1B | delete(L,V,NL), derp(X,Y,NL).
+        XB is (X1-1)//N, YB is (Y1-1)//N
+         | delete(L,V,NL), option(X1,Y1,NL).
 
-makedomain(Board):- length(Board,N), dom(N), genlist(1,N,Doms), makedomains(N,Board,Doms).
-makedomainRow(0,_,Board,_).
-makedomainsRow(M,Board,Doms) :- M > 0,
-        makedomainElem(Board[M],) , M1 is M-1, 
-        makedomainsRow(M1,Board,Doms).
+option(X,Y,[X1]) <=> known(X,Y,X1).
 
-genlist(N,N,[N]).
-genlist(M,N,[M|T]) :- M< N, M1 is M + 1, genlist(M1,N,T).
+upto(0,[]).
+upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
+
+%search
+option(_,Y,_) \ search  <=> permute(Y), search.
+search <=> true.
+
+permute(Y) \ option(X,Y,List) <=> enum(X,Y,List).
+permute(_) <=> true.
+
+enum(X,Y,List) :-
+  member(V,List),
+  (
+    known(X,Y,V)
+  ;
+    delete(List,V,Result),
+    option(X,Y,Result)
+  ).
 
