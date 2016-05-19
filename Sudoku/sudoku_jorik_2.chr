@@ -1,0 +1,91 @@
+:- use_module(library(chr)).
+:- use_module(library(lists)).
+:- use_module(library(time)).
+:- op(700,xfx,'in').
+:- [sudex_toledo].
+:- chr_constraint solve/1, import/1, import/2, import_row/3, known/3,
+    add_known/3, dom/1, options/3, search/1, show/2.
+
+solve(Name) <=> 
+    puzzles(Raw,Name),
+    length(Raw,N),
+    dom(N),
+    import(Raw),
+    search(1),
+    !,
+    show(1,1).
+
+solveAll:-
+    puzzles(_,Name),
+    write(Name), write("\r\n"),
+    time(solve(Name)).
+    
+dom(N) \ show(Row,Col) <=> Col > N | NRow is Row + 1, write("\r\n"), show(NRow,1).
+dom(N), show(Row,_) <=> Row > N | true.
+known(Row,Col,Val), show(Row,Col) <=> write(Val), write(" "), Col1 is Col+1, show(Row,Col1).    
+
+import(Raw) <=> import(Raw,1).
+import([],_) <=> true.
+import([CRow|Rows],Y) <=>
+    import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
+
+import_row([],_,_) <=> true.
+import_row([CVal|Vals],Y,X) <=> 
+    nonvar(CVal) | known(Y,X,CVal), X1 is X + 1, import_row(Vals,Y,X1).
+  
+dom(N) \ import_row([CVal|Vals],Y,X) <=>
+    var(CVal) | upto(N,L), options(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1). 
+      
+
+in_block(Row,Col,Block,N2) :-
+    N is integer(sqrt(N2)),
+    Block1 is Block - 1,
+    BlockRow is div(Block1,N),
+    BlockCol is mod(Block1,N),
+    RowB is (Row - 1)// N,
+    ColB is (Col - 1)// N,
+    BlockRow == RowB, BlockCol == ColB.
+    
+
+
+
+add_known(Row,_,Val) \ options(Row,Col,L) <=>
+    delete(L,Val,NL), L \== NL | options(Row,Col,NL).
+
+    
+add_known(_,Col,Val) \ options(Row,Col,L) <=>
+     delete(L,Val,NL), L \== NL | options(Row,Col,NL).
+
+
+
+dom(N), add_known(Row,Col,Val) \ options(Row2,Col2,L) <=>
+    block_number(X,N), in_block(Row,Col,X,N), in_block(Row2,Col2,X,N),
+     delete(L,Val,NL), L \== NL | options(Row2,Col2,NL).
+
+add_known(Row,Col,Val) <=> known(Row,Col,Val).
+  
+options(_,_,[]) <=> fail.
+options(Row,Col,[Val]) <=> add_known(Row,Col,Val).
+
+
+dom(M) \ search(N) <=> N1 is N-1, N1 == M | true.
+search(N) \ options(Col, Row, Vals) <=> length(Vals,X), X =< N | try_value(Col, Row, Vals).
+search(N) <=> N1 is N+1, search(N1).
+
+/*
+search \ options(Col, Row, Vals) <=> try_value(Col, Row, Vals).
+search <=> true.
+*/
+block_number(X,Dom):-
+    upto(Dom,L),
+    member(X,L).
+
+try_value(Col, Row, [Val|Vals]):-
+    (
+    add_known(Col,Row,Val)
+    ;
+    options(Col,Row,Vals)
+    ).
+    
+upto(0,[]).
+upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
