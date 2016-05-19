@@ -1,0 +1,28 @@
+:- use_module(library(chr)).
+:- use_module(library(lists)).
+:- op(700,xfx,'in').
+:- [sudex_toledo].
+:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3.
+
+solve(Name) <=> 
+    puzzles(Raw,Name), 
+    import(Raw,1).
+    
+    
+import([],_) <=> true.
+import([CRow|Rows],Y) <=>
+    import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
+
+import_row([],_,_) <=> true.
+import_row([CVal|Vals],Y,X) <=> 
+    nonvar(CVal) | known(X,Y,CVal), X1 is X + 1, import_row(Vals,Y,X1).
+    
+import_row([CVal|Vals],Y,X) <=>
+    var(CVal), upto(9,L), option(X,Y,L), X1 is X + 1, import_row(Vals,Y,X1). 
+
+
+option(_,_,[]) <=> fail.
+option(X,Y,[X1]) <=> known(X,Y,X1).
+
+upto(0,[]).
+upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
