@@ -1,0 +1,40 @@
+:- use_module(library(chr)).
+:- [sudex_toledo].
+:- chr_constraint solve/1.
+:- chr_constraint readElem/3.
+:- chr_constraint dom/1.
+:- chr_constraint assigned/3.
+:- chr_constraint derp/3
+
+solve(Name) <=> puzzles(Board,Name), makedomain(Board), sudoku(1,Board).
+
+sudoku(_,[]).
+sudoku(N,[R|Rs]) :- readRow(N,1,R), N1 is N+1, sudoku(N1,Rs).
+
+readRow(_,_,[]).
+readRow(X,N,[E|Es]) :- readElem(X,N,E), N1 is N+1, readRow(X,N1,Es).
+
+readElem(X,Y,V) <=> nonvar(V) | assigned(X,Y,V).
+readElem(_,_,_) <=> true.
+
+%% ROW Constraints
+assigned(X,_,V) \ derp(X,Y,L) <=> member(V,L) | delete(L,V,NL), derp(X,Y,NL).
+
+%% COL Constraints
+assigned(_,Y,V) \ derp(X,Y,L) <=> member(V,L) | delete(L,V,NL), derp(X,Y,NL).
+
+%% BLOCK Constraints
+assigned(X,Y,V), dom(N) \ derp(X1,Y1,L) <=> 
+        XB is (X-1)//N, YB is (Y-1)//N,
+        X1B is (X1-1)//N, Y1B is (Y1-1)//N,
+        XB == X1B, YB == Y1B | delete(L,V,NL), derp(X,Y,NL).
+
+makedomain(Board):- length(Board,N), dom(N), genlist(1,N,Doms), makedomains(N,Board,Doms).
+makedomainRow(0,_,Board,_).
+makedomainsRow(M,Board,Doms) :- M > 0,
+        makedomainElem(Board[M],) , M1 is M-1, 
+        makedomainsRow(M1,Board,Doms).
+
+genlist(N,N,[N]).
+genlist(M,N,[M|T]) :- M< N, M1 is M + 1, genlist(M1,N,T).
+

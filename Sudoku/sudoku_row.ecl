@@ -1,17 +1,18 @@
 :- lib(ic).
 :- lib(ic_search).
+:- [sudex_toledo].
 :- import alldifferent/1 from ic_global.
 
 solve(Name):-
   puzzles(AlmostBoard,Name),
-  lists2cols(AlmostBoard,Board),
+  lists2rows(AlmostBoard,Board),
   print_board(Board),
   sudoku(Board),
   labeling(Board),
   print_board(Board).
 
 sudoku(Sudoku):-
-  length(Sudoku,[N2]),
+  length(Sudoku,N2),
   N is integer(sqrt(N2)),
   ( for(I,1,N2), param(N2,Sudoku)  do
       Row is Sudoku[I],
@@ -48,16 +49,17 @@ print_board(Board) :-
 	( for(I,1,N), param(Board,N) do
 	    ( for(J,1,N), param(Board,I) do
 		    Row is Board[I],
-        selectElement(X,J,Row),
+                    array_list(T,Row),
+                    selectElement(X,J,T),
 		    ( var(X) -> write("  _") ; printf(" %2d", [X]) )
 	    ), nl
 	), nl.
 
-array_list(A, L) :- A =.. [[]|L].
+%array_list(A, L) :- A =.. [[]|L].
 
 lists2rows(Lists,Rows) :-
   ( foreach(List,Lists), foreach(Row,Rows) do
-      array_list(Row,List)
+      array_list(Row, List)
   ).
 
 lists2matrix(Lists, Matrix) :-
