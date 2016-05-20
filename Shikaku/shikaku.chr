@@ -1,40 +1,46 @@
 :- use_module(library(chr)).
+:- use_module(library(lists)).
 :- [puzzles].
-:- chr_constraint alldifferent(?list(int)).
-:- chr_constraint
+:- chr_constraint rect/5, rect_temp/5, makeDomains/3, dom/2.
 
 
-solve(N) <=> problem(N,Width,Height,P), makeDomains(Width,Height,Rs), constraint(Ps,Rs), enum(Rs).
 
-makeRectangles([],_).
-makeRectangles([(I,J,V)|Ps],[R|Rs]) :-
-  ,
-  makeRectangles(Ps,Rs).
+solve(Name) <=> puzzle(Name,Width,Height,Ps), dom(Width,Height), makeDomains(Ps).
 
-%Deletes all impossible starting points from the second rectangle in case the first is correct.
-no_overlap(rect(I1,J1,X1,_,W1,H1),rect(I2,J2,X2,_,_,_)), X1 in [V] \ X2 in LX <=>
-  X0 is V+W1-1, subtract(LX,[V..X0],LX0), LX \== LX0 | X2 in LX0.
-no_overlap(rect(I1,J1,_,Y1,W1,H1),rect(I2,J2,_,Y2,_,_)), Y1 in [V] \ Y2 in LY <=>
-  Y0 is V+H1-1, subtract(LY,[V..Y0],LY0), LY \== LY0 | Y2 in LY0.
 
-makeDomains(W,H,Rs) :- generateList(1,W,DomX),generateList(1,H,DomY), makeDomain(Rs,DomX,DomY).
-makeDomain([],_,_).
-makeDomain([rect(I,J,X,Y,W,H)|Rs],DomX,DomY) :-
-  X in DomX, Y in DomY, makeDomain(Rs,DomX,DomY).
+makeDomains(_,_,[]) <=> true.
+dom(W,H) \ makeDomains([(I,J,V)|Ps]) <=>
+  X1 is I-W, X2 is I,
+  Y1 is J-H, Y2 is J
+  | fromTo(X1,X2,LX), fromTo(W,W+V,T), subtract(LX,T,Xs),
+    fromTo(Y1,Y2,LY), fromTo(H,H+V,T), subtract(LY,T,Ys),
+    generateSizes(V,Ss), rect_temp(I,J,Xs,Ys,Ss), makeDomains(Width,Height,Ps).
 
-generateList(N,N,[N]).
-generateList(M,N,[M|T]) :- M < N, M1 is M+1, generateList(M1,N,T).
+%FAILURE
+failureX @ rect_temp(_,_,[],_,_) <=> fail.
+failureY @ rect_temp(_,_,_,[],_) <=> fail.
+failureS @ rect_temp(_,_,_,_,[]) <=> fail.
 
-generate @ point(I,J,V) ==> W*H is V |
+%Contains no other points
+above @ point(I,J,_) \ rect_temp(I2,J,Xs,Ys,Ss) <=> I < I2, upTo(I,L), subtract(Xs,L,NL), Xs \== NL | rect_temp(I2,J,NL,Ys,Ss).
+left @  point(I,J,_) \ rect_temp(I,J2,Xs,Ys,Ss) <=> J < J2, upTo(J,L), subtract(Ys,L,NL), Ys \== NL | rect_temp(I,J2,NL,Ys,Ss).
+
+%Finalise rectangle
+onlyOption @ rect_temp(I,J,[X],[Y],[S]) <=> rect(c(I,J),c(X,Y),S).
+
+
+
+%Deleting values outside
+/*
+outsideBoardX @ dom(W,_), point(I,J,V) \ rect_temp(I,J,Xs,Ys,Ss) <=>
+  fromTo(W,W+V,T), subtract(Xs,T,L), Xs \== L | rect_temp(I,J,L,Ys,Ss).
+outsideBoardY @ dom(_,H), point(I,J,V) \ rect_temp(I,J,Xs,Ys,Ss) <=>
+  fromTo(H,H+V,T), subtract(Ys,T,L), Ys \== L | rect_temp(I,J,Xs,L,Ss).
+*/
 
 outsideDom @ domain(Width,Height) \ rect(I,J,X,Y,W,H) <=> X2 is X+W, Y2 is Y+H,
             X =< 0, Y =< 0,
             X > X2, Y > Y2 | true.
-
-removeDuplicates @ rect(I,J,X,Y,W,H) \ rect(I,J,X,Y,W,H) <=> true.
-
-outside @ point(I,J,_) \ rect(I2,J2,X,Y,W,H) <=>
-            X2 is X+W, Y2 is Y+H, I \== I2, J \== J2, I >= X, J >= Y, I < X2, J < Y2 | true.
 
 overlaps @ rect(_,_,XA,YA,WA,HA), rect(_,_,XB,YB,WB,HB) <=>
             XA2 is XA+WA-1, XB2 is XB+WB-1,
@@ -42,5 +48,19 @@ overlaps @ rect(_,_,XA,YA,WA,HA), rect(_,_,XB,YB,WB,HB) <=>
             XA < XB2, XA2 > XB,
             YA < YB2, YA2 > YB | fail.
 
-%%%% goal(Z), elem(X), elem(Y) ==> T is X*Y, Z == T | s(X,Y).
-%%%% s(X,X) \ s(X,X) <=> true.
+generateSizes(V,Ss):-
+  upTo(V,L),
+  findall(s(W,H),(member(W,L),member(H,L), T is W*H, T == V),Ss).
+
+upto(0,[]).
+upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
+
+fromTo(N,N,[N]).
+fromTo(M,N,[Tail]):-
+  M =< 0,
+  M1 is M+1,
+  fromTo(M1,N,Tail).
+fromTo(M,N,[M|Tail]):-
+  M > 0,
+  M1 is M+1,
+  fromTo(M1,N,Tail).
