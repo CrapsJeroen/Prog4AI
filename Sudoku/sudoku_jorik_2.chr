@@ -33,6 +33,8 @@ show(Row,Col) <=> format('. '), Col1 is Col+1, show(Row,Col1).
 clean \ known(_,_,_) <=> true.
 clean, dom(_), imported <=> true.
 
+
+
 import(Raw) <=> import(Raw,1).
 import([],_) <=> true.
 import([CRow|Rows],Y) <=>
@@ -45,6 +47,9 @@ import_row([CVal|Vals],Y,X) <=>
 dom(N) \ import_row([CVal|Vals],Y,X) <=>
     var(CVal) | upto(N,L), options(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1). 
       
+
+
+
 
 	  
 dom(N) \ add_known(Row,Col,Val)<=>  generate_constraints(Row,Col,Val,N), known(Row,Col,Val).%, format('known(~w,~w : ~w)',[Row,Col,Val]), nl.

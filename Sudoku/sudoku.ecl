@@ -8,8 +8,13 @@ solve(Name) :-
 	print_board(Board),
 	sudoku(Board),
 	labeling(Board),
-	print_board(Board).
+	print_board(Board),
+        !.
 
+solveAll:-
+        puzzles(_,Name),
+        write(Name), nl,
+        solve(Name).
 sudoku(Sudoku):-
     dim(Sudoku,[N2,N2]),
     N is integer(sqrt(N2)),

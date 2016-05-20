@@ -1,65 +1,90 @@
 :- use_module(library(chr)).
 :- use_module(library(lists)).
-:- [puzzles].
-:- chr_constraint rect/5, rect_temp/5, makeDomains/3, dom/2.
+:- include(puzzles).
+:- include(print).
+:- chr_constraint search/1, point/3, solve/1, nrRect/1, rect/3, rect_temp/3, makeDomains/1, dom/2.
 
 
 
-solve(Name) <=> puzzle(Name,Width,Height,Ps), dom(Width,Height), makeDomains(Ps).
+solve(Name) <=> 
+        problem(Name,Width,Height,Ps),
+        length(Ps,N),
+        nrRect(N), 
+        dom(Width,Height), 
+        makeDomains(Ps),
+        search(1),
+        show(Width, Height, Ps, chr), !, fail.
 
 
-makeDomains(_,_,[]) <=> true.
+makeDomains([]) <=> true.
 dom(W,H) \ makeDomains([(I,J,V)|Ps]) <=>
-  X1 is I-W, X2 is I,
-  Y1 is J-H, Y2 is J
-  | fromTo(X1,X2,LX), fromTo(W,W+V,T), subtract(LX,T,Xs),
-    fromTo(Y1,Y2,LY), fromTo(H,H+V,T), subtract(LY,T,Ys),
-    generateSizes(V,Ss), rect_temp(I,J,Xs,Ys,Ss), makeDomains(Width,Height,Ps).
+  X1 is max(1,I-V+1), X2 is I, fromTo(X1,X2,Xs),
+  Y1 is max(1,J-V+1), Y2 is J, fromTo(Y1,Y2,Ys)
+  | generateSizes(W,H,V,Ss), rect_temp(c(I,J),c(Xs,Ys),Ss), makeDomains(Ps).
+
 
 %FAILURE
-failureX @ rect_temp(_,_,[],_,_) <=> fail.
-failureY @ rect_temp(_,_,_,[],_) <=> fail.
-failureS @ rect_temp(_,_,_,_,[]) <=> fail.
+failureX @ rect_temp(_,c([],_),_) <=> fail.
+failureY @ rect_temp(_,c(_,[]),_) <=> fail.
+failureS @ rect_temp(_,_,[]) <=> fail.
 
 %Contains no other points
-above @ point(I,J,_) \ rect_temp(I2,J,Xs,Ys,Ss) <=> I < I2, upTo(I,L), subtract(Xs,L,NL), Xs \== NL | rect_temp(I2,J,NL,Ys,Ss).
-left @  point(I,J,_) \ rect_temp(I,J2,Xs,Ys,Ss) <=> J < J2, upTo(J,L), subtract(Ys,L,NL), Ys \== NL | rect_temp(I,J2,NL,Ys,Ss).
-
-%Finalise rectangle
-onlyOption @ rect_temp(I,J,[X],[Y],[S]) <=> rect(c(I,J),c(X,Y),S).
-
-
-
-%Deleting values outside
 /*
-outsideBoardX @ dom(W,_), point(I,J,V) \ rect_temp(I,J,Xs,Ys,Ss) <=>
-  fromTo(W,W+V,T), subtract(Xs,T,L), Xs \== L | rect_temp(I,J,L,Ys,Ss).
-outsideBoardY @ dom(_,H), point(I,J,V) \ rect_temp(I,J,Xs,Ys,Ss) <=>
-  fromTo(H,H+V,T), subtract(Ys,T,L), Ys \== L | rect_temp(I,J,Xs,L,Ss).
+above @ point(I,J,_) \ rect_temp(c(I2,J),c(Xs,Ys),Ss) <=> I < I2, upTo(I,L), subtract(Xs,L,NL), Xs \== NL | rect_temp(c(I2,J),c(NL,Ys),Ss).
+left @  point(I,J,_) \ rect_temp(c(I,J2),c(Xs,Ys),Ss) <=> J < J2, upTo(J,L), subtract(Ys,L,NL), Ys \== NL | rect_temp(c(I,J2),c(Xs,NL),Ss).
 */
 
-outsideDom @ domain(Width,Height) \ rect(I,J,X,Y,W,H) <=> X2 is X+W, Y2 is Y+H,
-            X =< 0, Y =< 0,
-            X > X2, Y > Y2 | true.
+%Finalise rectangle
+rect_temp(c(I,J),c([X],[Y]),[S]) <=> rect(c(I,J),c(X,Y),S).
 
-overlaps @ rect(_,_,XA,YA,WA,HA), rect(_,_,XB,YB,WB,HB) <=>
+
+notinsideX @ rect(c(I,_),c(X,_),s(W,_)) <=> 
+        XL is X+W-1, I > XL | fail.
+notinsideY @ rect(c(_,J),c(_,Y),s(_,H)) <=> 
+        YL is Y+H-1, J > YL | fail.
+
+
+outsideDomWidth @ dom(Width,_) \ rect(_,c(X,_),s(W,_)) <=> 
+        X2 is X+W-1,
+        X2 > Width | fail.
+outsideDomHeight @ dom(_,Height) \ rect(_,c(_,Y),s(_,H)) <=> 
+        Y2 is Y+H-1,
+        Y2 > Height | fail.
+
+overlaps @ rect(_,c(XA,YA),s(WA,HA)), rect(_,c(XB,YB),s(WB,HB)) <=>
             XA2 is XA+WA-1, XB2 is XB+WB-1,
             YA2 is YA+HA-1, YB2 is YB+HB-1,
-            XA < XB2, XA2 > XB,
-            YA < YB2, YA2 > YB | fail.
+            XA =< XB2, XA2 >= XB,
+            YA =< YB2, YA2 >= YB | fail.
 
-generateSizes(V,Ss):-
-  upTo(V,L),
-  findall(s(W,H),(member(W,L),member(H,L), T is W*H, T == V),Ss).
 
-upto(0,[]).
-upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
+nrRect(M) \ search(N) <=> N1 is N-1, N1 == M | true.
+search(N), rect_temp(c(I,J),c(Xs,Ys),Ss) <=> 
+        generateCombinations(Xs,Ys,Ss,L), try_value(c(I,J),L), search(N).
+search(N) <=> N1 is N+1, search(N1).
+	
+try_value(_,[]) :- fail.    
+try_value(P,[(X,Y,S)|Vals]):- 
+    (
+    rect(P,c(X,Y),S)
+    ;
+    try_value(P,Vals)
+    ).
+
+generateCombinations(Xs,Ys,Ss,L):-
+        findall((X,Y,S),(member(X,Xs),member(Y,Ys),member(S,Ss)),L).
+
+generateSizes(Width,Height,V,Ss):-
+  Ws is min(Width,V),
+  Hs is min(Height,V),
+  upTo(Ws,Widths),
+  upTo(Hs,Heights),
+  findall(s(W,H),(member(W,Widths),member(H,Heights), T is W*H, T == V),Ss).
+
+upTo(0,[]).
+upTo(N,[N|L]) :- N>0, N1 is N-1, upTo(N1,L).
 
 fromTo(N,N,[N]).
-fromTo(M,N,[Tail]):-
-  M =< 0,
-  M1 is M+1,
-  fromTo(M1,N,Tail).
 fromTo(M,N,[M|Tail]):-
   M > 0,
   M1 is M+1,

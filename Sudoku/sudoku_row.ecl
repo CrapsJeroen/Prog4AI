@@ -11,7 +11,13 @@ solve(Name):-
   array_list(MBoard, Board),  
   labeling(MBoard),
   array_list(MBoard, B),
-  print_board(B).
+  print_board(B),
+  !.
+
+solveAll:-
+        puzzles(_,Name),
+        write(Name), nl,
+        solve(Name).
 
 sudoku(Sudoku):-
   length(Sudoku,N2),
