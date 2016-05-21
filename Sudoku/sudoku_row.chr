@@ -5,13 +5,14 @@
 :- op(700,xfx,'in').
 :- [sudex_toledo].
 :- chr_constraint solve/1, import/1, import/2, import_row/3,
-    dom/1,search, show/0, clean/0, show/2, row/2,col/2,block/2.
+    dom/1,search, show/0, clean/0, show/2, row/2,col/2,block/2, imported/0.
 solve(Name) <=> 
     puzzles(Raw,Name),
     length(Raw,N),
     dom(N),
 	generate_domains(1,N),	
     import(Raw),
+	imported,
 	show,
     flatten(Raw,Sudoku),
 	Sudoku ins 1..N,
@@ -54,15 +55,27 @@ import([],_) <=> true.
 import([CRow|Rows],Y) <=>import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
 
 import_row([],_,_) <=> true.
+
+% hier gebeurt het belangrijkste: de elementen worden in de juiste row/col/block gestoken zodat de constraints per row/col/block kunnen toegepast worden
 dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) \ import_row([CVal|Vals],Y,X) <=>
 	in_block(Y,X,BlockN,N), position_in_block(Y,X,PosInBlock,N) |
     nth1(X,RowList,CVal), nth1(Y,ColList,CVal), nth1(PosInBlock, BlockList, CVal),
 	X1 is X + 1, import_row(Vals,Y,X1).
 	
 
-row(_,L) ==> all_different(L); fail.
-col(_,L) ==> all_different(L); fail.
-block(_,L) ==> all_different(L); fail.
+imported, col(_,L) ==> all_different(L); fail.
+imported, block(_,L) ==> all_different(L); fail.
+
+% Sinds ik u gestuurd heb besefte ik eigenlijk dat dit toch de klassieke aanpak is en niet de row aanpak.
+% Deze is equivalent met de klassieke aanpak waar er gewoon gezegd wordt dat ze allemaal verschillend moeten zijn, maar niet dat er een permutatie is.
+% Pas bij labeling zullen dus de meeste waardes worden ingevuld.
+imported, row(_,L) ==> all_different(L); fail.
+
+% eigenlijk is deze equivalent met de row aanpak, maar die is super traag. 
+% Hier is wel de verklaring dat door het niet updaten van het domein er veel aan backtracking gedaan moet worden.
+% Hij probeert hier meteen alles in te vullen, wat natuurlijk zo goed als altijd fout gaat. 
+% Bij Eclipse vult hij pas in wanneer hij moet (bij labeling) of wanneer hij zeker is.
+%imported, dom(N), row(_,L) ==> upto(N,Dom), permutation(Dom,L); fail.
 
 upto(0,[]).
 upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
