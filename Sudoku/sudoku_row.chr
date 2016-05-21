@@ -58,8 +58,8 @@ import_row([],_,_) <=> true.
 
 % hier gebeurt het belangrijkste: de elementen worden in de juiste row/col/block gestoken zodat de constraints per row/col/block kunnen toegepast worden
 dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) \ import_row([CVal|Vals],Y,X) <=>
-	in_block(Y,X,BlockN,N), position_in_block(Y,X,PosInBlock,N) |
-    nth1(X,RowList,CVal), nth1(Y,ColList,CVal), nth1(PosInBlock, BlockList, CVal),
+	in_block(Y,X,BlockN,N), position_in_block(Y,X,PosInBlock,N) | % zorg dat het de juiste block nummer is en zoek de positie binnen die blok
+    nth1(X,RowList,CVal), nth1(Y,ColList,CVal), nth1(PosInBlock, BlockList, CVal), % zet de waardes op de juiste positie in hun row/col/block
 	X1 is X + 1, import_row(Vals,Y,X1).
 	
 
@@ -91,7 +91,11 @@ in_block(Row,Col,Block,N2):-
 	BlockCol is mod(Block1,N) + 1,
 	RowB == BlockRow, ColB == BlockCol.
 	
-	
+% geeft de positie weer binnen de blok:
+% 1 2 3
+% 4 5 6
+% 7 8 9
+% Bijvoorbeeld Row=8 en Col=8 gaat op de middelste positie binnen de blok rechtsonder staan, dus dit gaat 5 teruggeven bij Pos.	
 position_in_block(Row,Col,Pos,N2):-
     N is integer(sqrt(N2)),
 	upto(N2,L2),
