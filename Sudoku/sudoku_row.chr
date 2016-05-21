@@ -14,7 +14,7 @@ solve(Name) <=>
     import(Raw),
 	imported,
 	all_known([]),
-	%show,
+	show,
     search,
     !,
     show,
@@ -62,19 +62,21 @@ dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) \ import_row([CV
     nth1(X,RowList,CVal), nth1(Y,ColList,CVal), nth1(PosInBlock, BlockList, CVal),
 	X1 is X + 1, import_row(Vals,Y,X1).
 	
-/*	
+
 imported, row(_,L) ==> all_different(L); fail.
 imported, col(_,L) ==> all_different(L); fail.
 imported, block(_,L) ==> all_different(L); fail.
-*/
+
 %imported, row(Row1,L1)/*, dom_el(Col1)*/, row(Row2,L2)/*, dom_el(Col2)*/, dom(N) ==> in_same_block(Row1,Col1,Row2,Col2,N), nth1(Col1,L1,Val), nth1(Col2,L2,Val) | fail.
 
-search, dom(N), row(Row,RowList), col(Col,ColList), block(BlockN,BlockList) ==> 
-	in_block(Row,Col,BlockN,N), nth1(Col,RowList,X), var(X) | generate_options(RowList, ColList, BlockList, N, Options), try_value(X,Options).
+search, dom(N), row(_,RowList) ==> generate_options(RowList,N,Options), try_value(RowList, Options,[]).
 %search, dom(N), row(_,L), dom_el(Col) ==> nth1(Col,L,X), var(X) | try_value(X,L,N).
 search, row(Row,RowList) \ all_known(DoneList) <=> \+ member(Row,DoneList),\+ (member(X,RowList), var(X)) | all_known([Row|DoneList]).
 dom(N) \ search, all_known(List) <=> upto(N,L), permutation(L,List) | true.
 
+generate_options(List,N,Options):-
+	findall(El,(member(El,List),nonvar(El)),RowTaken),
+	upto(N,L1), subtract(L1,RowTaken,Options). 
 
 generate_options(RowList, ColList, BlockList, N, Options):-
 	findall(El,(member(El,RowList),nonvar(El)),RowTaken),
@@ -83,9 +85,22 @@ generate_options(RowList, ColList, BlockList, N, Options):-
 	upto(N,L1), subtract(L1,RowTaken,L2), 
 	subtract(L2,ColTaken,L3), subtract(L3,BlockTaken,Options).
 
-try_value(_,[]):- fail.
-try_value(X,Options):-
-	member(X,Options).
+try_value([],_,_).
+try_value([X|RowList], Options, Tried):-
+	nonvar(X),
+	try_value(RowList,Options, Tried).
+
+try_value([X|RowList], [Val|Options], Tried):-
+	var(X),
+	(
+		(
+		X is Val,
+		union(Options, Tried, NewOptions),
+		try_value(RowList,NewOptions,[])
+		)
+		;
+		try_value([X|RowList], Options,[Val|Tried])
+	).
 
 /*
 try_value(X,Vals,N):-
