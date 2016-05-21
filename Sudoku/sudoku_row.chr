@@ -4,18 +4,18 @@
 :- use_module(library(clpfd)).
 :- op(700,xfx,'in').
 :- [sudex_toledo].
-:- chr_constraint solve/1, import/1, import/2, import_row/3, known/3,
-    add_known/3, dom/1, options/3, search, show/0, clean/0, show/2, remove_option/3, imported/0,
-	row/2,col/2,block/2, dom_el/1, all_known/1.
+:- chr_constraint solve/1, import/1, import/2, import_row/3,
+    dom/1,search, show/0, clean/0, show/2, row/2,col/2,block/2.
 solve(Name) <=> 
     puzzles(Raw,Name),
     length(Raw,N),
     dom(N),
+	generate_domains(1,N),	
     import(Raw),
-	imported,
-	all_known([]),
 	show,
-    search,
+    flatten(Raw,Sudoku),
+	Sudoku ins 1..N,
+	labeling([ff],Sudoku),
     !,
     show,
 	clean.
@@ -39,22 +39,19 @@ show(Row,Col) <=> format('. '), Col1 is Col+1, show(Row,Col1).
 clean \ col(_,_) <=> true.
 clean \ row(_,_) <=> true.
 clean \ block(_,_) <=> true.
-clean \ dom_el(_) <=> true.
-clean, dom(_), imported <=> true.
+clean, dom(_) <=> true.
 
-dom(N) ==> upto(N,L), dom_els(L,N).
-dom_els([],_).
-dom_els([Val|Vals],N) :- 
-	dom_el(Val), 
-	length(L1,N), col(Val,L1), 
-	length(L2,N), block(Val,L2), 
-	length(L3,N), row(Val,L3), 
-	dom_els(Vals,N).	
+generate_domains(I,N):- I > N .
+generate_domains(I,N):-
+	length(L1,N), col(I,L1), 
+	length(L2,N), block(I,L2), 
+	length(L3,N), row(I,L3), 
+	I1 is I+1,
+	generate_domains(I1,N).
 
 import(Raw) <=> import(Raw,1).
 import([],_) <=> true.
-import([CRow|Rows],Y) <=>
-    import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
+import([CRow|Rows],Y) <=>import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
 
 import_row([],_,_) <=> true.
 dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) \ import_row([CVal|Vals],Y,X) <=>
@@ -63,107 +60,9 @@ dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) \ import_row([CV
 	X1 is X + 1, import_row(Vals,Y,X1).
 	
 
-imported, row(_,L) ==> all_different(L); fail.
-imported, col(_,L) ==> all_different(L); fail.
-imported, block(_,L) ==> all_different(L); fail.
-
-%imported, row(Row1,L1)/*, dom_el(Col1)*/, row(Row2,L2)/*, dom_el(Col2)*/, dom(N) ==> in_same_block(Row1,Col1,Row2,Col2,N), nth1(Col1,L1,Val), nth1(Col2,L2,Val) | fail.
-
-search, dom(N), row(_,RowList) ==> generate_options(RowList,N,Options), try_value(RowList, Options,[]).
-%search, dom(N), row(_,L), dom_el(Col) ==> nth1(Col,L,X), var(X) | try_value(X,L,N).
-search, row(Row,RowList) \ all_known(DoneList) <=> \+ member(Row,DoneList),\+ (member(X,RowList), var(X)) | all_known([Row|DoneList]).
-dom(N) \ search, all_known(List) <=> upto(N,L), permutation(L,List) | true.
-
-generate_options(List,N,Options):-
-	findall(El,(member(El,List),nonvar(El)),RowTaken),
-	upto(N,L1), subtract(L1,RowTaken,Options). 
-
-generate_options(RowList, ColList, BlockList, N, Options):-
-	findall(El,(member(El,RowList),nonvar(El)),RowTaken),
-	findall(El,(member(El,ColList),nonvar(El)),ColTaken),
-	findall(El,(member(El,BlockList),nonvar(El)),BlockTaken),
-	upto(N,L1), subtract(L1,RowTaken,L2), 
-	subtract(L2,ColTaken,L3), subtract(L3,BlockTaken,Options).
-
-try_value([],_,_).
-try_value([X|RowList], Options, Tried):-
-	nonvar(X),
-	try_value(RowList,Options, Tried).
-
-try_value([X|RowList], [Val|Options], Tried):-
-	var(X),
-	(
-		(
-		X is Val,
-		union(Options, Tried, NewOptions),
-		try_value(RowList,NewOptions,[])
-		)
-		;
-		try_value([X|RowList], Options,[Val|Tried])
-	).
-
-/*
-try_value(X,Vals,N):-
-	findall(El,(member(El,Vals),nonvar(El)),Taken),
-	upto(N,L), member(Choice,L), \+ member(Choice,Taken),
-	%write(Taken),nl, write(Choice),
-	X is Choice.
-	*/
-	
-	
-	/* length(A,4),nth1(2,A,8),findall(El,(member(El,A),nonvar(El)),Bla).
-		length(A,4),nth1(2,A,2),try_value(X,A,2).
-try_value(X,Vals,N):-
-	findall(El,(nonvar(El),member(El,Vals)),Taken),
-	upto(N,L), member(Choice,L), \+ member(Taken,Choice),
-	X is Choice.
-*/
-/*  
-dom(N) \ import_row([CVal|Vals],Y,X) <=>
-    var(CVal) | upto(N,L), options(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1). 
-  */    
-
-
-
-/*
-	  
-dom(N) \ add_known(Row,Col,Val)<=>  generate_constraints(Row,Col,Val,N), known(Row,Col,Val).%, format('known(~w,~w : ~w)',[Row,Col,Val]), nl.
-
-imported \  remove_option(Row,Col,Val), options(Row,Col,L) <=> delete(L,Val,NL), options(Row,Col,NL). 
-imported, known(Row,Col,Val)\ remove_option(Row,Col,Val) <=>  fail.
-imported, known(Row,Col,Val)\ remove_option(Row,Col,Val2) <=>  Val \== Val2 | true.
-
-options(_,_,[]) <=> fail.
-options(Row,Col,[Val]) <=> add_known(Row,Col,Val).
-
-
-dom(M) \ search(N) <=> N1 is N-1, N1 == M | true.
-search(N), options(Col, Row, Vals) <=> length(Vals,X), X =< N | try_value(Col, Row, Vals), search(N).
-search(N) <=> N1 is N+1, search(N1).
-
-block_number(X,Dom):-
-    upto(Dom,L),
-    member(X,L).
-	
-try_value(_,_,[]) :- fail.    
-try_value(Col, Row, [Val|Vals]):-
-    (
-    add_known(Col,Row,Val)
-    ;
-    try_value(Col,Row,Vals)
-    ).
-
-
-
-generate_constraints(Row, Col, Val, N) :- 
-	findall(const(Row2,Col2,Val), in_same_block(Row,Col,Row2,Col2,N),L1),
-	findall(const(OtherRow,Col,Val), in_same_line(Row,OtherRow,N), L2),
-	findall(const(Row,OtherCol,Val), in_same_line(Col,OtherCol,N),L3),
-	flatten([L1,L2,L3],LR), apply_constraints(LR).
-	
-apply_constraints([]).
-apply_constraints([const(Row,Col,Val)|Rest]):- remove_option(Row,Col,Val), apply_constraints(Rest).
-*/
+row(_,L) ==> all_different(L); fail.
+col(_,L) ==> all_different(L); fail.
+block(_,L) ==> all_different(L); fail.
 
 upto(0,[]).
 upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
@@ -187,23 +86,3 @@ position_in_block(Row,Col,Pos,N2):-
 	Row1 is Row-1, Col1 is Col-1,
 	RowB is mod(Row1,N), ColB is mod(Col1,N),
 	Pos is N * RowB + ColB + 1.
-% position_in_block(8,8,Pos,9).
-	
-% block_number(3,1,N,9).
-in_same_block(Row1,Col1,Row2,Col2,N2) :-
-    N is integer(sqrt(N2)),
-	upto(N,L),
-	member(Row1,L), member(Col1,L),
-	member(Row2,L), member(Col2,L),
-    RowB1 is (Row1 - 1)// N,
-    ColB1 is (Col1 - 1)// N,
-    RowB2 is (Row2 - 1)// N,
-    ColB2 is (Col2 - 1)// N,
-	\+ (Row1 == Row2, Col1 == Col2),
-	RowB1 == RowB2, ColB1 == ColB2.
-	
-in_same_line(Coord, OtherCoord,N) :-
-	upto(N,L),
-	member(Coord,L), member(OtherCoord,L),
-	Coord \== OtherCoord.
-	

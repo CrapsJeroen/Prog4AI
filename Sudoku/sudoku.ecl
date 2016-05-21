@@ -15,6 +15,10 @@ solveAll:-
         puzzles(_,Name),
         write(Name), nl,
         solve(Name).
+		
+solveAllAuto:-
+	(solveAll,fail; true).
+    
 sudoku(Sudoku):-
     dim(Sudoku,[N2,N2]),
     N is integer(sqrt(N2)),

@@ -18,7 +18,9 @@ solveAll:-
         puzzles(_,Name),
         write(Name), nl,
         solve(Name).
-
+solveAllAuto:-
+	(solveAll,fail; true).
+	
 sudoku(Sudoku):-
   length(Sudoku,N2),
   N is integer(sqrt(N2)),
