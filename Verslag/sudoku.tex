@@ -94,8 +94,8 @@ We extract the required information from this matrix by defining rows, columns a
 For each row, column and block we say that every value in these lists must be different.
 So all of the constraints are exactly the same, but the way of extracting this information from the matrix is different.\\
 
-A row with index $I$ is defined in a matrix by $Row is Sudoku[I,1..N^{2}]$. 
-For extracting a column with index $I$ we use $Col is Sudoku[1..N^{2},I]$.
+A row with index $I$ is defined in a matrix by \textit{Row is} $Sudoku[I,1..N^{2}]$. 
+For extracting a column with index $I$ we use \textit{Col is } $Sudoku[1..N^{2},I]$.
 While extracting the information for the rows and columns is straight forward, it becomes clear when extracting the variables required to fulfill the block constraints.
 We define the block with index $(I,J)$ as follows. 
 The indices $I, J$ are elements from the interval $[0,1,\cdots,(n-1)]$.
@@ -118,13 +118,68 @@ Combining all of the possible $X$ and $Y$ values based on the given $(I,J)$ pair
 ).
 \end{lstlisting}
 
+Important to note is that after all of these constraints the most important aspect of the problem remains how to decide if every value in a list is unique. 
+There a couple of different ways to implement this.
+In this first viewpoint every variable is instantiated separately with an element from the domain $[1,2,\cdots,n^{2}]$. \\
+
+As can be seen in the code snippet above we utilise the buildin \textsl{alldiferent/1} function from the ic library, which we have imported into our program with the \textsl{:- lib(ic)} command.
+We could have used passive constraints where the entire search space would be used instead of the pruned version that is created by the ic library.
+This would have caused a lot of backtracking to occur while looking for a possible solution since every variable would be instantiated separately from the others.
+For every variable in the list the rest of the list is checked to see if it doesn't contains the same value.\\
+
+Another option was to use the suspend library which puts constraints on the variables before searching.
+But afterwards it still iterates over the entire search space, because it still doesn't utilise the additional constraints to reduce the search space of the other variables in a list/column/block.\\
+
+We ended up choosing the ic library for two reasons.
+Firstly this allows us to define the constraint before starting the search process.
+Secondly, the search domain is reduced while search by the constraints so that less backtracking is required.
+This is called Forward Checking. \\
+
+Further optimalisations can be achieved by value and variable ordering.
+Which we can change by using different methods in the \textsl{search(+L, ++Arg, ++Select, +Choice, ++Method, +Option)} command of the ECLiPSe library.
+\begin{itemize}
+\item %TODO Selection methods
+\end{itemize}
 
 \paragraph*{Alternative viewpoint}
+
+In this alternative viewpoint we view the puzzle as a list of lists.
+There are $n^2$ list with each $n^{2}$ variables.
+In this representation we see this list of variables as a single variable of which the possible values are all of the possible permutations of the sequence $[1,2,\cdots,n^{2}]$. \\
+
+\begin{lstlisting}
+(foreach(Row,Sudoku), param(N2)  do
+  permutation([1..N2],Row)
+)
+
+permutation(Sequence,Permutation):-
+  Permutation :: Sequence,
+  alldifferent(Permutation).
+\end{lstlisting}
+
+By defining the entire row as a variable we no longer need the row constraints since these are implied by the domain of the variables.
+The column and block constraints are similar to the original viewpoint, except for the fact that instead of working with the matrix we now need to iterate over the lists to extract the necessary variables to form the columns and blocks.
+
+\begin{lstlisting}
+(foreach(Row,Sudoku), param(N2) do
+  (for(J,1,N2), foreach(E,Col) do
+     selectElement(E,J,Row)
+  ),
+  alldifferent(Col)
+)
+\end{lstlisting}
+
+As a consequence of this viewpoint is that we use active propagation by only having permutation of the sequence 1 to $n^2$.
+The reasoning behind this is that we will no longer attempt a certain value for a variable in a row when the value already exists in the row. 
+This kind of active propagation is already done when we utilise the ic library, so we are not expecting to see a big difference in performance between these two implementations.\\
+
+We will further discuss the results in the section \ref{subsec:sudokuexperiments}
 
 \subsubsection{CHR}
 \subsubsection{Decision}
 
-\subsection{Experiments}
+
+\subsection{Experiments}\label{subsec:sudokuexperiments}
 \subsubsection{Results}
 \subsubsection{Heuristics}
 \subsubsection{Difficulties}
