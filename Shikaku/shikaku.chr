@@ -2,133 +2,184 @@
 :- use_module(library(lists)).
 :- include(puzzles).
 :- include(print).
-:- chr_constraint search/1, point/3, solve/1, nrRect/1, rect/3, rect_temp/2, makeDomains/1, dom/2.
+:- chr_constraint search/1, solve/1, rect/3, 
+	rect_temp/2, makeDomains/2, clean/0.
 
+%%% MAIN %%%
 
-
+/*
+*	Solve the puzzle with the given Name 
+*/
 solve(Name) <=> 
-        problem(Name,Width,Height,Ps),
-        length(Ps,N),
-        nrRect(N), 
-        dom(Width,Height),
-        makeDomains(Ps),
+        problem(Name,Width,Height,Points),
+        makeDomains(Points,s(Width,Height)),
 		MaxSize is Width * Height, 
 		search(MaxSize),
-        show(Width, Height, Ps, chr), !.
-
+        show(Width, Height, Points, chr, ascii), 
+		!,
+		clean.
+/*
+*	Solve all puzzles and pause inbetween.
+*/
 solveAll:-
     problem(Name,_,_,_),
     write(Name), nl,
     time(solve(Name)).
-	
+/*
+*	Solve all puzzles without pausing
+*/	
 solveAllAuto:-
 	time((solveAll,fail; true)).
+	
+/*
+*	Clean up
+*/
+clean \ rect(_,_,_) <=> true.
+clean <=> true.
 
-makeDomains([]) <=> true.
-dom(W,H) \ makeDomains([(I,J,V)|Ps]) <=>
-	generateCombinations(I,J,V,W,H,L),rect_temp(c(I,J),L), makeDomains(Ps).
+%%%% INITIALIZATION %%%
+/*
+*	Import the points from the puzzle and generate the rectangle options.
+*/
+makeDomains([],_) <=> true.
+makeDomains([(X,Y,Value)|Points],FieldSize) <=>
+	generateOptions(c(X,Y),Value,FieldSize,OptionsList),
+	rect_temp(c(X,Y),OptionsList),
+	makeDomains(Points,FieldSize).
 
+/*
+*	Generates all rectangle ooptions for the point with position Point and 
+*	value Value and unifies the result with OptionsList.
+*/
+generateOptions(Pos,Value,FieldSize,OptionsList):-
+    findall(Option,
+		generateSingleOption(Pos,Value,FieldSize,Option),
+		OptionsList).
 
-%FAILURE
+/*	
+*	Generate a single rectangle option (with Pos and Size) for the point with
+*	position Point and value Value.
+*	Ensures	the the recangle has the correct size, contains the point and
+*	fits within the given FieldSize.
+*/
+generateSingleOption(Point,Value,FieldSize,(Pos,Size)):-
+	correctSize(Size,Value),
+	contains(Pos,Size,Point),
+	inField(Pos,Size,FieldSize).
+	
+%%% SEARCH %%%
+
+/*
+*	Enumerates all possible options for all rectangles.
+*	Attempts to place rectangles from large to small, so it should be
+*	initiated with an N at least as large as the largest possible recangle.
+*/	
+search(N), rect_temp(Point,OptionsList) <=>
+	member((_,s(Width,Height)),OptionsList), 
+	Width*Height >= N 
+	| try_option(Point,OptionsList), 
+	search(N).
+search(0) <=> true.
+search(N) <=> N1 is N - 1, search(N1).
+
+/*
+*	Iteratively tries all rectangle options for the given point. 
+*/
+try_option(_,[]) :- fail.    
+try_option(Point,[(Pos,Size)|Options]):- 
+    (
+    rect(Point,Pos,Size)
+    ;
+    try_option(Point,Options)
+    ).
+
+%%% CHR CONSTRATINS %%%
+	
+/*
+*	FAILURE: Backtrack when a rectangle has no options left.
+*/
 failure @ rect_temp(_,[]) <=> fail.
 
-%Contains no other points
 /*
-above @ point(I,J,_) \ rect_temp(c(I2,J),c(Xs,Ys),Ss) <=> I < I2, upTo(I,L), subtract(Xs,L,NL), Xs \== NL | rect_temp(c(I2,J),c(NL,Ys),Ss).
-left @  point(I,J,_) \ rect_temp(c(I,J2),c(Xs,Ys),Ss) <=> J < J2, upTo(J,L), subtract(Ys,L,NL), Ys \== NL | rect_temp(c(I,J2),c(Xs,NL),Ss).
+*	Remove all rectangle options which contain points other than the point
+*	they belong to.
 */
-
-%Finalise rectangle
-%rect_temp(c(I,J),[(X,Y,S)]) <=> rect(c(I,J),c(X,Y),S).
+rect_temp(RefPoint,_) \ rect_temp(Point,OptionsList) <=>
+	remove_point_overlap(RefPoint,OptionsList,NewList),
+	OptionsList \== NewList 
+	| rect_temp(Point,NewList).
 
 /*
-notinsideX @ rect(c(I,_),c(X,_),s(W,_)) <=> 
-        XL is X+W-1, I > XL | fail.
-notinsideY @ rect(c(_,J),c(_,Y),s(_,H)) <=> 
-        YL is Y+H-1, J > YL | fail.
+*	When a new rectangle with position Pos and size Size is added, 
+*	remove all rectangle options which overlap with the new recangle.
+*/	
+rect(_,Pos,Size) \ rect_temp(Point,OptionsList) <=>
+	remove_rect_overlap(Pos,Size,OptionsList,NewList),
+	OptionsList \== NewList 
+	| rect_temp(Point,NewList).
 
 
-outsideDomWidth @ dom(Width,_) \ rect(_,c(X,_),s(W,_)) <=> 
-        X2 is X+W-1,
-        X2 > Width | fail.
-outsideDomHeight @ dom(_,Height) \ rect(_,c(_,Y),s(_,H)) <=> 
-        Y2 is Y+H-1,
-        Y2 > Height | fail.
+	
+%%% HELPER PREDICATES %%%	
+	
+/*
+*	Removes all rectangle options from the OptionList which contain the given
+*	point. Unifies the result with NewList.
+*/	
+remove_point_overlap(Point,OptionsList,NewList):-
+	findall((Pos,Size),(
+		member((Pos,Size),OptionsList),
+		\+ contains(Pos,Size,Point)
+		),NewList).
 
+	
+/*
+*	Removes all rectangle options from the OptionsList which overlap with the
+*	recangle with position RefPos and size RefSize. 
+*	Unifies the result with NewList
 */
-rect_temp(c(I,J),_) \ rect_temp(X,L) <=>
-	%nl, nl, write('yup'), nl, nl,
-	remove_point_overlap(I,J,L,NewL), L \== NewL | rect_temp(X,NewL).
-	
-rect(_,c(I,J),Size) \ rect_temp(X,L) <=>
-	remove_rect_overlap(I,J,Size,L,NewL), L \== NewL | rect_temp(X,NewL).
-/*	
-overlaps @ rect(_,c(XA,YA),s(WA,HA)), rect(_,c(XB,YB),s(WB,HB)) <=>
-            XA2 is XA+WA-1, XB2 is XB+WB-1,
-            YA2 is YA+HA-1, YB2 is YB+HB-1,
-            XA =< XB2, XA2 >= XB,
-            YA =< YB2, YA2 >= YB | fail.
-*/			
-% RECT ADDED --> REMOVE OPTIONS FROM TEMPS??
-% remove_overlap(3,1,[(3,1,s(1,2)),(2,1,s(2,1))],Out).
-remove_point_overlap(I,J,L,NewL):-
-	findall((X,Y,S),(member((X,Y,S),L),\+ contains(X,Y,S,I,J)),NewL).
+remove_rect_overlap(RefPos,RefSize,OptionsList,NewList):-
+	findall((Pos,Size),(
+		member((Pos,Size),OptionsList),
+		\+ overlap(RefPos,RefSize,Pos,Size)
+		),NewList).
 
-remove_rect_overlap(I,J,Size,L,NewL):-
-	findall((X,Y,S),(member((X,Y,S),L),\+ overlap(c(X,Y),S,c(I,J),Size)),NewL).
 	
+/*
+*	Checks whether a box with the given Width and Height has a surface of Size.
+*	Will generate Width and Height if Size is given. 
+*/
+correctSize(s(Width,Height),Size):-
+	between(1,Size,Width), between(1,Size,Height),
+	CalcSize is Width * Height,
+	CalcSize == Size.
+
+/*
+*	Checks whether or not the box with top left corner c(BoxX,BoxY) 
+*	and size s(BoxWidth,BoxHeight) contains the position c(PointX,PointY).
+*	Will generate BoxX and BoxY if all other parameters are known.	
+*/
+contains(c(BoxX,BoxY),s(Width,Height),c(PointX,PointY)):-
+	XMin is max(1,PointX - Width + 1),
+	YMin is max(1,PointY - Height + 1),
+	between(XMin,PointX,BoxX), between(YMin,PointY,BoxY).
+
+/*
+*	Checks whether or not the box with top left corner c(BoxX,BoxY) 
+*	and size s(BoxWidth,BoxHeight) fits inside the field with 
+*	dimensions FieldWidth x FieldHeight	
+*/
+inField(c(BoxX,BoxY),s(BoxWidth,BoxHeight),s(FieldWidth,FieldHeight)):-
+	XBM is BoxX+BoxWidth-1, YBM is BoxY+BoxHeight-1,
+	BoxX > 0, XBM =< FieldWidth,
+	BoxY > 0, YBM =< FieldHeight.
+	
+/*
+*	Checks whether or not the rectangle with position c(XA,YA) and size s(WA,HA)
+*	overlaps with the recangle with position c(XB,YB) and size s(WB,HB). 
+*/	
 overlap(c(XA,YA),s(WA,HA),c(XB,YB),s(WB,HB)):-
 	XA2 is XA+WA-1, XB2 is XB+WB-1,
 	YA2 is YA+HA-1, YB2 is YB+HB-1,
 	XA =< XB2, XA2 >= XB,
 	YA =< YB2, YA2 >= YB.
-			
-search(N), rect_temp(c(I,J),L) <=>
-		member((_,_,s(W,H)),L), W*H >= N | 
-        try_value(c(I,J),L), search(N).
-
-search(0) <=> true.
-search(N) <=> N1 is N - 1, search(N1).
-
-try_value(_,[]) :- fail.    
-try_value(P,[(X,Y,S)|Vals]):- 
-    (
-    rect(P,c(X,Y),S)
-    ;
-    try_value(P,Vals)
-    ).
-
-generateCombinations(I,J,V,W,H,L):-
-    findall((X,Y,S),makeCombination(I,J,V,W,H,X,Y,S),L).
-	
-makeCombination(I,J,V,W,H,X,Y,S):-
-	correctSize(S,V),
-	contains(X,Y,S,I,J),
-	inField(X,Y,S,W,H).
-	% NO OVERLAP WITH EXISTING NUMBERS;
-	% makeCombination([1,2],[1],[(3,1)],3,1,X,Y,S).
-
-correctSize(s(W,H),Size):-
-	between(1,Size,W), between(1,Size,H),
-	CalcSize is W * H,
-	CalcSize == Size.
-	
-contains(X,Y,s(W,H),I,J):- % contains(X,Y,3,1,2,3).
-	XMin is max(1,I - W + 1),
-	YMin is max(1,J - H + 1),
-	between(XMin,I,X), between(YMin,J,Y).
-	
-inField(BoxX,BoxY,s(BoxWidth,BoxHeight),W,H):-
-	XBM is BoxX+BoxWidth-1, YBM is BoxY+BoxHeight-1,
-	BoxX > 0, XBM =< W,
-	BoxY > 0, YBM =< H.
-/*	
-upTo(0,[]).
-upTo(N,[N|L]) :- N>0, N1 is N-1, upTo(N1,L).
-
-fromTo(N,N,[N]).
-fromTo(M,N,[M|Tail]):-
-  M < N,
-  M1 is M+1,
-  fromTo(M1,N,Tail).
-*/
