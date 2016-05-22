@@ -2,7 +2,7 @@
 :- use_module(library(lists)).
 :- include(puzzles).
 :- include(print).
-:- chr_constraint search/1, point/3, solve/1, nrRect/1, rect/3, rect_temp/3, makeDomains/1, dom/2.
+:- chr_constraint search/0, point/3, solve/1, nrRect/1, rect/3, rect_temp/2, makeDomains/1, dom/2.
 
 
 
@@ -12,21 +12,24 @@ solve(Name) <=>
         nrRect(N), 
         dom(Width,Height), 
         makeDomains(Ps),
-        search(1),
-        show(Width, Height, Ps, chr), !, fail.
+        search,
+        show(Width, Height, Ps, chr, ascii), !.
 
+solveAll:-
+    problem(Name,_,_,_),
+    write(Name), nl,
+    time(solve(Name)).
+	
+solveAllAuto:-
+	time((solveAll,fail; true)).
 
 makeDomains([]) <=> true.
 dom(W,H) \ makeDomains([(I,J,V)|Ps]) <=>
-  X1 is max(1,I-V+1), X2 is I, fromTo(X1,X2,Xs),
-  Y1 is max(1,J-V+1), Y2 is J, fromTo(Y1,Y2,Ys)
-  | generateSizes(W,H,V,Ss), rect_temp(c(I,J),c(Xs,Ys),Ss), makeDomains(Ps).
+	generateCombinations(I,J,V,W,H,L),rect_temp(c(I,J),L), makeDomains(Ps).
 
 
 %FAILURE
-failureX @ rect_temp(_,c([],_),_) <=> fail.
-failureY @ rect_temp(_,c(_,[]),_) <=> fail.
-failureS @ rect_temp(_,_,[]) <=> fail.
+failure @ rect_temp(_,[]) <=> fail.
 
 %Contains no other points
 /*
@@ -35,9 +38,9 @@ left @  point(I,J,_) \ rect_temp(c(I,J2),c(Xs,Ys),Ss) <=> J < J2, upTo(J,L), sub
 */
 
 %Finalise rectangle
-rect_temp(c(I,J),c([X],[Y]),[S]) <=> rect(c(I,J),c(X,Y),S).
+%rect_temp(c(I,J),[(X,Y,S)]) <=> rect(c(I,J),c(X,Y),S).
 
-
+/*
 notinsideX @ rect(c(I,_),c(X,_),s(W,_)) <=> 
         XL is X+W-1, I > XL | fail.
 notinsideY @ rect(c(_,J),c(_,Y),s(_,H)) <=> 
@@ -51,17 +54,26 @@ outsideDomHeight @ dom(_,Height) \ rect(_,c(_,Y),s(_,H)) <=>
         Y2 is Y+H-1,
         Y2 > Height | fail.
 
+*/
+rect_temp(c(I,J),_) \ rect_temp(X,L) <=>
+	%nl, nl, write('yup'), nl, nl,
+	remove_overlap(I,J,L,NewL), L \== NewL | rect_temp(X,NewL).
+	
 overlaps @ rect(_,c(XA,YA),s(WA,HA)), rect(_,c(XB,YB),s(WB,HB)) <=>
             XA2 is XA+WA-1, XB2 is XB+WB-1,
             YA2 is YA+HA-1, YB2 is YB+HB-1,
             XA =< XB2, XA2 >= XB,
             YA =< YB2, YA2 >= YB | fail.
+			
+% RECT ADDED --> REMOVE OPTIONS FROM TEMPS??
+% remove_overlap(3,1,[(3,1,s(1,2)),(2,1,s(2,1))],Out).
+remove_overlap(I,J,L,NewL):-
+	findall((X,Y,S),(member((X,Y,S),L),\+ contains(X,Y,S,I,J)),NewL).
 
-
-nrRect(M) \ search(N) <=> N1 is N-1, N1 == M | true.
-search(N), rect_temp(c(I,J),c(Xs,Ys),Ss) <=> 
-        generateCombinations(Xs,Ys,Ss,L), try_value(c(I,J),L), search(N).
-search(N) <=> N1 is N+1, search(N1).
+			
+search, rect_temp(c(I,J),L) <=> 
+        try_value(c(I,J),L), search.
+search <=> true.
 	
 try_value(_,[]) :- fail.    
 try_value(P,[(X,Y,S)|Vals]):- 
@@ -71,21 +83,37 @@ try_value(P,[(X,Y,S)|Vals]):-
     try_value(P,Vals)
     ).
 
-generateCombinations(Xs,Ys,Ss,L):-
-        findall((X,Y,S),(member(X,Xs),member(Y,Ys),member(S,Ss)),L).
+generateCombinations(I,J,V,W,H,L):-
+    findall((X,Y,S),makeCombination(I,J,V,W,H,X,Y,S),L).
+	
+makeCombination(I,J,V,W,H,X,Y,S):-
+	correctSize(S,V),
+	contains(X,Y,S,I,J),
+	inField(X,Y,S,W,H).
+	% NO OVERLAP WITH EXISTING NUMBERS;
+	% makeCombination([1,2],[1],[(3,1)],3,1,X,Y,S).
 
-generateSizes(Width,Height,V,Ss):-
-  Ws is min(Width,V),
-  Hs is min(Height,V),
-  upTo(Ws,Widths),
-  upTo(Hs,Heights),
-  findall(s(W,H),(member(W,Widths),member(H,Heights), T is W*H, T == V),Ss).
-
+correctSize(s(W,H),Size):-
+	between(1,Size,W), between(1,Size,H),
+	CalcSize is W * H,
+	CalcSize == Size.
+	
+contains(X,Y,s(W,H),I,J):- % contains(X,Y,3,1,2,3).
+	XMin is max(1,I - W + 1),
+	YMin is max(1,J - H + 1),
+	between(XMin,I,X), between(YMin,J,Y).
+	
+inField(BoxX,BoxY,s(BoxWidth,BoxHeight),W,H):-
+	XBM is BoxX+BoxWidth-1, YBM is BoxY+BoxHeight-1,
+	BoxX > 0, XBM =< W,
+	BoxY > 0, YBM =< H.
+/*	
 upTo(0,[]).
 upTo(N,[N|L]) :- N>0, N1 is N-1, upTo(N1,L).
 
 fromTo(N,N,[N]).
 fromTo(M,N,[M|Tail]):-
-  M > 0,
+  M < N,
   M1 is M+1,
   fromTo(M1,N,Tail).
+*/
