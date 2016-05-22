@@ -6,56 +6,56 @@ init_format(ascii).
 init_format(latex) :-
     write('% \\usepackage{pmboxdraw}'), nl.
     
-corner_symbol(unicode, 0, " ").
-corner_symbol(unicode, 1, "?").
-corner_symbol(unicode, 2, "?").
-corner_symbol(unicode, 3, "└").  % NE
-corner_symbol(unicode, 4, "?").
-corner_symbol(unicode, 5, "│"). % NS
-corner_symbol(unicode, 6, "┌"). % ES
-corner_symbol(unicode, 7, "├"). % NES
-corner_symbol(unicode, 8, "?"). 
-corner_symbol(unicode, 9, "┘"). % WN
-corner_symbol(unicode, 10, "─"). % EW
-corner_symbol(unicode, 11, "┴"). % NEW
-corner_symbol(unicode, 12, "┐"). % SW
-corner_symbol(unicode, 13, "┤"). % NSW
-corner_symbol(unicode, 14, "┬"). % ESW
-corner_symbol(unicode, 15, "┼"). % NESW
+corner_symbol(unicode, 0, ' ').
+corner_symbol(unicode, 1, '?').
+corner_symbol(unicode, 2, '?').
+corner_symbol(unicode, 3, '└').  % NE
+corner_symbol(unicode, 4, '?').
+corner_symbol(unicode, 5, '│'). % NS
+corner_symbol(unicode, 6, '┌'). % ES
+corner_symbol(unicode, 7, '├'). % NES
+corner_symbol(unicode, 8, '?'). 
+corner_symbol(unicode, 9, '┘'). % WN
+corner_symbol(unicode, 10, '─'). % EW
+corner_symbol(unicode, 11, '┴'). % NEW
+corner_symbol(unicode, 12, '┐'). % SW
+corner_symbol(unicode, 13, '┤'). % NSW
+corner_symbol(unicode, 14, '┬'). % ESW
+corner_symbol(unicode, 15, '┼'). % NESW
 
-corner_symbol(ascii, 0, " ").
-corner_symbol(ascii, 1, "?").
-corner_symbol(ascii, 2, "?").
-corner_symbol(ascii, 3, "+").  % NE
-corner_symbol(ascii, 4, "?").
-corner_symbol(ascii, 5, "|"). % NS
-corner_symbol(ascii, 6, "+"). % ES
-corner_symbol(ascii, 7, "+"). % NES
-corner_symbol(ascii, 8, "?"). 
-corner_symbol(ascii, 9, "+"). % WN
-corner_symbol(ascii, 10, "-"). % EW
-corner_symbol(ascii, 11, "+"). % NEW
-corner_symbol(ascii, 12, "+"). % SW
-corner_symbol(ascii, 13, "+"). % NSW
-corner_symbol(ascii, 14, "+"). % ESW
-corner_symbol(ascii, 15, "+"). % NESW
+corner_symbol(ascii, 0, ' ').
+corner_symbol(ascii, 1, '?').
+corner_symbol(ascii, 2, '?').
+corner_symbol(ascii, 3, '+').  % NE
+corner_symbol(ascii, 4, '?').
+corner_symbol(ascii, 5, '|'). % NS
+corner_symbol(ascii, 6, '+'). % ES
+corner_symbol(ascii, 7, '+'). % NES
+corner_symbol(ascii, 8, '?'). 
+corner_symbol(ascii, 9, '+'). % WN
+corner_symbol(ascii, 10, '-'). % EW
+corner_symbol(ascii, 11, '+'). % NEW
+corner_symbol(ascii, 12, '+'). % SW
+corner_symbol(ascii, 13, '+'). % NSW
+corner_symbol(ascii, 14, '+'). % ESW
+corner_symbol(ascii, 15, '+'). % NESW
 
-corner_symbol(latex, 0, " ").
-corner_symbol(latex, 1, "?").
-corner_symbol(latex, 2, "?").
-corner_symbol(latex, 3, "\\textSFii").  % NE
-corner_symbol(latex, 4, "?").
-corner_symbol(latex, 5, "\\textSFxi"). % NS
-corner_symbol(latex, 6, "\\textSFi"). % ES
-corner_symbol(latex, 7, "\\textSFviii"). % NES
-corner_symbol(latex, 8, "?"). 
-corner_symbol(latex, 9, "\\textSFiv"). % WN
-corner_symbol(latex, 10, "\\textSFx"). % EW
-corner_symbol(latex, 11, "\\textSFvii"). % NEW
-corner_symbol(latex, 12, "\\textSFiii"). % SW
-corner_symbol(latex, 13, "\\textSFix"). % NSW
-corner_symbol(latex, 14, "\\textSFvi"). % ESW
-corner_symbol(latex, 15, "\\textSFv"). % NESW
+corner_symbol(latex, 0, ' ').
+corner_symbol(latex, 1, '?').
+corner_symbol(latex, 2, '?').
+corner_symbol(latex, 3, '\\textSFii').  % NE
+corner_symbol(latex, 4, '?').
+corner_symbol(latex, 5, '\\textSFxi'). % NS
+corner_symbol(latex, 6, '\\textSFi'). % ES
+corner_symbol(latex, 7, '\\textSFviii'). % NES
+corner_symbol(latex, 8, '?'). 
+corner_symbol(latex, 9, '\\textSFiv'). % WN
+corner_symbol(latex, 10, '\\textSFx'). % EW
+corner_symbol(latex, 11, '\\textSFvii'). % NEW
+corner_symbol(latex, 12, '\\textSFiii'). % SW
+corner_symbol(latex, 13, '\\textSFix'). % NSW
+corner_symbol(latex, 14, '\\textSFvi'). % ESW
+corner_symbol(latex, 15, '\\textSFv'). % NESW
 
 corner_symbol(N, S) :- corner_symbol(u, N, S).
 

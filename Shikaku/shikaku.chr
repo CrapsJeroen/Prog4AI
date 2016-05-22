@@ -14,7 +14,7 @@ solve(Name) <=>
         makeDomains(Ps),
 		MaxSize is Width * Height, 
 		search(MaxSize),
-        show(Width, Height, Ps, chr, ascii), !.
+        show(Width, Height, Ps, chr), !.
 
 solveAll:-
     problem(Name,_,_,_),
