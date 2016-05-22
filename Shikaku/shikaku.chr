@@ -1,3 +1,4 @@
+:-  encoding(utf8).
 :- use_module(library(chr)).
 :- use_module(library(lists)).
 :- include(puzzles).
@@ -15,7 +16,7 @@ solve(Name) <=>
         makeDomains(Points,s(Width,Height)),
 		MaxSize is Width * Height, 
 		search(MaxSize),
-        show(Width, Height, Points, chr, ascii), 
+        show(Width, Height, Points, chr), 
 		!,
 		clean.
 /*
@@ -24,7 +25,7 @@ solve(Name) <=>
 solveAll:-
     problem(Name,_,_,_),
     write(Name), nl,
-    time(solve(Name)).
+    time(solve(Name)), nl.
 /*
 *	Solve all puzzles without pausing
 */	
