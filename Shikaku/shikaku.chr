@@ -57,19 +57,30 @@ outsideDomHeight @ dom(_,Height) \ rect(_,c(_,Y),s(_,H)) <=>
 */
 rect_temp(c(I,J),_) \ rect_temp(X,L) <=>
 	%nl, nl, write('yup'), nl, nl,
-	remove_overlap(I,J,L,NewL), L \== NewL | rect_temp(X,NewL).
+	remove_point_overlap(I,J,L,NewL), L \== NewL | rect_temp(X,NewL).
 	
+rect(_,c(I,J),Size) \ rect_temp(X,L) <=>
+	remove_rect_overlap(I,J,Size,L,NewL), L \== NewL | rect_temp(X,NewL).
+/*	
 overlaps @ rect(_,c(XA,YA),s(WA,HA)), rect(_,c(XB,YB),s(WB,HB)) <=>
             XA2 is XA+WA-1, XB2 is XB+WB-1,
             YA2 is YA+HA-1, YB2 is YB+HB-1,
             XA =< XB2, XA2 >= XB,
             YA =< YB2, YA2 >= YB | fail.
-			
+*/			
 % RECT ADDED --> REMOVE OPTIONS FROM TEMPS??
 % remove_overlap(3,1,[(3,1,s(1,2)),(2,1,s(2,1))],Out).
-remove_overlap(I,J,L,NewL):-
+remove_point_overlap(I,J,L,NewL):-
 	findall((X,Y,S),(member((X,Y,S),L),\+ contains(X,Y,S,I,J)),NewL).
 
+remove_rect_overlap(I,J,Size,L,NewL):-
+	findall((X,Y,S),(member((X,Y,S),L),\+ overlap(c(X,Y),S,c(I,J),Size)),NewL).
+	
+overlap(c(XA,YA),s(WA,HA),c(XB,YB),s(WB,HB)):-
+	XA2 is XA+WA-1, XB2 is XB+WB-1,
+	YA2 is YA+HA-1, YB2 is YB+HB-1,
+	XA =< XB2, XA2 >= XB,
+	YA =< YB2, YA2 >= YB.
 			
 search, rect_temp(c(I,J),L) <=> 
         try_value(c(I,J),L), search.
