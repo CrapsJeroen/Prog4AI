@@ -2,7 +2,7 @@
 :- use_module(library(lists)).
 :- include(puzzles).
 :- include(print).
-:- chr_constraint search/0, point/3, solve/1, nrRect/1, rect/3, rect_temp/2, makeDomains/1, dom/2.
+:- chr_constraint search/1, point/3, solve/1, nrRect/1, rect/3, rect_temp/2, makeDomains/1, dom/2.
 
 
 
@@ -10,9 +10,10 @@ solve(Name) <=>
         problem(Name,Width,Height,Ps),
         length(Ps,N),
         nrRect(N), 
-        dom(Width,Height), 
+        dom(Width,Height),
         makeDomains(Ps),
-        search,
+		MaxSize is Width * Height, 
+		search(MaxSize),
         show(Width, Height, Ps, chr, ascii), !.
 
 solveAll:-
@@ -82,10 +83,13 @@ overlap(c(XA,YA),s(WA,HA),c(XB,YB),s(WB,HB)):-
 	XA =< XB2, XA2 >= XB,
 	YA =< YB2, YA2 >= YB.
 			
-search, rect_temp(c(I,J),L) <=> 
-        try_value(c(I,J),L), search.
-search <=> true.
-	
+search(N), rect_temp(c(I,J),L) <=>
+		member((_,_,s(W,H)),L), W*H >= N | 
+        try_value(c(I,J),L), search(N).
+
+search(0) <=> true.
+search(N) <=> N1 is N - 1, search(N1).
+
 try_value(_,[]) :- fail.    
 try_value(P,[(X,Y,S)|Vals]):- 
     (
