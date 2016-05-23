@@ -1,12 +1,78 @@
-\section{Introduction}\label{sec:introduction}
-% WHY
-The goal of this project is to design an architecture for a smart home system.
-Smart home systems provide home automation, which is the use and control of home appliances remotely or automatically. 
-This system improves convenience, comfort, energy efficiency and security for the user.
-% WHAT
-The system consists of a smart home gateway and an online system.
-The smart home gateway can communicate with plug-and-play sensors and actuators, which are spread around the home of the user.
-The online system will communicate with the gateway to make sure that any information is synchronized and properly processed.
+\section{Task 2: Shikaku}\label{sec:shikaku}
+\subsection{Introduction}
 
-% HOW
-The points of differentiation from existing technology providers will be twofold. Firstly, as the HomeSys gateway will feature a 3G communication module, it will will be 100\% plug-and-play, i.e. not requiring any pre-existing infrastructure. Secondly, the gateway will be designed with explicit focus on flexibility, hereby allowing the development and integration of new smart-home end-to-end applications, perhaps even allowing third party applications.
+A shikaku is a puzzle consisting of a recangular grid where some positions on the grid are filled by a number. The goal of the puzzle is to paritition the grid into rectangles where each rectangle contains exactly one number and its area is equal to the value of that number. This a a fairly easy task to do manually, but it quickly gets more complicated as the puzzle gets larger. We have attempted to find a source which calculated the computational complexity of Shikaku puzzles. Sadly, we could only find references to a single article\cite{Takenaga}. This article claims that Shikaku puzzles are NP-Complete, but since we could not find a way to get a hold of the actual article itself we cannot verify its validity. \\
+
+
+
+
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  {\setstretch{0.875}
+\begin{alltt}
+\begin{center}
+\textSFi\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFiii
+\textSFxi 3   .   .   .   .   .   4 \textSFxi
+\textSFxi                           \textSFxi
+\textSFxi .   .   .   5   .   .   2 \textSFxi
+\textSFxi                           \textSFxi
+\textSFxi 2   2   .   .   3   .   . \textSFxi
+\textSFxi                           \textSFxi
+\textSFxi .   .   6   .   .   .   . \textSFxi
+\textSFxi                           \textSFxi
+\textSFxi .   .   .   5   .   .   3 \textSFxi
+\textSFxi                           \textSFxi
+\textSFxi .   .   3   2   .   2   . \textSFxi
+\textSFxi                           \textSFxi
+\textSFxi .   .   .   .   7   .   . \textSFxi
+\textSFii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFiv
+\end{center}
+\end{alltt}
+}
+  \caption{The Shikaku puzzle...}
+  \label{fig:shikaku1a}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  {\setstretch{0.875}
+\begin{alltt}
+\begin{center}
+\textSFi\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvi\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFiii
+\textSFxi 3   .   . \textSFxi .   .   .   4 \textSFxi
+\textSFviii\textSFx\textSFx\textSFx\textSFvi\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvi\textSFx\textSFx\textSFx\textSFix
+\textSFxi . \textSFxi .   .   5   .   . \textSFxi 2 \textSFxi
+\textSFxi   \textSFviii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvi\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFix   \textSFxi
+\textSFxi 2 \textSFxi 2   . \textSFxi .   3   . \textSFxi . \textSFxi
+\textSFviii\textSFx\textSFx\textSFx\textSFvii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFv\textSFx\textSFx\textSFx\textSFix
+\textSFxi .   .   6   .   .   . \textSFxi . \textSFxi
+\textSFviii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvi\textSFx\textSFx\textSFx\textSFix   \textSFxi
+\textSFxi .   .   .   5   . \textSFxi . \textSFxi 3 \textSFxi
+\textSFviii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvi\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFix   \textSFxi   \textSFxi
+\textSFxi .   .   3 \textSFxi 2   . \textSFxi 2 \textSFxi . \textSFxi
+\textSFviii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFvii\textSFx\textSFx\textSFx\textSFvii\textSFx\textSFx\textSFx\textSFix
+\textSFxi .   .   .   .   7   .   . \textSFxi
+\textSFii\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFx\textSFiv
+\end{center}
+\end{alltt}
+}
+  \caption{... and its solution}
+  \label{fig:shikaku1b}
+\end{subfigure}
+\caption{An example of a 7 by 7 Shikaku puzzle}
+\label{fig:shikaku1}
+\end{figure}
+
+\subsection{Terminology}
+Because a Shikaku cannot easily be described as a matrix of values, we will introduce some terminology. To denote the value of number on the grid write $\upsilon(x,y)$, where $x$ denotes the column of the grid and $y$ denotes the row. Note that both coordinates start at $1$. For instance: $\upsilon(1,1) = 3$ and $\upsilon(4,2) = 5$ in the Shikaku shown in figure~\ref{fig:shikaku1}. 
+\\
+The field itself has certain dimensions. All dimensions are denoted as a pair $s(w,h)$, where $w$ is the width (the amount of columns) and $h$ is the height (the amount of rows). In the running example, the dimensions of the field are $s(7,7)$. 
+\\
+To uniquely define a rectangle we need both a position on the grid ( the top left corner) and a size. Positions are denoted in a similar way as sizes: $c(x,y)$ represents the grid position shared by column $x$ and row $y$. With this, we can define a rectangle like this: $rect(c(i,j),c(x,y),s(w,h))$. Here is $c(i,j)$ the number contained within the rectangle, $c(x,y)$ the top-left position of the rectangle and $s(w,h)$ the dimensions of the rectangle. We have decided to also put the position of the value contained by the rectangle in its definition to make the notation more analogous to our implemented code. As an example: $rect(c(7,1),c(4,1),s(4,1))$ is the rectangle in the top right corner of the solved puzzle in figure~\ref{fig:shikaku1b}
+
+
+\subsection{Conclusions}
+
+
