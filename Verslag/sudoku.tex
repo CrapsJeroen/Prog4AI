@@ -301,7 +301,25 @@ If this happens, we will backtrack to the last choice point.
 The only time a choice is made in our implementation is when we enumerate the possible options in the domain of a variable.
 
 \subsubsection{Decision}
-We chose to implement our two viewpoints in \texttt{ECLiPSe} and \texttt{CHR}.
+Before deciding which langagues we would use for our implementation, we made a comparison between the programming languages.
+
+\paragraph*{ECLiPSe} is an constraint logic programming language that is backward-compatible with \texttt{Prolog}.
+The constraint logic programming is used for constraint satisfaction problems.
+These problems are defined by some variables which can take a possible value from a certain domain.
+A solution for these kind of problems is found when each variable has exactly one value and that it fulfills all of the constraints.
+In case of the sudoku problem the variables would be the unknown values in the puzzle with their domain being the interval between 1 and $n^2$.
+The constraints would be that there can only be one occurrence of a value in a certain row, column or block.
+
+\paragraph*{CHR} is short for Constraint Handling Rules. 
+In \texttt{CHR} we will work with a constraint store which we will use to represent the state of the problem that we are trying to solve.
+By using simplification and propagation rules we will be making comitted choices. 
+This means once we change the state of the constraint store this can't be undone.
+Everytime a new constraint is added to the constraint store every rule is checked to see if it is necessary to execute it.
+Propagation rules are only executed once for the same constraint.
+Again for the sudoku problem we would see the constraint store as a way to represent our knownledge of the given information.
+The row, column and block constraints will change the constraint store to reduce the search space.
+While we said that \texttt{CHR} makes comitted choices, it is still possible to backtrack due to the usage of \texttt{Prolog}. 
+
 
 \newpage
 \subsection{Experiments}\label{subsec:sudokuexperiments}
