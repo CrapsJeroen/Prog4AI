@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.23)  22 MAY 2016 14:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.23)  23 MAY 2016 12:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -687,14 +687,14 @@ LaTeX Info: Redefining \nameref on input line 17.
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(62.59596pt, 478.00641pt, 56.9055pt)
-* v-part:(T,H,B)=(85.35826pt, 697.09262pt, 62.59596pt)
+* h-part:(L,W,R)=(68.28644pt, 466.62547pt, 62.59596pt)
+* v-part:(T,H,B)=(85.35826pt, 674.33032pt, 85.35826pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
-* \textwidth=478.00641pt
-* \textheight=697.09262pt
-* \oddsidemargin=-9.67403pt
-* \evensidemargin=-9.67403pt
+* \textwidth=466.62547pt
+* \textheight=674.33032pt
+* \oddsidemargin=-3.98355pt
+* \evensidemargin=-3.98355pt
 * \topmargin=-23.91173pt
 * \headheight=12.0pt
 * \headsep=25.0pt
@@ -743,78 +743,108 @@ been already used, duplicate ignored
                    \relax 
 l.26 \newpage
               [1] (./sudoku.tex
-Underfull \hbox (badness 10000) in paragraph at lines 10--11
+Underfull \hbox (badness 10000) in paragraph at lines 10--12
 
  []
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 24.
+(caption)                particular \caption on input line 25.
 See the caption package documentation for explanation.
 
 
-Overfull \hbox (0.46048pt too wide) in paragraph at lines 30--36
+Overfull \hbox (11.84142pt too wide) in paragraph at lines 31--37
  [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 40--45
+Underfull \hbox (badness 10000) in paragraph at lines 41--46
 
  []
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 61.
+(caption)                particular \caption on input line 62.
 See the caption package documentation for explanation.
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 91--96
+Overfull \hbox (9.43404pt too wide) in paragraph at lines 67--73
+ [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 92--97
 
  []
 
 [3]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 113.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 114.
 
  (/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 113.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 114.
 
-Underfull \hbox (badness 10000) in paragraph at lines 121--124
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 125--129
+Underfull \hbox (badness 10000) in paragraph at lines 122--125
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 130--132
+Underfull \hbox (badness 10000) in paragraph at lines 126--130
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 133--137
+Underfull \hbox (badness 10000) in paragraph at lines 131--133
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 146--149
+Underfull \hbox (badness 10000) in paragraph at lines 134--138
 
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 172--175
+Underfull \hbox (badness 10000) in paragraph at lines 154--157
 
  []
 
 
-LaTeX Warning: Reference `subsec:sudokuexperiments' on page 5 undefined on inpu
-t line 176.
+Underfull \hbox (badness 10000) in paragraph at lines 180--183
 
-) (./shikaku.tex) [5]
+ []
+
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 194.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/omlcmr.fd
+File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 194.
+
+Underfull \hbox (badness 10000) in paragraph at lines 209--213
+
+ []
+
+[5] [6]
+Overfull \hbox (1.37929pt too wide) in paragraph at lines 270--271
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (1.37929pt too wide) in paragraph at lines 272--273
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--295
+
+ []
+
+[7]) (./shikaku.tex) [8]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 40.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 40.
  (./report.aux)
@@ -822,23 +852,16 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 40.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 40.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: BF068708E4B6E48CF640CFDCFFD60B27;993.
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 40.
  ) 
 Here is how much of TeX's memory you used:
- 19226 strings out of 493089
- 354661 string characters out of 6134841
- 444266 words of memory out of 5000000
- 22356 multiletter control sequences out of 15000+600000
- 6463 words of font info for 23 fonts, out of 8000000 for 9000
+ 19298 strings out of 493089
+ 355691 string characters out of 6134841
+ 450310 words of memory out of 5000000
+ 22374 multiletter control sequences out of 15000+600000
+ 6631 words of font info for 24 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,11n,92p,485b,1612s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,15n,92p,485b,1093s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
@@ -851,11 +874,12 @@ cal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/local/tex
 live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
 ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texliv
-e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on report.pdf (6 pages, 179034 bytes).
+e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive
+/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on report.pdf (9 pages, 207403 bytes).
 PDF statistics:
- 213 PDF objects out of 1000 (max. 8388607)
- 188 compressed objects within 2 object streams
- 51 named destinations out of 1000 (max. 500000)
+ 290 PDF objects out of 1000 (max. 8388607)
+ 260 compressed objects within 3 object streams
+ 101 named destinations out of 1000 (max. 500000)
  146 words of extra memory for PDF output out of 10000 (max. 10000000)
 

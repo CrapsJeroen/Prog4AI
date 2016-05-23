@@ -7,10 +7,11 @@ An \textit{n-sudoku} puzzle contains $n^{4}$ squares, in an $n^{2}$ by $n^{2}$ g
 \textit{A puzzle is solved if every unit contains every element \\ from the interval $1$ to $n^2$ exactly once.}
 \end{center}
 
-This means that every unit is filled with a permutation of $[1,2,\cdots,n^{2}$. The classical viewpoint for Sudoku states that all numbers in a row must be different, that all numbers in a column must be different, and that all numbers in a block must be different.\\
+This means that every unit is filled with a permutation of $[1,2,\cdots,n^{2}$. 
+The classical viewpoint for Sudoku states that all numbers in a row must be different, that all numbers in a column must be different and that all numbers in a block must be different.\\
 
 \begin{center}
-\begin{tabu}{|[2pt] c | c | c |[2pt] c | c | c |[2pt] c | c | c |[2pt]} \tabucline[2pt]{-}
+\begin{tabu} {|[2pt] c | c | c |[2pt] c | c | c |[2pt] c | c | c |[2pt]} \tabucline[2pt]{-}
 	$x_{1,1}$ & $x_{1,2}$ & $x_{1,3}$ & $x_{1,4}$ & $x_{1,5}$ & $x_{1,6}$ & $x_{1,7}$ & $x_{1,8}$ & $x_{1,9}$ \\ \hline
 	$x_{2,1}$ & $x_{2,2}$ & $x_{2,3}$ & $x_{2,4}$ & $x_{2,5}$ & $x_{2,6}$ & $x_{2,7}$ & $x_{2,8}$ & $x_{2,9}$ \\ \hline
 	$x_{3,1}$ & $x_{3,2}$ & $x_{3,3}$ & $x_{3,4}$ & $x_{3,5}$ & $x_{3,6}$ & $x_{3,7}$ & $x_{3,8}$ & $x_{3,9}$ \\ \tabucline[2pt]{-}
@@ -47,7 +48,7 @@ Again we can define this more formally. We define $n^{2}$ variables $r_i$ instea
 So to visualize this: 
 
 \begin{center}
-\begin{tabu}{ |[2pt] l c r |[2pt]}\tabucline[2pt]{-}
+\begin{tabu} to 0.3\textwidth{ |[2pt] X[2] X[1] X[2] |[2pt]}\tabucline[2pt]{-}
 & $r_{1}$ & \\ \hline
 & $r_{2}$ & \\ \hline
 & $r_{3}$ & \\ \tabucline[2pt]{-}
@@ -110,10 +111,10 @@ Combining all of the possible $X$ and $Y$ values based on the given $(I,J)$ pair
 \begin{lstlisting}
 ( multifor([I,J],0,(N-1)), param(Sudoku, N) do
 	( multifor([K,L],1,N), param(Sudoku, I, J, N), foreach(B,Block) do
-        	R is (I*N)+K,
-        	C is (J*N)+L,
+		R is (I*N)+K,
+		C is (J*N)+L,
 		B is Sudoku[R,C]
-    ),
+	),
 	alldifferent(Block)
 ).
 \end{lstlisting}
@@ -136,10 +137,17 @@ Secondly, the search domain is reduced while search by the constraints so that l
 This is called Forward Checking. \\
 
 Further optimalisations can be achieved by value and variable ordering.
-Which we can change by using different methods in the \textsl{search(+L, ++Arg, ++Select, +Choice, ++Method, +Option)} command of the ECLiPSe library.
+Which we can change by using different methods in the \textsl{search(+L, ++Arg, ++Select, +Choice, ++Method, +Option)} command of the ECLiPSe library. 
+We have tried out multiple of these methods to which one performed best with our given implementation.
 \begin{itemize}
-\item %TODO Selection methods
+\item \textbf{input first}: The order of the instantiation of the variables is done in the same order as they have been put into the system by our implementation. This method utilises no extra information about the domain size of the variables.
+\item \textbf{first fail}: The variable with the smallest domain size will be instantiated first, meaning that the deeper we go into the search tree the larger the domain size should be. This would normally imply that failure should occur earlier rather than later. 
+\item \textbf{anti first fail}: In this method the variables with the largest domain size will be instantiated first. This implies that harder decisions are made later in the search tree.
+\item \textbf{occurrence}: In this case the variable with the most amount of constraints attached to it is selected first for instantiation. This variable should have a lot of influence on the remainder of the search space. 
 \end{itemize}
+
+The result of these experiments can be found in the section \ref{subsec:sudokuexperiments}.
+Where we will further evaluate these different methods, so that we can decide which one produces the best results.
 
 \paragraph*{Alternative viewpoint}
 
@@ -149,12 +157,12 @@ In this representation we see this list of variables as a single variable of whi
 
 \begin{lstlisting}
 (foreach(Row,Sudoku), param(N2)  do
-  permutation([1..N2],Row)
+	permutation([1..N2],Row)
 )
 
 permutation(Sequence,Permutation):-
-  Permutation :: Sequence,
-  alldifferent(Permutation).
+	Permutation :: Sequence,
+	alldifferent(Permutation).
 \end{lstlisting}
 
 By defining the entire row as a variable we no longer need the row constraints since these are implied by the domain of the variables.
@@ -162,10 +170,10 @@ The column and block constraints are similar to the original viewpoint, except f
 
 \begin{lstlisting}
 (foreach(Row,Sudoku), param(N2) do
-  (for(J,1,N2), foreach(E,Col) do
-     selectElement(E,J,Row)
-  ),
-  alldifferent(Col)
+	(for(J,1,N2), foreach(E,Col) do
+		selectElement(E,J,Row)
+	),
+	alldifferent(Col)
 )
 \end{lstlisting}
 
@@ -176,9 +184,126 @@ This kind of active propagation is already done when we utilise the ic library, 
 We will further discuss the results in the section \ref{subsec:sudokuexperiments}
 
 \subsubsection{CHR}
+First of all we want to clearly mention how the implementation of our sudoku solver works.
+To start everything off we retrieve the \texttt{Puzzle} by its name and calculate the $n^2$ which we add to the constraint store.
+Now the \texttt{import(Puzzle)} will be added to the constraint store to further add the elements of the puzzle.
+Afterwards the constraint store is printed out, the search is started and the solution is printed out once more. 
+We will also empty the constraint store afterwards for convenience.
+
+\begin{lstlisting}
+solve(Name) <=>
+	puzzles(Puzzle,Name),
+	length(Puzzle,N2),
+	dom(N2),
+	import(Puzzle),
+	show,
+	search,
+	!,
+	show,
+	clean.
+\end{lstlisting}
+
+The way the elements are added to the constraint store and processed beforehand both depend on the viewpoint that is used.
+
+\paragraph*{Original viewpoint}
+In the original viewpoint the \texttt{$import(puzzle)$} will be used to change the value of the element at the specified position in the existing lists of length $n^{2}$. 
+But before this can be done we need to specify a few constraints.
+For every column, row and block we will add a constraint to the constraint store.
+Each of these constraints will contain an index to specify about which column/row/block we are talking about and a list of the length $n^2$.\\
+
+Now we can start adding the known elements into the lists.
+So for example if there is an element at position (1,2) with value 3, then in the $col(2,ColList)$ constraint the list will be changed so that at the position with index 1 the value 3 is placed.
+Of course for the other lists this is also done, so also at the position with index 2 in the RowList the value 3 is placed.
+For the blocks, the exact position in the list is calculated from the row and column of the given value.
+Something to explain is that the column, row and block constraints aren't removed from and added again to the constraint store with their updated list because we don't want these rules to trigger again.
+
+\begin{lstlisting}
+dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) 
+	\ import_row([CVal|Vals],Y,X) <=>
+	in_block(Y,X,BlockN,N), position_in_block(Y,X,PosInBlock,N) | 
+	nth1(X,RowList,CVal), nth1(Y,ColList,CVal), 
+	nth1(PosInBlock, BlockList, CVal), 
+	X1 is X + 1, import_row(Vals,Y,X1).
+\end{lstlisting}
+
+Adding all of the known values into the domain all that needs to be done is to specify that all of the elements in the list need to be different from each other.
+We will force this constraint by using a built-in function namely the alldifferent function.
+This function will enforce that all of the elements in the list are different from each other, if not the function will fail.
+
+\begin{lstlisting}
+imported, col(_,L) ==> all_different(L); fail.
+imported, block(_,L) ==> all_different(L); fail.
+imported, row(_,L) ==> all_different(L); fail.
+\end{lstlisting}
+
+The only thing that for remains for us is to iterate over the search space. We have done this by using the built-in labeling functionality. We show the problem before and after solving the puzzle.
+Finally we end by cleaning our entire constraint store.
+
+\paragraph*{Alternative viewpoint}
+In the alternative viewpoint we will exchange the \texttt{$import([CRow|Rows],Y)$} for two new constraints namely \texttt{$import\_row(CRow,Y,1)$} and \texttt{$import(Rows,Y1)$} which is $Y$ incremented by one.
+
+This method of inserting the domain knowledge into the constraint store will be continued recursively until all the given information is handled.
+So depending on the fact that an element is known or not will determine how it is added to the constraint store.
+If the element is a variable \texttt{$option(X,Y,L)$} is used where X stands for column, Y stands for row and the L contains all possible values in the domain.
+On the other hand if a element is a value, we add \texttt{$known(X,Y,V)$} to the constraint store where this is the position of the specified value in the puzzle.
+When there is only one remaining value in the domain of an \texttt{$option(X,Y,L)$} we will change this to \texttt{$known(X,Y,V)$} with V being the only remaining value in the domain.
+
+\begin{lstlisting}
+import([],_) <=> true.
+import([CRow|Rows],Y) <=>
+    import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
+
+import_row([],_,_) <=> true.
+import_row([CVal|Vals],Y,X) <=>
+    nonvar(CVal) | known(Y,X,CVal), X1 is X + 1, import_row(Vals,Y,X1).
+
+import_row([CVal|Vals],Y,X) <=>
+    var(CVal) | upto(9,L), option(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1).
+\end{lstlisting}
+
+Now that all of the information is added to the system we will use the constraints to change the domains of the \texttt{$option$} constraints.
+If an known element is on the same row as a variable that is not instantiated yet, we can remove the value of the known element from the possibilities from the variable.
+We also do this for the columns.
+
+\begin{lstlisting}
+%% ROW Constraints
+known(X,_,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
+%% COL Constraints
+known(_,Y,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
+\end{lstlisting}
+
+The block constraints have the same purpose but where less obvious to implement. 
+This was because of the way we needed to decide when a certain variable was occurring in the same block as the known value.
+For this we used the integer division to give an index to the blocks.
+As a result we have blocks (0,0) to (n-1,n-1) which we can use to filter the domain of the remaining variables even further.
+We always remove the existing option from the constraint store before adding an updated one.
+This way we ensure that all of the rules will be checked for the new constraint.
+
+\begin{lstlisting}
+%% BLOCK Constraints
+known(X,Y,V), dom(N2) \ option(X1,Y1,L) <=> member(V,L),
+        N is integer(sqrt(N2)),
+        XB is (X-1)//N, YB is (Y-1)//N,
+        XB is (X1-1)//N, YB is (Y1-1)//N
+         | delete(L,V,NL), option(X1,Y1,NL).
+\end{lstlisting}
+
+The only thing that remains now is to enumerate the search space. 
+This is done by adding the \texttt{search} constraint into the constraint store by the first method we mentioned.
+When an \texttt{option} constraint is present in the constraint store it will be retrieved and stored together with a \texttt{permute} constraint. 
+This permute constraint will remain in the constraint store until all of the options at the row specified by the permute constraint are removed from the constraint store. \\
+
+Due to the enumeration being implemented in prolog we can backtrack if necessary.
+Once a single variable is instantiated and a known constraint is added to the store, the remaining variables on that row will remove the selected value from their domain so that there can never be a conflict in a row.
+Here we instantiated the entire row as a permutation from the sequence one to $n^2$. 
+We say that failure occurs when an option has no possible values left.
+If this happens, we will backtrack to the last choice point. 
+The only time a choice is made in our implementation is when we enumerate the possible options in the domain of a variable.
+
 \subsubsection{Decision}
+We chose to implement our two viewpoints in \texttt{ECLiPSe} and \texttt{CHR}.
 
-
+\newpage
 \subsection{Experiments}\label{subsec:sudokuexperiments}
 \subsubsection{Results}
 \subsubsection{Heuristics}
