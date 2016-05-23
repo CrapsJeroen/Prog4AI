@@ -2,17 +2,17 @@
 :- use_module(library(lists)).
 :- op(700,xfx,'in').
 :- [sudex_toledo].
-:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, search/0, permute/1, show/0, show/2, clean/0.
+:- chr_constraint solve/1, import/2, import_row/3, option/3, known/3, dom/1, search/0, permutation/1, show/0, show/2, clean/0.
 
 solve(Name) <=>
-    puzzles(Raw,Name),
-    length(Raw,N),
-    dom(N),
-    import(Raw,1),
+  puzzles(Puzzle,Name),
+  length(Puzzle,N2),
+  dom(N2),
+  import(Puzzle),
 	show,
-    search,
-    !,
-    show,
+  search,
+  !,
+  show,
 	clean.
 
 
@@ -32,6 +32,7 @@ show(Row,Col) <=> format('. '), Col1 is Col+1, show(Row,Col1).
 clean \ known(_,_,_) <=> true.
 clean, dom(_) <=> true.
 
+import(Puzzle) <=> import(Puzzle,1).
 import([],_) <=> true.
 import([CRow|Rows],Y) <=>
     import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
@@ -41,7 +42,7 @@ import_row([CVal|Vals],Y,X) <=>
     nonvar(CVal) | known(Y,X,CVal), X1 is X + 1, import_row(Vals,Y,X1).
 
 import_row([CVal|Vals],Y,X) <=>
-    var(CVal), upto(9,L), option(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1).
+    var(CVal) | upto(9,L), option(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1).
 
 option(_,_,[]) <=> fail.
 
@@ -64,11 +65,11 @@ upto(0,[]).
 upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
 
 %search
-option(X,_,_) \ search  <=> permute(X), search.
+option(X,_,_) \ search  <=> permutation(X), search.
 search <=> true.
 
-permute(X) \ option(X,Y,List) <=> enum(X,Y,List).
-permute(_) <=> true.
+permutation(X) \ option(X,Y,List) <=> enum(X,Y,List).
+permutation(_) <=> true.
 
 enum(X,Y,List) :-
   member(V,List),
