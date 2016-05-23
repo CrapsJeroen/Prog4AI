@@ -73,7 +73,7 @@ So to visualize this:
 \end{center}
 
 \subsection{Criteria}
-The criteria according to us for a good viewpoint are the following: an easy understanding of the representation, the computational complexity to get to a solution, the amount of backtracks or logical inferences that are necessary to get a solution from the implementation of the proposed viewingpoint.
+The criteria according to us for a good viewpoint are the following: an easy understanding of the representation, the computational complexity to get to a solution, the amount of backtracks or logical inferences that are necessary to get a solution from the implementation of the proposed viewpoint.
 In our opinion the alternative viewpoint that we suggested is a good viewpoint, because the amount of backtracking that is necessary is greatly reduced by reducing the amount of variables in the problem and restricting their domain. 
 
 \subsection{Channeling Constraints}
@@ -83,7 +83,7 @@ If a row is assigned a certain permutation as its value, then the elements of th
 In the other direction this is not possible unless all of the variables in a row have been assigned a value and that they are all different from each other.
 So that these values from a permutation of the original list.
 The alternative viewpoint has as main advantage that the row-constraints are implied when declaring its domain.
-The influence of this is mainly noticed in the search process, instead of instantiating every variable separatly the entire row will be instantiated at once.
+The influence of this is mainly noticed in the search process, instead of instantiating every variable separately the entire row will be instantiated at once.
 Due to these channeling constraints being so trivial we think that there is no point in implementing them, since the influence would be minimal.  
 
 \subsection{Implementation}
@@ -99,14 +99,14 @@ A row with index $I$ is defined in a matrix by \textit{Row is} $Sudoku[I,1..N^{2
 For extracting a column with index $I$ we use \textit{Col is } $Sudoku[1..N^{2},I]$.
 While extracting the information for the rows and columns is straight forward, it becomes clear when extracting the variables required to fulfill the block constraints.
 We define the block with index $(I,J)$ as follows. 
-The indices $I, J$ are elements from the interval $[0,1,\cdots,(n-1)]$.
+The indexes $I, J$ are elements from the interval $[0,1,\cdots,(n-1)]$.
 The block at the upperleft corner of the puzzle will be named the $(0,0)$-block and the block at the bottomright corner will be the $(n-1,n-1)$-block.
 For each pair $(I,J)$ we now need to define the list containing its $n^{2}$ elements.
 We need two new variables $(K,L)$ to define the rows and columns needed to form these blocks.
 For example, the $X$ coordinate in our matrix will be equal to $(I*n)+K$. 
 So for the $(0,0)$ the required rows are $1,2,\cdots,n-1$.
 A similar approach can be made for the columns where $Y = (J*n)+L$.
-Combining all of the possible $X$ and $Y$ values based on the given $(I,J)$ pair leads to the all of the indices required to create the specified $(I,J)$-block.
+Combining all of the possible $X$ and $Y$ values based on the given $(I,J)$ pair leads to the all of the indexes required to create the specified $(I,J)$-block.
 
 \begin{lstlisting}
 ( multifor([I,J],0,(N-1)), param(Sudoku, N) do
@@ -123,24 +123,24 @@ Important to note is that after all of these constraints the most important aspe
 There a couple of different ways to implement this.
 In this first viewpoint every variable is instantiated separately with an element from the domain $[1,2,\cdots,n^{2}]$. \\
 
-As can be seen in the code snippet above we utilise the buildin \textsl{alldiferent/1} function from the ic library, which we have imported into our program with the \textsl{:- lib(ic)} command.
+As can be seen in the code snippet above we utilize the built-in \textsl{alldiferent/1} function from the ic library, which we have imported into our program with the \textsl{:- lib(ic)} command.
 We could have used passive constraints where the entire search space would be used instead of the pruned version that is created by the ic library.
 This would have caused a lot of backtracking to occur while looking for a possible solution since every variable would be instantiated separately from the others.
 For every variable in the list the rest of the list is checked to see if it doesn't contains the same value.\\
 
 Another option was to use the suspend library which puts constraints on the variables before searching.
-But afterwards it still iterates over the entire search space, because it still doesn't utilise the additional constraints to reduce the search space of the other variables in a list/column/block.\\
+But afterwards it still iterates over the entire search space, because it still doesn't utilize the additional constraints to reduce the search space of the other variables in a list/column/block.\\
 
 We ended up choosing the ic library for two reasons.
 Firstly this allows us to define the constraint before starting the search process.
 Secondly, the search domain is reduced while search by the constraints so that less backtracking is required.
 This is called Forward Checking. \\
 
-Further optimalisations can be achieved by value and variable ordering.
+Further optimizations can be achieved by value and variable ordering.
 Which we can change by using different methods in the \textsl{search(+L, ++Arg, ++Select, +Choice, ++Method, +Option)} command of the ECLiPSe library. 
 We have tried out multiple of these methods to which one performed best with our given implementation.
 \begin{itemize}
-\item \textbf{input first}: The order of the instantiation of the variables is done in the same order as they have been put into the system by our implementation. This method utilises no extra information about the domain size of the variables.
+\item \textbf{input first}: The order of the instantiation of the variables is done in the same order as they have been put into the system by our implementation. This method utilizes no extra information about the domain size of the variables.
 \item \textbf{first fail}: The variable with the smallest domain size will be instantiated first, meaning that the deeper we go into the search tree the larger the domain size should be. This would normally imply that failure should occur earlier rather than later. 
 \item \textbf{anti first fail}: In this method the variables with the largest domain size will be instantiated first. This implies that harder decisions are made later in the search tree.
 \item \textbf{occurrence}: In this case the variable with the most amount of constraints attached to it is selected first for instantiation. This variable should have a lot of influence on the remainder of the search space. 
@@ -179,7 +179,7 @@ The column and block constraints are similar to the original viewpoint, except f
 
 As a consequence of this viewpoint is that we use active propagation by only having permutation of the sequence 1 to $n^2$.
 The reasoning behind this is that we will no longer attempt a certain value for a variable in a row when the value already exists in the row. 
-This kind of active propagation is already done when we utilise the ic library, so we are not expecting to see a big difference in performance between these two implementations.\\
+This kind of active propagation is already done when we utilize the ic library, so we are not expecting to see a big difference in performance between these two implementations.\\
 
 We will further discuss the results in the section \ref{subsec:sudokuexperiments}
 
@@ -293,7 +293,7 @@ This is done by adding the \texttt{search} constraint into the constraint store 
 When an \texttt{option} constraint is present in the constraint store it will be retrieved and stored together with a \texttt{permute} constraint. 
 This permute constraint will remain in the constraint store until all of the options at the row specified by the permute constraint are removed from the constraint store. \\
 
-Due to the enumeration being implemented in prolog we can backtrack if necessary.
+Due to the enumeration being implemented in Prolog we can backtrack if necessary.
 Once a single variable is instantiated and a known constraint is added to the store, the remaining variables on that row will remove the selected value from their domain so that there can never be a conflict in a row.
 Here we instantiated the entire row as a permutation from the sequence one to $n^2$. 
 We say that failure occurs when an option has no possible values left.
@@ -301,7 +301,7 @@ If this happens, we will backtrack to the last choice point.
 The only time a choice is made in our implementation is when we enumerate the possible options in the domain of a variable.
 
 \subsubsection{Decision}
-Before deciding which langagues we would use for our implementation, we made a comparison between the programming languages.
+Before deciding which languages we would use for our implementation, we made a comparison between the programming languages.
 
 \paragraph*{ECLiPSe} is an constraint logic programming language that is backward-compatible with \texttt{Prolog}.
 The constraint logic programming is used for constraint satisfaction problems.
@@ -310,18 +310,40 @@ A solution for these kind of problems is found when each variable has exactly on
 In case of the sudoku problem the variables would be the unknown values in the puzzle with their domain being the interval between 1 and $n^2$.
 The constraints would be that there can only be one occurrence of a value in a certain row, column or block.
 
+\newpage
 \paragraph*{CHR} is short for Constraint Handling Rules. 
 In \texttt{CHR} we will work with a constraint store which we will use to represent the state of the problem that we are trying to solve.
-By using simplification and propagation rules we will be making comitted choices. 
+This is used often used to implement Rule Based Systems, an example of this is the domain-specific expert system.
+This uses rules to make deductions or choices, which is very applicable to the provided problems. 
+By using simplification and propagation rules we will be making committed choices. 
 This means once we change the state of the constraint store this can't be undone.
-Everytime a new constraint is added to the constraint store every rule is checked to see if it is necessary to execute it.
+Whenever a new constraint is added to the constraint store every rule is checked to see if it is necessary to execute it.
 Propagation rules are only executed once for the same constraint.
-Again for the sudoku problem we would see the constraint store as a way to represent our knownledge of the given information.
+Again for the sudoku problem we would see the constraint store as a way to represent our knowledge of the given information.
 The row, column and block constraints will change the constraint store to reduce the search space.
-While we said that \texttt{CHR} makes comitted choices, it is still possible to backtrack due to the usage of \texttt{Prolog}. 
+While we said that \texttt{CHR} makes committed choices, it is still possible to backtrack due to the usage of \texttt{Prolog}.
+ 
+\paragraph*{Jess} stands for the Java expert system shell.
+It uses backward chaining and works by deriving conclusions from premises.
+So due to its integration in with Java we can use objects and other Java functionality to fulfill our needs.
+Just like with \texttt{CHR} this can easily be used to implement Rule Based Systems.
+In this system there are three parts: the Rule Base, the Working Memory (Fact Base) and the Inference Engine.
+The Rule Base contains functions calls that manipulate the Fact Base, which contains all of the prior information for the problem.
+While the Inference Engine will match the elements from the Fact Base to the Rule Base.
+This is done by comparing all the rules to the Fact Base to see which rules need to be activated.
+Further it will handle conflicts and execute the commands on the Fact Base.
+The Fact Base will represent the state of our system during the processing of the information.
+The order in which the rules are activated depends on the patterns. 
+The most specific pattern will be triggered first, but it is possible to prioritize certain rules above others by defining a weight.
+If we look at Sudoku, we could say that the known values are the Fact Base and that all of the row, column and block constraints are part of the Rule Base.
+These rules will deduce the options on the other variables.
 
+\paragraph*{Decision}
+We eventually chose to use \texttt{ECLiPSe} and \texttt{CHR} for our implementations of our Sudoku solver.
+The reasoning behind this was that \texttt{CHR} and \texttt{Jess} are in a way very similar and we found the syntax of \texttt{CHR} much more clearer compared to \texttt{Jess}.
+Since we already had a basic understanding of \texttt{Prolog}, it was preferable that the chosen languages had a certain integration with it.
+\texttt{Jess} looked less straightforward in our eyes and seemed like the least desirable choice out of the three options.
 
-\newpage
 \subsection{Experiments}\label{subsec:sudokuexperiments}
 \subsubsection{Results}
 \subsubsection{Heuristics}
