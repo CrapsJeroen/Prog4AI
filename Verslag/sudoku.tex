@@ -367,7 +367,7 @@ It seemed like the least desirable option out of the three.
 In these experiments we want to see the difference between the two viewpoints and the different programming languages.
 But it is also our intention to measure the influence of the different search methods, so that we can find the optimal setup for our implementation.
 The most important aspects that we will consider is the time is takes to solve the problem, but also the amount of inferences that are required is a good measuring point.
-During all of the experiments we used the same computer\footnote{TODO computer specifications}.
+During all of the experiments we used the same computer\footnote{Intel® Core™ i5-4570S CPU @ 2.90GHz × 4 }.
 It is in our interest to time-out the process after a certain time.
 Due to using the same computer at all times we should get a good indication of the performance of our sudoku solvers.
 All of the times at we will express are in seconds.
@@ -379,18 +379,26 @@ All of the times at we will express are in seconds.
 \begin{tabu}{|c|[2pt] c|c|c|c|c|}
 \cline{2-6}
 \multicolumn{1}{c|}{} & \begin{sideways}ECLiPSe labeling\end{sideways} & \begin{sideways}ECLiPSe Input First\end{sideways} & \begin{sideways}ECLiPSe First Fail\end{sideways} & \begin{sideways}ECLiPSe Anti First Fail\end{sideways} & \begin{sideways}CHR\end{sideways}\\ \tabucline[2pt]{-}             
-medium			&	&	&	&	&	\\
-difficult		&	&	&	&	&	\\
-verydifficult	&	&	&	&	&	\\
-expert			&	&	&	&	&	\\
-lambda			&	&	&	&	&	\\
-hard17			&	&	&	&	&	\\
-symme			&	&	&	&	&	\\
-eastermonster	&	&	&	&	&	\\
-tarek052			&	&	&	&	&	\\
-goldennugget		&	&	&	&	&	\\
-coloin			&	&	&	&	&	\\ \tabucline[2pt]{-}
-Average	 		&	&	&	&	&	\\
+verydifficult	&	0.00	&	0.00	&	0.00	&	0.00	&	0.01	\\
+expert			&	0.00	&	0.00	&	0.01	&	0.00	&	0.03	\\
+lambda			&	0.00	&	0.00	&	0.00	&	0.00	&	0.93	\\
+hard17			&	0.00	&	0.00	&	0.01	&	1.10	&	0.46	\\
+symme			&	0.15	&	0.14	&	0.07	&	4.09	&	0.49	\\
+eastermonster	&	0.16	&	0.16	&	0.08	&	1.79	&	0.18	\\
+tarek052		&	0.25	&	0.25	&	0.12	&	1.84	&	0.23	\\
+goldennugget	&	0.50	&	0.49	&	0.22	&	0.23	&	0.52	\\
+coloin			&	0.17	&	0.17	&	0.02	&	12.84	&	0.13	\\
+extra1			&	0.00	&	0.01	&	0.00	&	0.00	&	0.18	\\ 
+extra2			&	0.00	&	0.00	&	0.00	&	0.00	&	6.79	\\ 
+extra3			&	0.01	&	0.00	&	0.01	&	0.00	&	0.93	\\ 
+extra4			&	0.00	&	0.01	&	0.00	&	0.00	&	1.88	\\ 
+inkara2012		&	0.02	&	0.02	&	0.06	&	1.13	&	0.42	\\ 
+clue18			&	0.19	&	0.19	&	0.03	&	0.55	&	0.47	\\ 
+clue17			&	0.00	&	0.00	&	0.00	&	0.00	&	0.24	\\ 
+sudowiki\_nb28	&	0.75	&	0.75	&	0.40	&	0.08	&	2.32	\\ 
+sudowiki\_nb49	&	0.14	&	0.15	&	0.14	&	1.14	&	0.81	\\ 
+peter			&	0.00	&	0.00	&	0.00	&	0.00	&	0.06	\\\tabucline[2pt]{-}
+Average	 		&	0.12	&	0.12	&	0.06	&	1.34	&	0.90	\\
 \hline
 \end{tabu}
 \captionof{table}{The results from the experiments on the first viewpoint}
@@ -406,18 +414,26 @@ Average	 		&	&	&	&	&	\\
 \begin{tabu}{|c|[2pt] c|c|c|c|c|}
 \cline{2-6}
 \multicolumn{1}{c|}{} & \begin{sideways}ECLiPSe labeling\end{sideways} & \begin{sideways}ECLiPSe Input First\end{sideways} & \begin{sideways}ECLiPSe First Fail\end{sideways} & \begin{sideways}ECLiPSe Anti First Fail\end{sideways} & \begin{sideways}CHR\end{sideways}\\ \tabucline[2pt]{-}             
-medium			&	&	&	&	&	\\
-difficult		&	&	&	&	&	\\
-verydifficult	&	&	&	&	&	\\
-expert			&	&	&	&	&	\\
-lambda			&	&	&	&	&	\\
-hard17			&	&	&	&	&	\\
-symme			&	&	&	&	&	\\
-eastermonster	&	&	&	&	&	\\
-tarek052			&	&	&	&	&	\\
-goldennugget		&	&	&	&	&	\\
-coloin			&	&	&	&	&	\\ \tabucline[2pt]{-}
-Average 			&	&	&	&	&	\\
+verydifficult	&	0.00	&	0.00	&	0.00	&	0.00	&	0.35	\\
+expert			&	0.00	&	0.01	&	0.00	&	0.00	&	1.87	\\
+lambda			&	0.00	&	0.00	&	0.08	&	0.00	&	1.00	\\
+hard17			&	0.00	&	0.00	&	0.00	&	1.18	&	0.46	\\
+symme			&	0.17	&	0.15	&	0.00	&	4.39	&	0.49	\\
+eastermonster	&	0.19	&	0.19	&	0.11	&	1.97	&	0.18	\\
+tarek052		&	0.29	&	0.30	&	0.18	&	1.97	&	0.24	\\
+goldennugget	&	0.54	&	0.53	&	0.30	&	0.00	&	0.49	\\
+coloin			&	0.25	&	0.25	&	0.00	&	13.71	&	0.13	\\
+extra1			&	0.00	&	0.00	&	0.00	&	0.00	&	0.18	\\ 
+extra2			&	0.00	&	0.00	&	0.00	&	0.00	&	6.74	\\ 
+extra3			&	0.00	&	0.00	&	0.00	&	0.00	&	0.93	\\ 
+extra4			&	0.00	&	0.00	&	0.00	&	0.00	&	1.87	\\ 
+inkara2012		&	0.00	&	0.00	&	0.00	&	1.52	&	0.41	\\ 
+clue18			&	0.23	&	0.22	&	0.00	&	0.00	&	0.48	\\ 
+clue17			&	0.00	&	0.00	&	0.00	&	0.00	&	0.24	\\ 
+sudowiki\_nb28	&	0.95	&	0.95	&	0.59	&	0.00	&	2.30	\\ 
+sudowiki\_nb49	&	0.14	&	0.22	&	0.21	&	2.08	&	0.79	\\ 
+peter			&	0.00	&	0.00	&	0.00	&	0.00	&	0.06	\\\tabucline[2pt]{-}
+Average	 		&	0.12	&	0.12	&	0.06	&	1.34	&	0.90	\\
 \hline
 \end{tabu}
 \captionof{table}{The results from the experiments on the second viewpoint.}

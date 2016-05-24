@@ -1,4 +1,5 @@
 :- lib(ic).
+:- lib(ic_search).
 :- [sudex_toledo].
 :- import alldifferent/1 from ic_global.
 
@@ -7,7 +8,7 @@ solve(Name) :-
         lists2matrix(AlmostBoard,Board),
 	print_board(Board),
 	sudoku(Board),
-	labeling(Board),
+	profile(search(Board,0,anti_first_fail,indomain,complete,[])),
 	print_board(Board),
         !.
 

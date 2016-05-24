@@ -1,23 +1,23 @@
 :- lib(ic).
 :- lib(ic_search).
+:- lib(listut).
 :- [sudex_toledo].
 :- import alldifferent/1 from ic_global.
 
 solve(Name):-
-  puzzles(AlmostBoard,Name),
-  lists2rows(AlmostBoard,Board),
-  print_board(Board),
+  puzzles(Board,Name),
+  %print_board(Board),
   sudoku(Board),
-  array_list(MBoard, Board),  
-  labeling(MBoard),
-  array_list(MBoard, B),
-  print_board(B),
+  flatten(Board,FlatList), 
+  profile(search(FlatList,0,anti_first_fail,indomain,complete,[])),
+  %print_board(Board),
   !.
 
 solveAll:-
         puzzles(_,Name),
         write(Name), nl,
         solve(Name).
+
 solveAllAuto:-
 	(solveAll,fail; true).
 	
@@ -27,9 +27,9 @@ sudoku(Sudoku):-
   ( foreach(Row,Sudoku), param(N2)  do
       permutation([1..N2],Row)
   ),
-  ( foreach(Row,Sudoku), param(N2) do
-    ( for(J,1,N2), foreach(E,Col) do
-        selectElement(E,J,Row)
+  ( for(J,1,N2), param(Sudoku) do
+    ( foreach(Row,Sudoku), param(J), foreach(E,Col) do
+        nth1(J,Row,E)
     ),
     alldifferent(Col)
   ),
@@ -37,9 +37,8 @@ sudoku(Sudoku):-
       ( multifor([K,L],1,N), param(N,I,J,Sudoku), foreach(B,Block) do
           R is (I*N)+K,
           C is (J*N)+L,
-          selectElement(Row,R,Sudoku),
-          array_list(Row,List),
-          selectElement(B,C,List)
+          nth1(R,Sudoku,Row),
+          nth1(C,Row,B)
       ),
       alldifferent(Block)
   ).
@@ -48,17 +47,11 @@ permutation(Sequence,Permutation):-
   Permutation :: Sequence,
   alldifferent(Permutation).
 
-selectElement(E,1,[E|_]):- !.
-selectElement(E,I,[_|Tail]):-
-  J is I-1,
-  selectElement(E,J,Tail).
-
 print_board(Board) :-
 	length(Board,N),
 	( foreach(Row,Board), param(N) do
-            array_list(Row,T),
-	    ( for(J,1,N), param(I,T) do
-                    selectElement(X,J,T),
+	    ( for(J,1,N), param(Row) do
+                    nth1(J,Row,X),
 		    ( var(X) -> write("  _") ; printf(" %2d", [X]) )
 	    ), nl
 	), nl.

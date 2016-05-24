@@ -1,102 +1,82 @@
 :- use_module(library(chr)).
 :- use_module(library(lists)).
-:- use_module(library(time)).
-:- use_module(library(clpfd)).
 :- op(700,xfx,'in').
 :- [sudex_toledo].
-:- chr_constraint solve/1, import/1, import/2, import_row/3,
-    dom/1,search, show/0, clean/0, show/2, row/2,col/2,block/2, imported/0.
+:- chr_constraint solve/1, import/1, import/2, import_row/3, option/3, known/3, dom/1, search/0, permutation/1, show/0, show/2, clean/0.
 
 solve(Name) <=>
   puzzles(Puzzle,Name),
-  length(Puzzle,N),
-  dom(N),
-  generate_domains(1,N),
+  length(Puzzle,N2),
+  dom(N2),
   import(Puzzle),
-  imported,
-  show,
-  flatten(Puzzle,Sudoku),
-  Sudoku ins 1..N,
-  labeling([ff],Sudoku),
+        show,
+  search,
   !,
   show,
-  clean.
+	clean.
 
 
 solveAll:-
-  puzzles(_,Name),
-  format(Name), nl,
-  time(solve(Name)).
+    puzzles(_,Name),
+    write(Name), nl,
+    time(solve(Name)).
 
 solveAllAuto:-
-  time((solveAll,fail; true)).
-
+	time((solveAll,fail; true)).
 
 show <=> nl, show(1,1).
 dom(N) \ show(Row,Col) <=> Col > N | NRow is Row + 1, nl, show(NRow,1).
 dom(N) \ show(Row,_) <=> Row > N | true.
-row(Row,Vals) \ show(Row,Col) <=> nth1(Col,Vals,Val), nonvar(Val) | format('~10r ',Val), Col1 is Col+1, show(Row,Col1).
-row(Row,Vals) \ show(Row,Col) <=> nth1(Col,Vals,Val), var(Val) | write('. '), Col1 is Col+1, show(Row,Col1).
+known(Row,Col,Val) \ show(Row,Col) <=> format('~10r ',Val), Col1 is Col+1, show(Row,Col1).
 show(Row,Col) <=> format('. '), Col1 is Col+1, show(Row,Col1).
-clean \ col(_,_) <=> true.
-clean \ row(_,_) <=> true.
-clean \ block(_,_) <=> true.
+clean \ known(_,_,_) <=> true.
 clean, dom(_) <=> true.
 
-generate_domains(I,N):- I > N .
-generate_domains(I,N):-
-	length(L1,N), col(I,L1),
-	length(L2,N), block(I,L2),
-	length(L3,N), row(I,L3),
-	I1 is I+1,
-	generate_domains(I1,N).
-
-import(Board) <=> import(Board,1).
+import(Puzzle) <=> import(Puzzle,1).
 import([],_) <=> true.
-import([CRow|Rows],Y) <=>import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
+import([CRow|Rows],Y) <=>
+    import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
 
 import_row([],_,_) <=> true.
+import_row([CVal|Vals],Y,X) <=>
+    nonvar(CVal) | known(Y,X,CVal), X1 is X + 1, import_row(Vals,Y,X1).
 
-% hier gebeurt het belangrijkste: de elementen worden in de juiste row/col/block gestoken zodat de constraints per row/col/block kunnen toegepast worden
-dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) \ import_row([CVal|Vals],Y,X) <=>
-	in_block(Y,X,BlockN,N), position_in_block(Y,X,PosInBlock,N) | % zorg dat het de juiste block nummer is en zoek de positie binnen die blok
-    nth1(X,RowList,CVal), nth1(Y,ColList,CVal), nth1(PosInBlock, BlockList, CVal), % zet de waardes op de juiste positie in hun row/col/block
-	X1 is X + 1, import_row(Vals,Y,X1).
+import_row([CVal|Vals],Y,X) <=>
+    var(CVal) | upto(9,L), option(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1).
 
+option(X,_,[V]), option(X,_,[V]) <=> fail.
+option(_,_,[]) <=> fail.
 
-imported, col(_,L) ==> all_different(L); fail.
-imported, block(_,L) ==> all_different(L); fail.
-imported, row(_,L) ==> all_different(L); fail.
+%% ROW Constraints
+known(X,_,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
 
-% eigenlijk is deze equivalent met de row aanpak, maar die is super traag.
-% Hier is wel de verklaring dat door het niet updaten van het domein er veel aan backtracking gedaan moet worden.
-% Hij probeert hier meteen alles in te vullen, wat natuurlijk zo goed als altijd fout gaat.
-% Bij Eclipse vult hij pas in wanneer hij moet (bij labeling) of wanneer hij zeker is.
-%imported, dom(N), row(_,L) ==> upto(N,Dom), permutation(Dom,L); fail.
+%% COL Constraints
+known(_,Y,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
+
+%% BLOCK Constraints
+known(X,Y,V), dom(N2) \ option(X1,Y1,L) <=> member(V,L),
+        N is integer(sqrt(N2)),
+        XB is (X-1)//N, YB is (Y-1)//N,
+        XB is (X1-1)//N, YB is (Y1-1)//N
+         | delete(L,V,NL), option(X1,Y1,NL).
+
+option(X,Y,[X1]) <=> known(X,Y,X1).
 
 upto(0,[]).
 upto(N,[N|L]) :- N>0, N1 is N-1, upto(N1,L).
 
-in_block(Row,Col,Block,N2):-
-  N is integer(sqrt(N2)),
-	upto(N2,L2),
-	member(Row,L2), member(Col,L2), member(Block,L2),
-  RowB is (Row - 1) // N + 1,
-  ColB is (Col - 1) // N + 1,
-	Block1 is Block - 1,
-	BlockRow is div(Block1,N) + 1,
-	BlockCol is mod(Block1,N) + 1,
-	RowB == BlockRow, ColB == BlockCol.
+%search
+option(X,_,_) \ search  <=> permutation(X), search.
+search <=> true.
 
-% geeft de positie weer binnen de blok:
-% 1 2 3
-% 4 5 6
-% 7 8 9
-% Bijvoorbeeld Row=8 en Col=8 gaat op de middelste positie binnen de blok rechtsonder staan, dus dit gaat 5 teruggeven bij Pos.
-position_in_block(Row,Col,Pos,N2):-
-  N is integer(sqrt(N2)),
-	upto(N2,L2),
-	member(Row,L2), member(Col,L2), member(Pos,L2),
-	Row1 is Row-1, Col1 is Col-1,
-	RowB is mod(Row1,N), ColB is mod(Col1,N),
-	Pos is N * RowB + ColB + 1.
+permutation(X) \ option(X,Y,List) <=> enum(X,Y,List).
+permutation(_) <=> true.
+
+enum(X,Y,List) :-
+  member(V,List),
+  (
+    known(X,Y,V)
+  ;
+    delete(List,V,Result),
+    option(X,Y,Result)
+  ).
