@@ -1,11 +1,10 @@
 \section{Task 1: Sudoku}\label{sec:sudoku}
 \subsection{Introduction}
 
-An \textit{n-sudoku} puzzle contains $n^{4}$ squares, in an $n^{2}$ by $n^{2}$ grid, and has $n^{2}$ blocks. These blocks are of size $N$ by $N$. Sudoku puzzles are proven to be \textbf{NP-Complete}. The collection of these rows, columns and zones are all units in the puzzle. So we come to the following statement:
+An \textit{n-sudoku} puzzle contains $n^{4}$ squares, in an $n^{2}$ by $n^{2}$ grid, and has $n^{2}$ blocks. These blocks are of size $n$ by $n$. Sudoku puzzles are form of latin squares these are proven to be \textbf{NP-Complete}. This implies that the general case of sudoku puzzles are also \textbf{NP-Complete}. The collection of these rows, columns and blocks are all \textbf{units} in the puzzle. So we come to the following definition:
 
-\begin{center}
-\textit{A puzzle is solved if every unit contains every element \\ from the interval $1$ to $n^2$ exactly once.}
-\end{center}
+\paragraph*{Definition:}
+\textit{A puzzle is solved if every unit contains every element from the interval $1$ to $n^2$ exactly once.}
 
 This means that every unit is filled with a permutation of $[1,2,\cdots,n^{2}$. 
 The classical viewpoint for Sudoku states that all numbers in a row must be different, that all numbers in a column must be different and that all numbers in a block must be different.\\
@@ -38,14 +37,16 @@ We can now define the Sudoku problem formally. A value at position row $i$ and c
 
 \subsection{Alternative viewpoint}
 
-In this section we will discuss an alternative viewpoint for an classical \textit{n-sudoku} puzzle.
-Now we will define the puzzle as a problem of $n^{2}$ rows, so we group all the elements in a row into a single variable. 
+In this section we will discuss an alternative for the classical viewpoint of a \textit{n-sudoku} puzzle.
+Now we will define the puzzle as a problem of $n^{2}$ rows instead of $n^{4}$ separate variables, so that we can group all the elements in a row into a single variable. 
 These rows will be permutations of the list $[1,2,\cdots,n^{2}]$. 
-The reasoning behind this viewpoint is to reduce the amount of constraints needed to express the problem. 
-The amount of variables need has been reduced from $n^{4}$ to $n^{2}$. \\
+The goal of this viewpoint is to reduce the amount of constraints needed to express the problem. 
+The amount of variables that are used has been reduced from $n^{4}$ to $n^{2}$. \\
 
-Again we can define this more formally. We define $n^{2}$ variables $r_i$ instead of the $n^{4}$ variables in the classical sudoku viewpoint. \textbf{TODO!!!}
-So to visualize this: 
+Again we can define this more formally. 
+We define $n^{2}$ variables $r_{i}$ instead of the $n^{4}$ variables $x_{i,j}$ in the classical sudoku viewpoint. 
+$r_{i}$ is the collection of the elements $x_{i,1},x_{i,2},\cdots,x_{i,n^{2}}$ in this case.
+A visualisation of this can be seen in Figure \ref{fig:sudokuRow}
 
 \begin{center}
 \begin{tabu} to 0.3\textwidth{ |[2pt] X[2] X[1] X[2] |[2pt]}\tabucline[2pt]{-}
@@ -59,9 +60,13 @@ So to visualize this:
 & $r_{8}$ & \\ \hline
 & $r_{9}$ & \\ \tabucline[2pt]{-}
 \end{tabu}
-\captionof{figure}{Example of the alternative viewpoint on an 3-sudoku puzzle.}
+\captionof{figure}{Example of the alternative viewpoint on an 3-sudoku puzzle.}\label{fig:sudokuRow}
 \end{center}
 
+The row constraints from the original viewpoint are no longer necessary because they are already include in the fact that each row has to be a permutation of the sequence $[1,2,\cdots,n^{2}]$.
+We will still need to define the column and block constraints.
+To do so we will say that $r_{i,j}$ is the element with index $j$ in the $i$th row of the puzzle.
+So that we can still properly define the columns and blocks.
 
 \begin{center}
 \begin{tabular}{l l l}
@@ -73,24 +78,31 @@ So to visualize this:
 \end{center}
 
 \subsection{Criteria}
-The criteria according to us for a good viewpoint are the following: an easy understanding of the representation, the computational complexity to get to a solution, the amount of backtracks or logical inferences that are necessary to get a solution from the implementation of the proposed viewpoint.
-In our opinion the alternative viewpoint that we suggested is a good viewpoint, because the amount of backtracking that is necessary is greatly reduced by reducing the amount of variables in the problem and restricting their domain. 
+The criteria according to us for a good viewpoint are the following: an easy understanding of the representation, a low computational complexity to get to a solution, a low amount of backtracks or logical inferences that are required to get a solution from the implementation of the proposed viewpoint.
+In our opinion the alternative viewpoint that we suggested is a good viewpoint, because the amount required backtracks that are required should greatly be reduced. 
+This is due to the decrease in variables in the problem and the further restriction of their domain. 
 
 \subsection{Channeling Constraints}
-The channeling constraints between the classical viewpoint and the alternative viewpoint can only be defined in one direction.
-It is only possible to define the values of the individual cells in the classical viewpoint when coming from the rows in the alternative viewpoint.
+The channeling constraints between the classical viewpoint and the alternative viewpoint we proposed can only be defined in one direction.
+It is only possible to define the values of the individual variables in the classical viewpoint when we posses the rows in the alternative viewpoint.
+This should always be valid in any case $r_{i} \rightarrow x_{i,1},x_{i,2},\cdots,x_{i,n^{2}}$, but in the other direction this is not the case.
 If a row is assigned a certain permutation as its value, then the elements of the corresponding row in the original viewpoint can be assigned the values from this permutation.
-In the other direction this is not possible unless all of the variables in a row have been assigned a value and that they are all different from each other.
-So that these values from a permutation of the original list.
-The alternative viewpoint has as main advantage that the row-constraints are implied when declaring its domain.
-The influence of this is mainly noticed in the search process, instead of instantiating every variable separately the entire row will be instantiated at once.
-Due to these channeling constraints being so trivial we think that there is no point in implementing them, since the influence would be minimal.  
+In the other direction this isn't possible unless all of the variables in a row have been assigned a value and they are all different from each other.
+So that these values form a permutation of the original list.
+The alternative viewpoint has as main advantage that the row-constraints are automatically implied when defining the domain of the variables.
+The influence of this would be mainly noticed in the search process, instead of instantiating every variable separately the entire row will be instantiated at once.
+Due to these channeling constraints being so trivial we think that there is no point in implementing them, since the influence would be minimal.
 
 \subsection{Implementation}
+
+In this section we will be discussing the implementation of our sudoku solvers.
+The reasoning behind why we chose \texttt{ECLiPSe} and \texttt{CHR} is later explained in section \ref{subsec:sudokudescision}.
+As mentioned previously we will not be implementing any channeling constraints due to them being too straightforward and it is only possible to define them in one direction.
+
 \subsubsection{ECLiPSe}
 \paragraph*{Original viewpoint}
 In the original viewpoint we view the sudoku as a matrix with $n^{4}$ variables.
-The constraints on this are the following.
+The constraints that are required for this viewpoint of the problem are the following.
 We extract the required information from this matrix by defining rows, columns and blocks.
 For each row, column and block we say that every value in these lists must be different.
 So all of the constraints are exactly the same, but the way of extracting this information from the matrix is different.\\
@@ -300,17 +312,20 @@ We say that failure occurs when an option has no possible values left.
 If this happens, we will backtrack to the last choice point. 
 The only time a choice is made in our implementation is when we enumerate the possible options in the domain of a variable.
 
-\subsubsection{Decision}
+\subsubsection{Decision}\label{subsec:sudokudescision}
 Before deciding which languages we would use for our implementation, we made a comparison between the programming languages.
+We will explain why they are usually used, what the idea behind them is and how we would reason about them when applying them to sudoku puzzles.
+We will start to discussion with \texttt{ECLiPSe}. Afterwards we will continue with \texttt{CHR} and \texttt{Jess}.
 
 \paragraph*{ECLiPSe} is an constraint logic programming language that is backward-compatible with \texttt{Prolog}.
 The constraint logic programming is used for constraint satisfaction problems.
+More specific, optimization, planning and other similar kind of problems.
 These problems are defined by some variables which can take a possible value from a certain domain.
 A solution for these kind of problems is found when each variable has exactly one value and that it fulfills all of the constraints.
+\texttt{ECLiPSe} provides several libraries which can be used in application programs.
 In case of the sudoku problem the variables would be the unknown values in the puzzle with their domain being the interval between 1 and $n^2$.
 The constraints would be that there can only be one occurrence of a value in a certain row, column or block.
 
-\newpage
 \paragraph*{CHR} is short for Constraint Handling Rules. 
 In \texttt{CHR} we will work with a constraint store which we will use to represent the state of the problem that we are trying to solve.
 This is used often used to implement Rule Based Systems, an example of this is the domain-specific expert system.
@@ -342,13 +357,76 @@ These rules will deduce the options on the other variables.
 We eventually chose to use \texttt{ECLiPSe} and \texttt{CHR} for our implementations of our Sudoku solver.
 The reasoning behind this was that \texttt{CHR} and \texttt{Jess} are in a way very similar and we found the syntax of \texttt{CHR} much more clearer compared to \texttt{Jess}.
 Since we already had a basic understanding of \texttt{Prolog}, it was preferable that the chosen languages had a certain integration with it.
-\texttt{Jess} looked less straightforward in our eyes and seemed like the least desirable choice out of the three options.
+\texttt{ECLiPSe} was chosen because of its difference from the two other languages and the similarities to \texttt{Prolog}.
+On the other hand \texttt{CHR} was chosen due to it being a more understandable high level language that was still closely related to \texttt{Prolog}.
+\texttt{Jess} looked less straightforward and suitable for the specified problems in our eyes.
+It seemed like the least desirable option out of the three.
+
 
 \subsection{Experiments}\label{subsec:sudokuexperiments}
-\subsubsection{Results}
-\subsubsection{Heuristics}
-\subsubsection{Difficulties}
+In these experiments we want to see the difference between the two viewpoints and the different programming languages.
+But it is also our intention to measure the influence of the different search methods, so that we can find the optimal setup for our implementation.
+The most important aspects that we will consider is the time is takes to solve the problem, but also the amount of inferences that are required is a good measuring point.
+During all of the experiments we used the same computer\footnote{TODO computer specifications}.
+It is in our interest to time-out the process after a certain time.
+Due to using the same computer at all times we should get a good indication of the performance of our sudoku solvers.
+All of the times at we will express are in seconds.
 
-\subsection{Conclusions}
+\subsubsection{Results}
+\paragraph*{Viewpoint 1}
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|c|}
+\cline{2-6}
+\multicolumn{1}{c|}{} & \begin{sideways}ECLiPSe labeling\end{sideways} & \begin{sideways}ECLiPSe Input First\end{sideways} & \begin{sideways}ECLiPSe First Fail\end{sideways} & \begin{sideways}ECLiPSe Anti First Fail\end{sideways} & \begin{sideways}CHR\end{sideways}\\ \tabucline[2pt]{-}             
+medium			&	&	&	&	&	\\
+difficult		&	&	&	&	&	\\
+verydifficult	&	&	&	&	&	\\
+expert			&	&	&	&	&	\\
+lambda			&	&	&	&	&	\\
+hard17			&	&	&	&	&	\\
+symme			&	&	&	&	&	\\
+eastermonster	&	&	&	&	&	\\
+tarek052			&	&	&	&	&	\\
+goldennugget		&	&	&	&	&	\\
+coloin			&	&	&	&	&	\\ \tabucline[2pt]{-}
+Average	 		&	&	&	&	&	\\
+\hline
+\end{tabu}
+\captionof{table}{The results from the experiments on the first viewpoint}
+\end{center}
+
+\begin{itemize}
+\item As can be seen from ... 
+\end{itemize}
+\newpage
+\paragraph*{Viewpoint 2}
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|c|}
+\cline{2-6}
+\multicolumn{1}{c|}{} & \begin{sideways}ECLiPSe labeling\end{sideways} & \begin{sideways}ECLiPSe Input First\end{sideways} & \begin{sideways}ECLiPSe First Fail\end{sideways} & \begin{sideways}ECLiPSe Anti First Fail\end{sideways} & \begin{sideways}CHR\end{sideways}\\ \tabucline[2pt]{-}             
+medium			&	&	&	&	&	\\
+difficult		&	&	&	&	&	\\
+verydifficult	&	&	&	&	&	\\
+expert			&	&	&	&	&	\\
+lambda			&	&	&	&	&	\\
+hard17			&	&	&	&	&	\\
+symme			&	&	&	&	&	\\
+eastermonster	&	&	&	&	&	\\
+tarek052			&	&	&	&	&	\\
+goldennugget		&	&	&	&	&	\\
+coloin			&	&	&	&	&	\\ \tabucline[2pt]{-}
+Average 			&	&	&	&	&	\\
+\hline
+\end{tabu}
+\captionof{table}{The results from the experiments on the second viewpoint.}
+\end{center}
+
+\begin{itemize} %Heuristieken, problemen, etc.. aanhalen
+\item As can be seen from ... 
+\end{itemize}
+
+\subsubsection{Conclusions}
 
 
