@@ -4,7 +4,7 @@
 :- include(puzzles).
 :- include(print).
 :- chr_constraint search/1, solve/1, rect/3,
-	rect_temp/2, makeDomains/2, clean/0.
+	rectTemp/2, makeDomains/2, clean/0.
 
 %%% MAIN %%%
 
@@ -45,7 +45,7 @@ clean <=> true.
 makeDomains([],_) <=> true.
 makeDomains([(X,Y,Value)|Points],FieldSize) <=>
 	generateOptions(c(X,Y),Value,FieldSize,OptionsList),
-	rect_temp(c(X,Y),OptionsList),
+	rectTemp(c(X,Y),OptionsList),
 	makeDomains(Points,FieldSize).
 
 /*
@@ -75,7 +75,7 @@ generateSingleOption(Point,Value,FieldSize,(Pos,Size)):-
 *	Attempts to place rectangles from large to small, so it should be
 *	initiated with an N at least as large as the largest possible recangle.
 */
-search(N), rect_temp(Point,OptionsList) <=>
+search(N), rectTemp(Point,OptionsList) <=>
 	member((_,s(Width,Height)),OptionsList),
 	Width*Height >= N
 	| try_option(Point,OptionsList),
@@ -88,36 +88,34 @@ search(N) <=> N1 is N - 1, search(N1).
 */
 try_option(_,[]) :- fail.
 try_option(Point,[(Pos,Size)|Options]):-
-    (
     rect(Point,Pos,Size)
-    ;
-    try_option(Point,Options)
-    ).
+	;
+	try_option(Point,Options).
 
 %%% CHR CONSTRATINS %%%
 
 /*
 *	FAILURE: Backtrack when a rectangle has no options left.
 */
-failure @ rect_temp(_,[]) <=> fail.
+failure @ rectTemp(_,[]) <=> fail.
 
 /*
 *	Remove all rectangle options which contain points other than the point
 *	they belong to.
 */
-rect_temp(RefPoint,_) \ rect_temp(Point,OptionsList) <=>
-	remove_point_overlap(RefPoint,OptionsList,NewList),
+rectTemp(RefPoint,_) \ rectTemp(Point,OptionsList) <=>
+	removePointOverlap(RefPoint,OptionsList,NewList),
 	OptionsList \== NewList
-	| rect_temp(Point,NewList).
+	| rectTemp(Point,NewList).
 
 /*
 *	When a new rectangle with position Pos and size Size is added,
 *	remove all rectangle options which overlap with the new recangle.
 */
-rect(_,Pos,Size) \ rect_temp(Point,OptionsList) <=>
-	remove_rect_overlap(Pos,Size,OptionsList,NewList),
+rect(_,Pos,Size) \ rectTemp(Point,OptionsList) <=>
+	removeRectOverlap(Pos,Size,OptionsList,NewList),
 	OptionsList \== NewList
-	| rect_temp(Point,NewList).
+	| rectTemp(Point,NewList).
 
 
 
@@ -127,7 +125,7 @@ rect(_,Pos,Size) \ rect_temp(Point,OptionsList) <=>
 *	Removes all rectangle options from the OptionList which contain the given
 *	point. Unifies the result with NewList.
 */
-remove_point_overlap(Point,OptionsList,NewList):-
+removePointOverlap(Point,OptionsList,NewList):-
 	findall((Pos,Size),(
 		member((Pos,Size),OptionsList),
 		\+ contains(Pos,Size,Point)
@@ -139,7 +137,7 @@ remove_point_overlap(Point,OptionsList,NewList):-
 *	recangle with position RefPos and size RefSize.
 *	Unifies the result with NewList
 */
-remove_rect_overlap(RefPos,RefSize,OptionsList,NewList):-
+removeRectOverlap(RefPos,RefSize,OptionsList,NewList):-
 	findall((Pos,Size),(
 		member((Pos,Size),OptionsList),
 		\+ overlap(RefPos,RefSize,Pos,Size)
