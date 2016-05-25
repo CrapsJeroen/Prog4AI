@@ -92,7 +92,7 @@ So that these values form a permutation of the original list.
 The alternative viewpoint has as main advantage that the row-constraints are automatically implied when defining the domain of the variables.
 The influence of this would be mainly noticed in the search process, instead of instantiating every variable separately the entire row will be instantiated at once.
 Due to these channeling constraints being so trivial we think that there is no point in implementing them, since the influence would be minimal.
-
+\newpage
 \subsection{Implementation}
 
 In this section we will be discussing the implementation of our sudoku solvers.
@@ -142,7 +142,7 @@ For every variable in the list the rest of the list is checked to see if it does
 
 Another option was to use the suspend library which puts constraints on the variables before searching.
 But afterwards it still iterates over the entire search space, because it still doesn't utilize the additional constraints to reduce the search space of the other variables in a list/column/block.\\
-
+\newpage
 We ended up choosing the ic library for two reasons.
 Firstly this allows us to define the constraint before starting the search process.
 Secondly, the search domain is reduced while search by the constraints so that less backtracking is required.
@@ -191,8 +191,7 @@ The column and block constraints are similar to the original viewpoint, except f
 
 As a consequence of this viewpoint is that we use active propagation by only having permutation of the sequence 1 to $n^2$.
 The reasoning behind this is that we will no longer attempt a certain value for a variable in a row when the value already exists in the row. 
-This kind of active propagation is already done when we utilize the ic library, so we are not expecting to see a big difference in performance between these two implementations.\\
-
+This kind of active propagation is already done when we utilize the ic library, so we are not expecting to see a big difference in performance between these two implementations.
 We will further discuss the results in the section \ref{subsec:sudokuexperiments}
 
 \subsubsection{CHR}
@@ -376,29 +375,30 @@ All of the times at we will express are in seconds.
 \paragraph*{Viewpoint 1}
 \begin{center}
 \footnotesize
-\begin{tabu}{|c|[2pt] c|c|c|c|c|}
-\cline{2-6}
-\multicolumn{1}{c|}{} & \begin{sideways}ECLiPSe labelling\end{sideways} & \begin{sideways}ECLiPSe Input Order\end{sideways} & \begin{sideways}ECLiPSe First Fail\end{sideways} & \begin{sideways}ECLiPSe Anti First Fail \end{sideways} & \begin{sideways}CHR\end{sideways}\\ \tabucline[2pt]{-}             
-verydifficult	&	0.00	&	0.00	&	0.00	&	0.00	&	0.01	\\
-expert			&	0.00	&	0.00	&	0.01	&	0.00	&	0.03	\\
-lambda			&	0.00	&	0.00	&	0.00	&	0.00	&	0.93	\\
-hard17			&	0.00	&	0.00	&	0.01	&	1.10	&	0.46	\\
-symme			&	0.15	&	0.14	&	0.07	&	4.09	&	0.49	\\
-eastermonster	&	0.16	&	0.16	&	0.08	&	1.79	&	0.18	\\
-tarek052		&	0.25	&	0.25	&	0.12	&	1.84	&	0.23	\\
-goldennugget	&	0.50	&	0.49	&	0.22	&	0.23	&	0.52	\\
-coloin			&	0.17	&	0.17	&	0.02	&	12.84	&	0.13	\\
-extra1			&	0.00	&	0.01	&	0.00	&	0.00	&	0.18	\\ 
-extra2			&	0.00	&	0.00	&	0.00	&	0.00	&	6.79	\\ 
-extra3			&	0.01	&	0.00	&	0.01	&	0.00	&	0.93	\\ 
-extra4			&	0.00	&	0.01	&	0.00	&	0.00	&	1.88	\\ 
-inkara2012		&	0.02	&	0.02	&	0.06	&	1.13	&	0.42	\\ 
-clue18			&	0.19	&	0.19	&	0.03	&	0.55	&	0.47	\\ 
-clue17			&	0.00	&	0.00	&	0.00	&	0.00	&	0.24	\\ 
-sudowiki\_nb28	&	0.75	&	0.75	&	0.40	&	0.08	&	2.32	\\ 
-sudowiki\_nb49	&	0.14	&	0.15	&	0.14	&	1.14	&	0.81	\\ 
-peter			&	0.00	&	0.00	&	0.00	&	0.00	&	0.06	\\\tabucline[2pt]{-}
-Average	 		&	0.12	&	0.12	&	0.06	&	1.34	&	0.90	\\
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|c|c|}
+\cline{2-11}
+\multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2.5cm}{ECLiPSe \\ labeling}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-11}
+\multicolumn{1}{c|}{} & Time (s) & nbOfBt & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt \\ \tabucline[2pt]{-} 
+verydifficult	&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.01&	\\
+expert			&	0.00	&&	0.00	&&	0.01	&&	0.00	&&	0.03	&\\
+lambda			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.93&	\\
+hard17			&	0.00	&&	0.00	&&	0.01	&&	1.10	&&	0.46&	\\
+symme			&	0.15	&&	0.14	&&	0.07	&&	4.09	&&	0.49	&\\
+eastermonster	&	0.16	&&	0.16	&&	0.08	&&	1.79	&&	0.18	&\\
+tarek052		&	0.25	&&	0.25	&&	0.12	&&	1.84	&&	0.23	&\\
+goldennugget	&	0.50	&&	0.49	&&	0.22	&&	0.23	&&	0.52	&\\
+coloin			&	0.17	&&	0.17	&&	0.02	&&	12.84&	&	0.13&	\\
+extra1			&	0.00	&&	0.01	&&	0.00	&&	0.00	&&	0.18	&\\ 
+extra2			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	6.79	&\\ 
+extra3			&	0.01	&&	0.00	&&	0.01	&&	0.00	&&	0.93	&\\ 
+extra4			&	0.00	&&	0.01	&&	0.00	&&	0.00	&&	1.88	&\\ 
+inkara2012		&	0.02	&&	0.02	&&	0.06	&&	1.13	&&	0.42	&\\ 
+clue18			&	0.19	&&	0.19	&&	0.03	&&	0.55	&&	0.47	&\\ 
+clue17			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.24	&\\ 
+sudowiki\_nb28	&	0.75	&&	0.75	&&	0.40	&&	0.08	&&	2.32	&\\ 
+sudowiki\_nb49	&	0.14	&&	0.15	&&	0.14	&&	1.14	&&	0.81	&\\ 
+peter			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.06	&\\\tabucline[2pt]{-}
+Average	 		&	0.12	&&	0.12	&&	0.06	&&	1.34	&&	0.90	&\\
 \hline
 \end{tabu}
 \captionof{table}{The results from the experiments on the first viewpoint}
@@ -419,7 +419,7 @@ Average	 		&	0.12	&	0.12	&	0.06	&	1.34	&	0.90	\\
 \begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|c|c|}
 \cline{2-11}
 \multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2.5cm}{ECLiPSe \\ labeling}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-11}
-\multicolumn{1}{c|}{} & sec & nrBT & sec & nrBT& sec & nrBT& sec & nrBT& sec & nrBT \\ \tabucline[2pt]{-}             
+\multicolumn{1}{c|}{} & Time (s) & nbOfBt & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt \\ \tabucline[2pt]{-}             
 verydifficult	&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	0.35	&	\\
 expert			&	0.00	&	&	0.01	&	&	0.00	&	&	0.00	&	&	1.87	&	\\
 lambda			&	0.00	&	&	0.00	&	&	0.08	&	&	0.00	&	&	1.00	&	\\
@@ -446,12 +446,17 @@ Average	 		&	0.12	&	&	0.12	&	&	0.06	&	&	1.34	&	&	0.90	&	\\
 \end{center}
 
 \begin{itemize} %Heuristieken, problemen, etc.. aanhalen
-\item As can be seen from ... 
+\item Again we notice that all of the \texttt{ECLiPSe} implementation are able to solve all of the puzzles. In case of the \texttt{CHR} implementation we notice that almost none of the puzzles can be solved under the time limit that we specified.
+\item Previously we saw that there was almost no difference between the \texttt{input order} and standard \texttt{labelling} in the original viewpoint, this is again the case for the alternative viewpoint. Labebelling uses the \texttt{left most approach} which resembles the \texttt{input order} heuristic very closely.
+\item The moment we start using \texttt{first fail}, we see a drastic increase in performance for almost all puzzles. The only puzzle that performs worse is the \textit{lambda} puzzle, here we see a decrease in performance. Our reasoning here is that the optimal ordering of the variables is close to the \texttt{input order}, while currently we are looking at the variables with the smallest domain. This suspicion is confirmed when we take a look at the performance of the \texttt{anti first fail} heuristic, which also performs better than the \texttt{first fail} heuristic.
+\item When we compare the \texttt{anti first fail} against the other implementations we see a decrease in performance except for a couple of instances where it performs drastically better than the other heuristics. The puzzles in question are \textit{lambda}, \textit{goldennugget}, \textit{sudowiki\_nb28} and \textit{clue18}. We saw a similar pattern in the original viewpoint. The worst puzzle for this viewpoint was \textit{coloin}, where it takes $13.71$ seconds compared to $0.25$ in the \texttt{input order} heuristic. The reasoning again is that in this puzzle \texttt{anti first fail} is the worst possible search heuristic.
+\item In general the alternative viewpoint performs worse than the original viewpoint. We think that the reason for this is that due to using the \texttt{ic library} we already use the forward checking that we were trying to achieve by using this viewpoint. So we end up creating extra overhead by imposing these constraints on the variables ourselves. 
+\item The implementation in \texttt{CHR} works pretty poorly considering the other results. Our reasoning behind why it is not able to finish the majority of the puzzles is that we go too deep into our search tree before we find a failure. With improvements to this method we should be able to increase the further performance of our implementation in \texttt{CHR}.
 \end{itemize}
 
 \subsubsection{Conclusions}
 
-We can see that our alternative viewpoint is performing worse on almost all puzzles, we believe this is due to the fact that the \texttt{ic library} will use forward checking which we tried to simulate with our implementation.
+We can see that our alternative viewpoint in general is performing worse on almost all puzzles, we believe this is due to the fact that the \texttt{ic library} will use forward checking which we tried to simulate with our implementation.
 The conclusion is that in almost all cases the \texttt{first fail} search heuristic performs best in the original viewpoint. While the \texttt{anti first fail} performs the worst overal, except for our implementation in \texttt{CHR}.
 We believe that \texttt{CHR} is less suited for problems that can be explained in a very straightforward fashion compared to \texttt{ECLiPSe}.
 Adding all of the constraints to the constraint store and processing them by using the simplification or propagation rules takes too much time compared to the quick built-in libraries and methods that can be used from \texttt{ECLiPSe}.
