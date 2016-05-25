@@ -6,11 +6,12 @@
 
 solve(Name):-
   puzzles(Board,Name),
-  %print_board(Board),
+  print_board(Board),
   sudoku(Board),
   flatten(Board,FlatList), 
-  profile(search(FlatList,0,anti_first_fail,indomain,complete,[])),
-  %print_board(Board),
+  search(FlatList,0,input_order,indomain,complete,[backtrack(Back)]),
+  writeln(Back),
+  print_board(Board),
   !.
 
 solveAll:-

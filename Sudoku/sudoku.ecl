@@ -8,7 +8,8 @@ solve(Name) :-
         lists2matrix(AlmostBoard,Board),
 	print_board(Board),
 	sudoku(Board),
-	profile(search(Board,0,anti_first_fail,indomain,complete,[])),
+	search(Board,0,input_order,indomain,complete,[backtrack(Back)]),
+        writeln(Back),
 	print_board(Board),
         !.
 

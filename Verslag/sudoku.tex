@@ -375,81 +375,79 @@ All of the times at we will express are in seconds.
 \paragraph*{Viewpoint 1}
 \begin{center}
 \footnotesize
-\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|c|c|}
-\cline{2-11}
-\multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2.5cm}{ECLiPSe \\ labeling}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-11}
-\multicolumn{1}{c|}{} & Time (s) & nbOfBt & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt \\ \tabucline[2pt]{-} 
-verydifficult	&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.01&	\\
-expert			&	0.00	&&	0.00	&&	0.01	&&	0.00	&&	0.03	&\\
-lambda			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.93&	\\
-hard17			&	0.00	&&	0.00	&&	0.01	&&	1.10	&&	0.46&	\\
-symme			&	0.15	&&	0.14	&&	0.07	&&	4.09	&&	0.49	&\\
-eastermonster	&	0.16	&&	0.16	&&	0.08	&&	1.79	&&	0.18	&\\
-tarek052		&	0.25	&&	0.25	&&	0.12	&&	1.84	&&	0.23	&\\
-goldennugget	&	0.50	&&	0.49	&&	0.22	&&	0.23	&&	0.52	&\\
-coloin			&	0.17	&&	0.17	&&	0.02	&&	12.84&	&	0.13&	\\
-extra1			&	0.00	&&	0.01	&&	0.00	&&	0.00	&&	0.18	&\\ 
-extra2			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	6.79	&\\ 
-extra3			&	0.01	&&	0.00	&&	0.01	&&	0.00	&&	0.93	&\\ 
-extra4			&	0.00	&&	0.01	&&	0.00	&&	0.00	&&	1.88	&\\ 
-inkara2012		&	0.02	&&	0.02	&&	0.06	&&	1.13	&&	0.42	&\\ 
-clue18			&	0.19	&&	0.19	&&	0.03	&&	0.55	&&	0.47	&\\ 
-clue17			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.24	&\\ 
-sudowiki\_nb28	&	0.75	&&	0.75	&&	0.40	&&	0.08	&&	2.32	&\\ 
-sudowiki\_nb49	&	0.14	&&	0.15	&&	0.14	&&	1.14	&&	0.81	&\\ 
-peter			&	0.00	&&	0.00	&&	0.00	&&	0.00	&&	0.06	&\\\tabucline[2pt]{-}
-Average	 		&	0.12	&&	0.12	&&	0.06	&&	1.34	&&	0.90	&\\
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
+\cline{2-9}
+\multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-9}
+\multicolumn{1}{c|}{} & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & inferences \\ \tabucline[2pt]{-} 
+verydifficult	&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	0.01	& 157,196	\\
+expert			&	0.00	& 0 &	0.01	& 1 &	0.00	& 0 &	0.03	& 537,655 \\
+lambda			&	0.00	& 3 &	0.00	& 3 &	0.00	& 0 &	0.93	& 18,295,296\\
+hard17			&	0.00	& 1 &	0.01	& 1 &	1.10	& 273 &	0.46	& 8,960,808	\\
+symme			&	0.14	& 42 &	0.07	& 19 &	4.09	& 912 &	0.49	& 9,590,025\\
+eastermonster	&	0.16	& 51 &	0.08	& 33 &	1.79	& 351 &	0.18	& 3,291,075\\
+tarek052		&	0.25	& 59 &	0.12	& 35 &	1.84	& 398 &	0.23	& 4,581,841\\
+goldennugget	&	0.49	& 104 &	0.22	& 76 &	0.23	& 30 &	0.52	& 9,906,969\\
+coloin			&	0.17	& 88 &	0.02	& 8 &	12.84	& 3004 &	0.13	& 2,240,845\\
+extra1			&	0.01	& 0 &	0.00	& 1 &	0.00	& 0 &	0.18	& 3,321,574\\ 
+extra2			&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	6.79	& 132,119,829\\ 
+extra3			&	0.00	& 3 &	0.01	& 3 &	0.00	& 0 &	0.93	& 18,295,296\\ 
+extra4			&	0.01	& 4 &	0.00	& 3 &	0.00	& 0 &	1.88	& 37,006,351\\ 
+inkara2012		&	0.02	& 3 &	0.06	& 17 &	1.13	& 244 &	0.42	& 8,091,754\\ 
+clue18			&	0.19	& 69 &	0.03	& 8 &	0.55	& 129 &	0.47	& 9,212,851\\ 
+clue17			&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	0.24	& 4,378,228\\ 
+sudowiki\_nb28	&	0.75	& 413 &	0.40	& 297 &	0.08	& 11 &	2.32	& 46,412,038\\ 
+sudowiki\_nb49	&	0.15	& 48 &	0.14	& 58 &	1.14	& 242 &	0.81	& 15,918,183\\ 
+peter			&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	0.06	& 741,743 \\\tabucline[2pt]{-}
+Average	 		&	0.12	& 47 &	0.06	& 30 &	1.34	& 294 &	0.90	& 22,075,239\\
 \hline
 \end{tabu}
 \captionof{table}{The results from the experiments on the first viewpoint}
 \end{center}
 
-\begin{itemize} %TODO Add backtracks
+\begin{itemize}
 \item The first thing we can notice is that all of our implementations of the first viewpoint succesfully solve all of the sudoku puzzles. We added an extra $16 \times 16$ sudoku puzzle to show that our implementations can handle larger puzzles than the original $9 \times 9$ sudoku.
-\item As can be seen there is close to no difference in performance between the \texttt{labelling} and the \texttt{input order} search heuristic. This can be explained by the fact that both of the start the search by selecting the first item in the variable list. All of the difference between these two methods is due to noise.
 \item When comparing the \texttt{input order} against the \texttt{fail first} we see that there is significant difference in performance. The \texttt{first fail} performs equally good or even better in almost all cases, expect for a few puzzles like for example \textbf{inkara2012}. The \texttt{first fail} will make the hard decisions early on with the intention to require less backtracking, which can also be seen in our results.
-\item On every puzzle, except for a few, the \texttt{anti first fail} will perform worse compared to the other implemetations in \texttt{ECLiPSe}. The puzzles in question are \textit{sudowiki\_nb28} and \textit{goldennugget}. Our reasoning is that the variables with the smallest domains don't have a lot of influence on the rest of the variables. So almost no progress is made by prioritizing them, while the variables with the larger domain have more influence.
-\item Our CHR implementation works slower than the \texttt{ECLiPSe} implementations, except for the anti first fail one. We believe this is due to the usages of the built-in libraries in our \texttt{ECLiPSe} implementations, these should perform much better than our own written methods in \texttt{CHR}.
-\item Which puzzle is the most difficult depends on the search heuristic that is used. In case of the \texttt{anti first fail} heurstic the \textit{coloin} puzzle is the hardest, but when we look at the \texttt{first fail} heuristic we see that the \texttt{sudowiki\_nb28} is the most difficult puzzle. Our reasoning is that it mainly depends on the importance of the variables with a small domain, if these variables have a large influence on the domain of the other variables then the \texttt{first fail} will see an increase in performance (due to the increased importance of the choice) and a decrease in the amount of backtracks that are made. 
+\item On every puzzle, except for a few, the \texttt{anti first fail} will perform worse compared to the other implemetations in \texttt{ECLiPSe}. The puzzles in question are \textbf{sudowiki\_nb28} and \textbf{goldennugget}. Our reasoning is that the variables with the smallest domains don't have a lot of influence on the rest of the variables. So almost no progress is made by prioritizing them, while the variables with the larger domain have more influence.
+\item Our \texttt{CHR} implementation works slower than the \texttt{ECLiPSe} implementations, except for the \texttt{anti first fail} one. We believe this is due to the usages of the built-in libraries in our \texttt{ECLiPSe} implementations, these should perform much better than our own written methods in \texttt{CHR}.
+\item Which puzzle is the most difficult depends on the search heuristic that is used. In case of the \texttt{anti first fail} heurstic the \textbf{coloin} puzzle is the hardest, but when we look at the \texttt{first fail} heuristic we see that the \texttt{sudowiki\_nb28} is the most difficult puzzle. Our reasoning is that it mainly depends on the importance of the variables with a small domain, if these variables have a large influence on the domain of the other variables then the \texttt{first fail} will see an increase in performance (due to the increased importance of the choice) and a decrease in the amount of backtracks that are made. 
 \end{itemize}
 
 \paragraph*{Viewpoint 2}
 \begin{center}
 \footnotesize
-\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|c|c|}
-\cline{2-11}
-\multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2.5cm}{ECLiPSe \\ labeling}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-11}
-\multicolumn{1}{c|}{} & Time (s) & nbOfBt & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt \\ \tabucline[2pt]{-}             
-verydifficult	&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	0.35	&	\\
-expert			&	0.00	&	&	0.01	&	&	0.00	&	&	0.00	&	&	1.87	&	\\
-lambda			&	0.00	&	&	0.00	&	&	0.08	&	&	0.00	&	&	1.00	&	\\
-hard17			&	0.00	&	&	0.00	&	&	0.00	&	&	1.18	&	&	0.46	&	\\
-symme			&	0.17	&	&	0.15	&	&	0.00	&	&	4.39	&	&	0.49	&	\\
-eastermonster	&	0.19	&	&	0.19	&	&	0.11	&	&	1.97	&	&	0.18	&	\\
-tarek052			&	0.29	&	&	0.30	&	&	0.18	&	&	1.97	&	&	0.24	&	\\
-goldennugget		&	0.54	&	&	0.53	&	&	0.30	&	&	0.00	&	&	0.49	&	\\
-coloin			&	0.25	&	&	0.25	&	&	0.00	&	&	13.71&	&	0.13	&	\\
-extra1			&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	0.18	&	\\ 
-extra2			&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	6.74	&	\\ 
-extra3			&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	0.93	&	\\
-extra4			&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	1.87	&	\\ 
-inkara2012		&	0.00	&	&	0.00	&	&	0.00	&	&	1.52	&	&	0.41	&	\\ 
-clue18			&	0.23	&	&	0.22	&	&	0.00	&	&	0.00	&	&	0.48	&	\\ 
-clue17			&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	0.24	&	\\ 
-sudowiki\_nb28	&	0.95	&	&	0.95	&	&	0.59	&	&	0.00	&	&	2.30	&	\\ 
-sudowiki\_nb49	&	0.14	&	&	0.22	&	&	0.21	&	&	2.08	&	&	0.79	&	\\ 
-peter			&	0.00	&	&	0.00	&	&	0.00	&	&	0.00	&	&	0.06	&	\\\tabucline[2pt]{-}
-Average	 		&	0.12	&	&	0.12	&	&	0.06	&	&	1.34	&	&	0.90	&	\\
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
+\cline{2-9}
+\multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-9}
+\multicolumn{1}{c|}{} & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & inferences \\ \tabucline[2pt]{-}             
+verydifficult	&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&	0.35	& 6,462,861	\\
+expert			&	0.01	&	0	&	0.00	&	1	&	0.00	&	0	&	1.87	& 34,471,978	\\
+lambda			&	0.00	&	3	&	0.08	&	3	&	0.00	&	0	&	TO	&	\\
+hard17			&	0.00	&	1	&	0.00	&	1	&	1.18	&	273	&		& 	\\
+symme			&	0.15	&	42	&	0.00	&	19	&	4.39	&	909	&		& 	\\
+eastermonster	&	0.19	&	52	&	0.11	&	33	&	1.97	&	352	&		& 	\\
+tarek052		&	0.30	&	59	&	0.18	&	35	&	1.97	&	398	&		& 	\\
+goldennugget	&	0.53	&	104	&	0.30	&	76	&	0.00	&	30	&		& 	\\
+coloin			&	0.25	&	88	&	0.00	&	8	&	13.71	&	3006&		& 	\\
+extra1			&	0.00	&	0	&	0.00	&	1	&	0.00	&	0	&		& 	\\ 
+extra2			&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&		& 	\\ 
+extra3			&	0.00	&	3	&	0.00	&	3	&	0.00	&	0	&		& 	\\
+extra4			&	0.00	&	4	&	0.00	&	3	&	0.00	&	0	&		& 	\\ 
+inkara2012		&	0.00	&	3	&	0.00	&	17	&	1.52	&	252	&		& 	\\ 
+clue18			&	0.22	&	69	&	0.00	&	8	&	0.00	&	129	&		& 	\\ 
+clue17			&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&		& 	\\ 
+sudowiki\_nb28	&	0.95	&	413	&	0.59	&	297	&	0.00	&	11	&		& 	\\ 
+sudowiki\_nb49	&	0.22	&	47	&	0.21	&	58	&	2.08	&	265	&		& 	\\ 
+peter			&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&		& 	\\\tabucline[2pt]{-}
+Average	 		&	0.12	&	47	&	0.06	&	30	&	1.34	&	296	&		& 	\\
 \hline
 \end{tabu}
 \captionof{table}{The results from the experiments on the second viewpoint.}
 \end{center}
 
-\begin{itemize} %Heuristieken, problemen, etc.. aanhalen
-\item Again we notice that all of the \texttt{ECLiPSe} implementation are able to solve all of the puzzles. In case of the \texttt{CHR} implementation we notice that almost none of the puzzles can be solved under the time limit that we specified.
-\item Previously we saw that there was almost no difference between the \texttt{input order} and standard \texttt{labelling} in the original viewpoint, this is again the case for the alternative viewpoint. Labebelling uses the \texttt{left most approach} which resembles the \texttt{input order} heuristic very closely.
-\item The moment we start using \texttt{first fail}, we see a drastic increase in performance for almost all puzzles. The only puzzle that performs worse is the \textit{lambda} puzzle, here we see a decrease in performance. Our reasoning here is that the optimal ordering of the variables is close to the \texttt{input order}, while currently we are looking at the variables with the smallest domain. This suspicion is confirmed when we take a look at the performance of the \texttt{anti first fail} heuristic, which also performs better than the \texttt{first fail} heuristic.
-\item When we compare the \texttt{anti first fail} against the other implementations we see a decrease in performance except for a couple of instances where it performs drastically better than the other heuristics. The puzzles in question are \textit{lambda}, \textit{goldennugget}, \textit{sudowiki\_nb28} and \textit{clue18}. We saw a similar pattern in the original viewpoint. The worst puzzle for this viewpoint was \textit{coloin}, where it takes $13.71$ seconds compared to $0.25$ in the \texttt{input order} heuristic. The reasoning again is that in this puzzle \texttt{anti first fail} is the worst possible search heuristic.
+\begin{itemize}
+\item Again we notice that all of the \texttt{ECLiPSe} implementations are able to solve all of the puzzles. In case of the \texttt{CHR} implementation we notice that almost none of the puzzles can be solved under the time limit that we specified.
+\item The moment we start using \texttt{first fail}, we see a drastic increase in performance for almost all puzzles. The only puzzle that performs worse is the \textbf{lambda} puzzle, here we see a decrease in performance. Our reasoning here is that the optimal ordering of the variables is close to the \texttt{input order}, while currently we are looking at the variables with the smallest domain. This suspicion is confirmed when we take a look at the performance of the \texttt{anti first fail} heuristic, which also performs better than the \texttt{first fail} heuristic.
+\item When we compare the \texttt{anti first fail} against the other implementations we see a decrease in performance except for a couple of instances where it performs drastically better than the other heuristics. The puzzles in question are \textbf{lambda}, \textbf{goldennugget}, \textbf{sudowiki\_nb28} and \textbf{clue18}. We saw a similar pattern in the original viewpoint. The worst puzzle for this viewpoint was \textbf{coloin}, where it takes $13.71$ seconds compared to $0.25$ in the \texttt{input order} heuristic. The reasoning again is that in this puzzle \texttt{anti first fail} is the worst possible search heuristic.
 \item In general the alternative viewpoint performs worse than the original viewpoint. We think that the reason for this is that due to using the \texttt{ic library} we already use the forward checking that we were trying to achieve by using this viewpoint. So we end up creating extra overhead by imposing these constraints on the variables ourselves. 
 \item The implementation in \texttt{CHR} works pretty poorly considering the other results. Our reasoning behind why it is not able to finish the majority of the puzzles is that we go too deep into our search tree before we find a failure. With improvements to this method we should be able to increase the further performance of our implementation in \texttt{CHR}.
 \end{itemize}
