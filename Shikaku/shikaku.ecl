@@ -14,7 +14,7 @@ solve(Name):-
 	problem(Name, W, H, Points),
 	writeln(Name),
 	time(solve(W, H, Points, Rects)),
-	show(W, H, Points, Rects),
+	%show(W, H, Points, Rects),
 	!.
 	
 quick_sort(List,Sorted):-quick_sort(List,[],Sorted).
@@ -37,7 +37,8 @@ solve(W,H,Points,Rects):-
   	true
   ),
   flatten(List,FlatList),
-  search(FlatList,0,input_order,indomain,complete,[]).
+  search(FlatList,0,input_order,indomain,complete,[backtrack(Back)]),
+        writeln(Back).
 
 rect_to_struct([],[]).
 rect_to_struct([rect(c(_,_),c(X,Y),s(W,H),_)|Rects],[rect{x:X,y:Y,w:W,h:H}|Structs]):-
@@ -70,5 +71,5 @@ rectangle((I,J,N),Others,Width,Height,rect(c(I,J),c(X,Y),s(W,H),N)):-
         W*H #= N,
         X+W-1 #=< Width,
         Y+H-1 #=< Height,
-        inside(c(X,Y),s(W,H),c(I,J)).
-		%outsides(c(X,Y),s(W,H),Others).
+        inside(c(X,Y),s(W,H),c(I,J)),
+		outsides(c(X,Y),s(W,H),Others).

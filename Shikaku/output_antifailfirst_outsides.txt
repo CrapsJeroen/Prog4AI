@@ -1,0 +1,116 @@
+tiny
+0
+
+Success, time = 0.0
+helmut
+28
+
+Success, time = 0.0
+p(0, 1)
+39
+
+Success, time = 0.0
+p(0, 2)
+3
+
+Success, time = 0.0
+p(0, 3)
+9
+
+Success, time = 0.0
+p(0, 4)
+15
+
+Success, time = 0.0
+p(0, 5)
+42
+
+Success, time = 0.0
+p(1, 1)
+59
+
+Success, time = 0.0
+p(1, 2)
+65
+
+Success, time = 0.0
+p(1, 3)
+40
+
+Success, time = 0.01
+p(1, 4)
+57
+
+Success, time = 0.0
+p(1, 5)
+279
+
+Success, time = 0.01
+p(2, 1)
+49
+
+Success, time = 0.01
+p(2, 2)
+2051
+
+Success, time = 0.05
+p(2, 3)
+119
+
+Success, time = 0.0099999999999999
+p(2, 4)
+128
+
+Success, time = 0.01
+p(2, 5)
+35
+
+Success, time = 0.01
+p(3, 1)
+659
+
+Success, time = 0.04
+p(3, 2)
+64
+
+Success, time = 0.01
+p(3, 3)
+579
+
+Success, time = 0.03
+p(3, 4)
+1698
+
+Success, time = 0.04
+p(3, 5)
+339
+
+Success, time = 0.02
+p(4, 1)
+118200
+
+Success, time = 7.34
+p(4, 2)
+7418
+
+Success, time = 0.359999999999999
+p(4, 3)
+317
+
+Success, time = 0.00999999999999979
+p(4, 4)
+4893
+
+Success, time = 0.18
+p(4, 5)
+1988
+
+Success, time = 0.0899999999999999
+p(5, 1)
+15655
+
+Success, time = 0.960000000000001
+p(5, 2)
+585179
+
+Success, time = 42.19

@@ -364,12 +364,11 @@ It seemed like the least desirable option out of the three.
 
 \subsection{Experiments}\label{subsec:sudokuexperiments}
 In these experiments we want to see the difference between the two viewpoints and the different programming languages.
-But it is also our intention to measure the influence of the different search methods, so that we can find the optimal setup for our implementation.
-The most important aspects that we will consider is the time is takes to solve the problem, but also the amount of inferences that are required is a good measuring point.
-During all of the experiments we used the same computer\footnote{Intel® Core™ i5-4570S CPU @ 2.90GHz × 4 }.
+But it is also our intention to measure the influence of the different search methods, so that we can find the optimal setup for our implementations.
+The most important aspects that we will consider are the time it takes to solve the problem, and the amount of inferences that are required, these are good measuring points.
+During all of our experiments we used the same computer\footnote{Intel® Core™ i5-4570S CPU @ 2.90GHz × 4}.
 It is in our interest to time-out the process after a certain time.
-Due to using the same computer at all times we should get a good indication of the performance of our sudoku solvers.
-All of the times at we will express are in seconds.
+Due to using the same computer for all the experiments we should get a good indication of the performance of our different sudoku solvers.
 
 \subsubsection{Results}
 \paragraph*{Viewpoint 1}
@@ -405,11 +404,11 @@ Average	 		&	0.12	& 47 &	0.06	& 30 &	1.34	& 294 &	0.90	& 22,075,239\\
 \end{center}
 
 \begin{itemize}
-\item The first thing we can notice is that all of our implementations of the first viewpoint succesfully solve all of the sudoku puzzles. We added an extra $16 \times 16$ sudoku puzzle to show that our implementations can handle larger puzzles than the original $9 \times 9$ sudoku.
+\item The first thing we can notice is that all of our implementations of the first viewpoint successfully solve all of the sudoku puzzles. We added an extra $16 \times 16$ sudoku puzzle to show that our implementations can handle larger puzzles than the original $9 \times 9$ sudoku.
 \item When comparing the \texttt{input order} against the \texttt{fail first} we see that there is significant difference in performance. The \texttt{first fail} performs equally good or even better in almost all cases, expect for a few puzzles like for example \textbf{inkara2012}. The \texttt{first fail} will make the hard decisions early on with the intention to require less backtracking, which can also be seen in our results.
-\item On every puzzle, except for a few, the \texttt{anti first fail} will perform worse compared to the other implemetations in \texttt{ECLiPSe}. The puzzles in question are \textbf{sudowiki\_nb28} and \textbf{goldennugget}. Our reasoning is that the variables with the smallest domains don't have a lot of influence on the rest of the variables. So almost no progress is made by prioritizing them, while the variables with the larger domain have more influence.
-\item Our \texttt{CHR} implementation works slower than the \texttt{ECLiPSe} implementations, except for the \texttt{anti first fail} one. We believe this is due to the usages of the built-in libraries in our \texttt{ECLiPSe} implementations, these should perform much better than our own written methods in \texttt{CHR}.
-\item Which puzzle is the most difficult depends on the search heuristic that is used. In case of the \texttt{anti first fail} heurstic the \textbf{coloin} puzzle is the hardest, but when we look at the \texttt{first fail} heuristic we see that the \texttt{sudowiki\_nb28} is the most difficult puzzle. Our reasoning is that it mainly depends on the importance of the variables with a small domain, if these variables have a large influence on the domain of the other variables then the \texttt{first fail} will see an increase in performance (due to the increased importance of the choice) and a decrease in the amount of backtracks that are made. 
+\item On every puzzle, except for a few, the \texttt{anti first fail} will perform worse compared to the other implementations in \texttt{ECLiPSe}. The puzzles in question are \textbf{sudowiki\_nb28} and \textbf{goldennugget}. Our reasoning is that the variables with the smallest domains don't have a lot of influence on the rest of the variables in these few cases. So almost no progress is made by prioritizing them, while the variables with the larger domain have more influence.
+\item Our \texttt{CHR} implementation works slower than the \texttt{ECLiPSe} implementations, except for the \texttt{anti first fail} one. We believe this is due to the usage of the built-in libraries in our \texttt{ECLiPSe} implementations, these should perform much better than our own written methods in \texttt{CHR}.
+\item Which puzzle is the most difficult depends on the search heuristic that is used. In case of the \texttt{anti first fail} heuristic the \textbf{coloin} puzzle is the hardest, but when we look at the \texttt{first fail} heuristic we see that the \texttt{sudowiki\_nb28} is the most difficult puzzle. Our reasoning is that it mainly depends on the importance of the variables with a small domain, if these variables have a large influence on the domain of the other variables then the \texttt{first fail} will see an increase in performance (due to the increased importance of the choice) and a decrease in the amount of backtracks that are made. 
 \end{itemize}
 
 \paragraph*{Viewpoint 2}
@@ -446,10 +445,11 @@ Average	 		&	0.12	&	47	&	0.06	&	30	&	1.34	&	296	&		& 	\\
 
 \begin{itemize}
 \item Again we notice that all of the \texttt{ECLiPSe} implementations are able to solve all of the puzzles. In case of the \texttt{CHR} implementation we notice that almost none of the puzzles can be solved under the time limit that we specified.
-\item The moment we start using \texttt{first fail}, we see a drastic increase in performance for almost all puzzles. The only puzzle that performs worse is the \textbf{lambda} puzzle, here we see a decrease in performance. Our reasoning here is that the optimal ordering of the variables is close to the \texttt{input order}, while currently we are looking at the variables with the smallest domain. This suspicion is confirmed when we take a look at the performance of the \texttt{anti first fail} heuristic, which also performs better than the \texttt{first fail} heuristic.
+\item The moment we start using the \texttt{first fail} heuristic, we see a drastic increase in performance for almost all puzzles. The only puzzle that performs worse is the \textbf{lambda} puzzle, here we see a decrease in performance. Our reasoning here is that the optimal ordering of the variables is close to the \texttt{input order}, while currently we are looking at the variables with the smallest domain. This suspicion is confirmed when we take a look at the performance of the \texttt{anti first fail} heuristic, which also performs better than the \texttt{first fail} heuristic.
 \item When we compare the \texttt{anti first fail} against the other implementations we see a decrease in performance except for a couple of instances where it performs drastically better than the other heuristics. The puzzles in question are \textbf{lambda}, \textbf{goldennugget}, \textbf{sudowiki\_nb28} and \textbf{clue18}. We saw a similar pattern in the original viewpoint. The worst puzzle for this viewpoint was \textbf{coloin}, where it takes $13.71$ seconds compared to $0.25$ in the \texttt{input order} heuristic. The reasoning again is that in this puzzle \texttt{anti first fail} is the worst possible search heuristic.
+\item We also observe an increase in the amount of backtracks when using the \texttt{anti first fail} heuristic, which we expected.
 \item In general the alternative viewpoint performs worse than the original viewpoint. We think that the reason for this is that due to using the \texttt{ic library} we already use the forward checking that we were trying to achieve by using this viewpoint. So we end up creating extra overhead by imposing these constraints on the variables ourselves. 
-\item The implementation in \texttt{CHR} works pretty poorly considering the other results. Our reasoning behind why it is not able to finish the majority of the puzzles is that we go too deep into our search tree before we find a failure. With improvements to this method we should be able to increase the further performance of our implementation in \texttt{CHR}.
+\item The implementation in \texttt{CHR} works pretty poorly considering the other results. Our reasoning behind why it is not able to finish the majority of the puzzles is that we go too deep into our search tree before we observe a failure. With improvements to this method we should be able to increase the further performance of our implementation in \texttt{CHR}.
 \end{itemize}
 
 \subsubsection{Conclusions}
