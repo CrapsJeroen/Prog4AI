@@ -23,21 +23,21 @@ quick_sort([Split|T],Acc,Sorted):-
 	pivot(Split,T,L1,L2),
 	quick_sort(L1,Acc,Sorted1),quick_sort(L2,[Split|Sorted1],Sorted).
 	
-pivot(Split,[],[],[]).
+pivot(_,[],[],[]).
 pivot(rect(P1,Q1,D1,S1),[rect(P2,Q2,D2,S2)|T],[rect(P2,Q2,D2,S2)|L],G):-S2=<S1,pivot(rect(P1,Q1,D1,S1),T,L,G).
 pivot(rect(P1,Q1,D1,S1),[rect(P2,Q2,D2,S2)|T],L,[rect(P2,Q2,D2,S2)|G]):-S2>S1,pivot(rect(P1,Q1,D1,S1),T,L,G).
 
 
 solve(W,H,Points,Rects):-
-	create_rectangles(W,H,Points,UnsortedRects),
-	quick_sort(UnsortedRects,Rects),
+	create_rectangles(W,H,Points,Rects),
+	%quick_sort(UnsortedRects,Rects),
 	rect_to_struct(Rects,Structs),
 	disjoint2(Structs),
   (foreach(rect(X,Y,W,H,_),Structs), foreach([X,Y,W,H],List) do
   	true
   ),
   flatten(List,FlatList),
-  search(FlatList,0,input_order,indomain,complete,[backtrack(Back)]),
+  search(FlatList,0,anti_first_fail,indomain,complete,[backtrack(Back)]),
         writeln(Back).
 
 rect_to_struct([],[]).

@@ -117,7 +117,126 @@ disjoint2(Structs),
 ),
   flatten(List,FlatList)
 \end{lstlisting}
+%TODO !!!
+--- ACTIVE/PASSIVE???? --- \\\
+%TODO !!!
+--- ADD SOURCE FOR INSIDE/OUTSIDES ---
+\subsubsection{Search strategies}
+We have also experimented with search strategies for the Shikaku puzzle. Just like with the Sudoku puzzle, we have measured the time and backtrack needed to solve each puzzle with several different search strategies. These strategies include input order, first fail and anti first fail. We have also implemented the search strategy we came up with the speed up our CHR Shikaku solver. This strategy will select the largest rectangles first. A full explanation of the reasoning behind this search strategy can be found in section~\ref{sec:CHR_opti} as the second additional optimization.
 
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
+\cline{2-9}
+\multicolumn{1}{c|}{} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Largest First}\end{sideways}}\\ \cline{2-9}
+\multicolumn{1}{c|}{} 
+		&    Time (s)	 &	 nbOfBt	&   Time (s) 	& 	nbOfBt	&   Time (s)	&     nbOfBt	&   Time (s) 	& nbOfBt 	\\ \tabucline[2pt]{-}             
+tiny		&	0.00	&	0		&	0.00	&	0		&	0.00	&	0	&	0.01	& 	0	\\
+helmut	&	0.01	&	639		&	0.00	&	829		&	0.00	&	262	&	0.00	& 	202	\\
+p(0,1)		&	0.00	&	5		&	0.01	&	8		&	0.01	&	46	&	0.00	&	17	\\
+p(0,2)		&	0.00	&	3		&	0.00	&	2		&	0.00	&	3	&	0.01	& 	3	\\
+p(0,3)		&	0.00	&	8		&	0.00	&	6		&	0.00	&	4	&	0.00	& 	4	\\
+p(0,4)		&	0.01	&	9		&	0.01	&	6		&	0.00	&	24	&	0.00	& 	18	\\
+p(0,5)		&	0.00	&	4		&	0.00	&	5		&	0.00	&	48	&	0.00	& 	6	\\
+p(1,1)		&	0.00	&	96		&	0.02	&	2910		&	0.00	&	71	&	0.00	&	133	\\
+p(1,2)		&	0.01	&	244		&	0.01	&	320		&	0.00	&	112	&	0.00	& 	94	\\
+p(1,3)		&	0.00	&	273		&	0.03	&	5233		&	0.00	&	49	&	0.01	& 	19	\\
+p(1,4)		&	0.00	&	23		&	0.01	&	308		&	0.01	&	70	&	0.00	& 	57	\\
+p(1,5)		&	0.01	&	244		&	0.01	&	2721		&	0.00	&	406	&	0.01	& 	760	\\
+p(2,1)		&	0.41	&	64 058	&	0.49	&	70 838	&	0.00	&	155	&	0.00	&	558	\\
+p(2,2)		&	0.04	&	4086		&	0.20	&	29 005	&	0.00	&	2368	&	0.03	& 	1827	\\
+p(2,3)		&	0.01	&	257		&	1.77	&	241 490	&	0.03	&	306	&	0.00	& 	58	\\
+p(2,4)		&	0.02	&	2251		&	3.34	&	628 514	&	0.01	&	168	&	0.00	& 	82	\\
+p(2,5)		&	0.01	&	286		&	0.02	&	643		&	0.00	&	43	&	0.00	& 	124	\\
+p(3,1)		&	0.16	&	14 322	&	TO	&	TO		&	0.04	&	1944	&	0.01	&	625	\\
+p(3,2)		&	0.01	&	94		&	TO	&	TO		&	0.01	&	73	&	0.00	& 	158	\\
+p(3,3)		&     371.80	&	31 924 514	&	TO	&	TO		&	0.07	&	5526	&	0.14	& 	9944	\\
+p(3,4)		&	0.34	&	42452		&	TO	&	TO		&	0.03	&	2910	&	0.15	& 	14675	\\
+p(3,5)		&	0.15	&	15445		&	TO	&	TO		&	0.02	&	820	&	0.00	& 	241	\\
+p(4,1)		&	TO	&	TO		&	TO	&	TO		&	5.58	&   282 333	&	1.22	&	54745	\\
+p(4,2)		&	0.91	&	91482		&	TO	&	TO		&	0.16	&    11 686	&	3.97	&   253 208	\\
+p(4,3)		&	TO	&	TO		&	TO	&	TO		&	0.01	&	773	&	0.49	&     55 545	\\
+p(4,4)		&	TO	&	TO		&	TO	&	TO		&	0.11	&	7098	&	0.37	&     30 352	\\
+p(4,5)		&	TO	&	TO		&	TO	&	TO		&	0.21	&     18 537	&	0.88	&     62 447	\\
+p(5,1)		&	TO	&	TO		&	TO	&	TO		&	7.90	&     307 116	&      217.67	&  8 457 170	\\
+p(5,2)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	& 	TO	\\
+p(5,3)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	& 	TO	\\
+p(5,4)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	& 	TO	\\
+p(5,5)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	& 	TO	\\
+p(6,1)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	&	TO	\\
+
+\hline
+\end{tabu}
+\captionof{table}{The execution time and number of backtracks for all the puzzles with different search methods.}
+\end{center}
+
+\begin{itemize}
+% TODO !!!
+\item ANALYSIS!!!!!
+\end{itemize}
+
+
+
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
+\cline{2-9}
+\multicolumn{1}{c|}{} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Largest First}\end{sideways}}\\ \cline{2-9}
+\multicolumn{1}{c|}{} 
+		&    Time (s)	 &	 nbOfBt	&   Time (s) 	& 	nbOfBt	&   Time (s)	&     nbOfBt	&   Time (s) 	& nbOfBt 	\\ \tabucline[2pt]{-}             
+tiny		&	0.00	&	0		&	0.00	&	0		&	0.00	&	0	&	0.01	& 	0	\\
+helmut	&	0.01	&	364		&	0.00	&	281		&	0.00	&	28	&	0.00	& 	171	\\
+p(0,1)		&	0.01	&	5		&	0.01	&	8		&	0.01	&	39	&	0.01	&	15	\\
+p(0,2)		&	0.01	&	3		&	0.00	&	2		&	0.00	&	3	&	0.00	& 	3	\\
+p(0,3)		&	0.01	&	5		&	0.00	&	5		&	0.00	&	9	&	0.00	& 	4	\\
+p(0,4)		&	0.00	&	5		&	0.00	&	6		&	0.00	&	15	&	0.00	& 	14	\\
+p(0,5)		&	0.00	&	4		&	0.01	&	5		&	0.00	&	42	&	0.00	& 	6	\\
+p(1,1)		&	0.01	&	44		&	0.01	&	1245		&	0.00	&	59	&	0.00	&	98	\\
+p(1,2)		&	0.01	&	53		&	0.01	&	110		&	0.00	&	65	&	0.00	& 	44	\\
+p(1,3)		&	0.00	&	188		&	0.03	&	2308		&	0.00	&	40	&	0.01	& 	18	\\
+p(1,4)		&	0.00	&	12		&	0.01	&	104		&	0.01	&	57	&	0.00	& 	41	\\
+p(1,5)		&	0.01	&	62		&	0.02	&	1237		&	0.00	&	279	&	0.01	& 	383	\\
+p(2,1)		&	0.09	&	6664		&	0.35	&	31 785	&	0.01	&	49	&	0.01	&	241	\\
+p(2,2)		&	0.02	&	1110		&	0.22	&	17 867	&	0.05	&	2051	&	0.03	& 	1725	\\
+p(2,3)		&	0.02	&	156		&	1.39	&	100 663	&	0.01	&	119	&	0.01	& 	32	\\
+p(2,4)		&	0.02	&	1056		&	7.01	&	570 537	&	0.01	&	128	&	0.00	& 	57	\\
+p(2,5)		&	0.02	&	258		&	0.03	&	643		&	0.01	&	35	&	0.01	& 	118	\\
+p(3,1)		&	0.04	&	1708		&	TO	&	TO		&	0.04	&	659	&	0.02	&	331	\\
+p(3,2)		&	0.01	&	51		&	TO	&	TO		&	0.01	&	64	&	0.01	& 	92	\\
+p(3,3)		&     430.24	&	17 847 417	&	TO	&	TO		&	0.03	&	579	&	0.12	& 	3753	\\
+p(3,4)		&	0.19	&	7143		&	TO	&	TO		&	0.04	&	1698	&	0.15	& 	6343	\\
+p(3,5)		&	0.02	&	702		&	TO	&	TO		&	0.02	&	339	&	0.01	& 	224	\\
+p(4,1)		&	TO	&	TO		&	TO	&	TO		&	7.34	&   118 200	&	1.06	&    20 003	\\
+p(4,2)		&	???	&	???		&	TO	&	TO		&	0.36	&    7418	&	3.32	&   91 431	\\
+p(4,3)		&	TO	&	TO		&	TO	&	TO		&	0.01	&	317	&	0.16	&     6991	\\
+p(4,4)		&	TO	&	TO		&	TO	&	TO		&	0.18	&	4893	&	0.54	&     20 606	\\
+p(4,5)		&	TO	&	TO		&	TO	&	TO		&	0.09	&     1988	&	0.28	&     7936	\\
+p(5,1)		&	TO	&	TO		&	TO	&	TO		&	0.96	&     15 655	&        54.4	&     957 812	\\
+p(5,2)		&	TO	&	TO		&	TO	&	TO		&	42.19	&     585 179	&        141.1	& 1 824 228	\\
+p(5,3)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	4.44	& 116 811	\\
+p(5,4)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	44.46	&   978 549	\\
+p(5,5)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	& 	TO	\\
+p(6,1)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	&	TO	\\
+
+\hline
+\end{tabu}
+\captionof{table}{The execution time and number of backtracks for all the puzzles with different search methods when the additional constraint is applied.}
+\end{center}
+
+
+\begin{itemize}
+% TODO !!!
+\item ANALYSIS!!!!!
+\end{itemize}
+\newpage
 \subsection{Shikaku in CHR}
 \subsubsection{Problem representation}
 The CHR implementation of our Shikaku solver makes less use of libraries than our ECLiPSe implementation. The first step is generating what we call temporary rectangles. These are rectangles which have not yet been defined fully defined. The goal of the solver is to fully define all these temporary rectangles while respecting the given constraints. This is the solution for the puzzle. The temporary rectangles consist of a grid locations corresponding to the location of the value it contains, and a list of tuples containing a grid location and dimensions each. Each tuple represents a possible top left corner of the rectangle and its size. 
@@ -174,8 +293,9 @@ try_option(Point,[(Pos,Size)|Options]):-
 
 The search is very simple. It picks a temporary rectangle and tries every option in its list of options. This is done by constructing a permanent rectangle from the option and checking whether or not that leads to a failure. If a failure is found, backtracking happens and the next option is tried. In case not a single option succeeds, another failure is caused which will backtrack the search to its previous decision. Once a permanent rectangle is found that does not lead to a failure, the search starts over again with the next temporary rectangle.
 
-\subsubsection{Additional optimizations}
 
+\subsubsection{Additional optimizations}
+\label{sec:CHR_opti}
 One additional constraint we came up with is ensuring that only a single value is contained within each rectangle. This constraint is already provided by the combination of having each rectangle contain the value in its definition and not allowing rectangles to overlap. The critical part here is that the solver can decide whether ot not a rectangle contains other values without the need to know about other rectangles. This observation allows the solver to limit the domains of each temporary rectangle even more before and prevents a large amount of backtracks. The way we implemented this is very similar to how the overlap between rectangles is handled. Since this is constraint proactively limits the search domain, it is also an active constraint.
 
 \begin{lstlisting}
@@ -185,7 +305,58 @@ rect_temp(RefPoint,_) \ rect_temp(Point,OptionsList) <=>
 	| rect_temp(Point,NewList).
 \end{lstlisting}
 
---- TABEL MET VERSCHIL--- \\ \\
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|}
+\cline{2-5}
+\multicolumn{1}{c|}{} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR \\ Basic solver}\end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR \\ Additional Constraint} \end{sideways}} \\ \cline{2-5}
+\multicolumn{1}{c|}{} 
+		&    Time (s)	 &	 inferences		&   Time (s) 	& 	inferences		\\ \tabucline[2pt]{-}             
+tiny		&	0.00	&	3084			&	0.00	&	4431	 		\\
+helmut	&	0.07	&	517 641		&	0.04	&	182 333		\\
+p(0,1)		&	0.01	&	28 257		&	0.01	&	29 899		\\
+p(0,2)		&	0.01	&	33 808		&	0.01	&	31 088		\\
+p(0,3)		&	0.01	&	45 009		&	0.00	&	34 562		\\
+p(0,4)		&	0.00	&	46 032		&	0.00	&	35 782		\\
+p(0,5)		&	0.00	&	24 721		&	0.00	&	36 614		\\
+p(1,1)		&	0.02	&	228 824		&	0.02	&	87 952		\\
+p(1,2)		&	0.02	&	59 097		&	0.02	&	122 824		\\
+p(1,3)		&	0.01	&	65 448		&	0.02	&	83 102		\\
+p(1,4)		&	0.02	&	74 441		&	0.02	&	61 179		\\
+p(1,5)		&	0.02	&	190 380		&	0.01	&	62 018		\\
+p(2,1)		&	0.71	&	6 507 516		&	0.05	&	357 974		\\
+p(2,2)		&	2.75	&	25 407 954		&	0.10	&	758 057		\\
+p(2,3)		&	0.37	&	3 295 683		&	0.03	&	214 269		\\
+p(2,4)		&	0.62	&	5 881 840		&	0.05	&	346 635		\\
+p(2,5)		&	0.94	&	8 888 968		&	0.04	&	224 674		\\
+p(3,1)		&	TO	&	TO			&	0.38	&	3 458 752		\\
+p(3,2)		&	0.25	&	2 234 784		&	0.12	&	1 067 363		\\
+p(3,3)		&     	TO	&	TO 			&	0.25	&	2 140 242		\\
+p(3,4)		&	19.56	&	185 782 112		&	0.08	&	650 691		\\
+p(3,5)		&	TO	&	TO			&	0.59	&	5 452 485		\\
+p(4,1)		&	TO	&	TO			&	TO	&	TO			\\
+p(4,2)		&	TO	&	TO			&	TO	&	TO			\\
+p(4,3)		&	TO	&	TO			&	TO	&	TO			\\
+p(4,4)		&	TO	&	TO			&	4.99	&	46 192 343		\\
+p(4,5)		&	TO	&	TO			&	1.29	&	11 824 321		\\
+p(5,1)		&	TO	&	TO			&	TO	&	TO			\\
+p(5,2)		&	TO	&	TO			&	33.47	&	310 379 885		\\
+p(5,3)		&	TO	&	TO			&	TO	&	TO			\\
+p(5,4)		&	TO	&	TO			&	1.70	&	14 858 545		\\
+p(5,5)		&	TO	&	TO			&	TO	&	TO			\\
+p(6,1)		&	TO	&	TO			&	TO	&	TO			\\
+
+\hline
+\end{tabu}
+\captionof{table}{The execution time and number of inferences of the basic solver and the solver with an additional constraint}
+\end{center}
+
+\begin{itemize}
+% TODO !!!
+\item ANALYSIS!!!!!
+\end{itemize}
 
 Our second optimization is not a constraint, but instead it is a smarter search heuristic.Our first approach to searching did not define an order in which the temporary rectangles should be searched. During testing we observed that a small rectangle (for instance size 2) placed the wrong way early into the search process could make the solver take a really long time trying to fit all the other rectangles. The solver would often fail really deep into the search and have to backtrack all the way to the start. \\
  Another observation was the fact that the really large rectangles in the larger puzzles only had relatively few options compared to their size thanks to our previous optimization. Most options would get filtered out right away because they would contain other values. These large rectangles also had a very large effect on the domains of other temporary rectangles. A rectangle of size 2 can only affect at least one temporary rectangle, but a rectangle of size 30 or higher will have many neighbors. Our reasoning was that by trying to place the large rectangles first, the solver could significantly reduce the search domain going forward and limit the depth at which backtracking usually occurs.
@@ -200,7 +371,57 @@ search(N) <=> N1 is N - 1, search(N1).
 \end{lstlisting}
 The search constraint should be initialized with a value at least as large as the largest possible rectangle. For simiplicity we simply initialize it with the total area of the grid, but looking for the highest value on the grid will also work. In each search step, it will try to place rectangles of at least the current value. If no temporary rectangles of sufficient size are matched, the value for the search is decremented repeatedly until the next match. \\
 
---- TABEL MET VERSCHIL--- \\ \\
-\subsection{Conclusions}
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|}
+\cline{2-7}
+\multicolumn{1}{c|}{} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR \\ Basic Solver}\end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR \\ Largest First} \end{sideways}} & 
+\multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR \\ Combined}\end{sideways}} \\ \cline{2-7} 
+\multicolumn{1}{c|}{} 
+		&    Time (s)	 &	 inferences		&   Time (s) 	& 	inferences	&   Time (s)	&     inferences	 	\\ \tabucline[2pt]{-}             
+tiny		&	0.00	&	3084			&	0.00	&	3328	 			&	0.00	&	3660		\\
+helmut	&	0.07	&	517 641		&	0.02	&	133 198			&	0.03	&	159 904		\\
+p(0,1)		&	0.01	&	28 257		&	0.01	&	29 134			&	0.01	&	25 657		\\
+p(0,2)		&	0.01	&	33 808		&	0.01	&	40 705			&	0.01	&	26 494		\\
+p(0,3)		&	0.01	&	45 009		&	0.01	&	34 550			&	0.01	&	30 800		\\
+p(0,4)		&	0.00	&	46 032		&	0.01	&	29 512			&	0.01	&	31 178		\\
+p(0,5)		&	0.00	&	24 721		&	0.01	&	36 639			&	0.00	&	32 022		\\
+p(1,1)		&	0.02	&	228 824		&	0.02	&	18 331			&	0.02	&	76 854		\\
+p(1,2)		&	0.02	&	59 097		&	0.02	&	119 194			&	0.02	&	112 199		\\
+p(1,3)		&	0.01	&	65 448		&	0.02	&	108 673			&	0.01	&	69 607		\\
+p(1,4)		&	0.02	&	74 441		&	0.02	&	76 805			&	0.01	&	67 014		\\
+p(1,5)		&	0.02	&	190 380		&	0.01	&	73 670			&	0.01	&	63 522		\\
+p(2,1)		&	0.71	&	6 507 516		&	0.15	&	1 392 238			&	0.08	&	612 939		\\
+p(2,2)		&	2.75	&	25 407 954		&	0.08	&	699 178			&	0.04	&	262 105		\\
+p(2,3)		&	0.37	&	3 295 683		&	0.04	&	234 719			&	0.02	&	200 600		\\
+p(2,4)		&	0.62	&	5 881 840		&	0.04	&	300 085			&	0.04	&	233 985		\\
+p(2,5)		&	0.94	&	8 888 968		&	0.04	&	263 053			&	0.03	&	225 389		\\
+p(3,1)		&	TO	&	TO			&	0.28	&	2 504 518			&	0.09	&	677 965		\\
+p(3,2)		&	0.25	&	2 234 784		&	0.08	&	565 555			&	0.06	&	519 563		\\
+p(3,3)		&     	TO	&	TO 			&	0.13	&	1 085 122			&	0.11	&	893 334		\\
+p(3,4)		&	19.56	&	185 782 112		&	0.28	&	2 519 750			&	0.08	&	653 212		\\
+p(3,5)		&	TO	&	TO			&	0.24	&	2 306 833			&	0.10	&	735 528		\\
+p(4,1)		&	TO	&	TO			&	0.78	&	7 359 453			&	0.35	&  	3 055 868		\\
+p(4,2)		&	TO	&	TO			&	0.29	&	2 587 162			&	0.21	&    	1 784 959		\\
+p(4,3)		&	TO	&	TO			&	0.34	&	2 972 902			&	0.15	&	1 351 991		\\
+p(4,4)		&	TO	&	TO			&	1.03	&	10 035 411			&	0.28	&	2 593 443		\\
+p(4,5)		&	TO	&	TO			&	0.34	&	3 143 284			&	0.20	&   	1 696 816		\\
+p(5,1)		&	TO	&	TO			&	12.79	&	123 529 917			&	0.59	&     	5 084 746		\\
+p(5,2)		&	TO	&	TO			&	95.54	&	898 562 921			&	1.09	&     	7 776 059		\\
+p(5,3)		&	TO	&	TO			&	2.93	&	26 276 870			&	0.41	&	3 511 457		\\
+p(5,4)		&	TO	&	TO			&	7.61	&	75 856 587			&	1.33	&	12 134 475		\\
+p(5,5)		&	TO	&	TO			&	44.24	&	437 154 752			&	3.65	&	35 034 535		\\
+p(6,1)		&	TO	&	TO			&      163.78	&	1 556 158 403		&	4.05	&	37 371 197		\\
+
+\hline
+\end{tabu}
+\captionof{table}{The execution time and number of inferences of the basic solver, the solver with an improved search selection order and the final solver with both optimizations combined.}
+\end{center}
 
 
+\begin{itemize}
+% TODO !!!
+\item ANALYSIS!!!!!
+\end{itemize}
