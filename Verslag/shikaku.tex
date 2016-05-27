@@ -154,7 +154,7 @@ p(2,4)		&	0.02	&	2251		&	3.34	&	628 514	&	0.01	&	168	&	0.00	& 	82	\\
 p(2,5)		&	0.01	&	286		&	0.02	&	643		&	0.00	&	43	&	0.00	& 	124	\\
 p(3,1)		&	0.16	&	14 322	&	TO	&	TO		&	0.04	&	1944	&	0.01	&	625	\\
 p(3,2)		&	0.01	&	94		&	TO	&	TO		&	0.01	&	73	&	0.00	& 	158	\\
-p(3,3)		&     371.80	&	31 924 514	&	TO	&	TO		&	0.07	&	5526	&	0.14	& 	9944	\\
+p(3,3)		&     	TO	&	TO		&	TO	&	TO		&	0.07	&	5526	&	0.14	& 	9944	\\ %  371.80	&	31 924 514    IO
 p(3,4)		&	0.34	&	42452		&	TO	&	TO		&	0.03	&	2910	&	0.15	& 	14675	\\
 p(3,5)		&	0.15	&	15445		&	TO	&	TO		&	0.02	&	820	&	0.00	& 	241	\\
 p(4,1)		&	TO	&	TO		&	TO	&	TO		&	5.58	&   282 333	&	1.22	&	54745	\\
@@ -174,13 +174,15 @@ p(6,1)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	&	TO	\\
 \captionof{table}{The execution time and number of backtracks for all the puzzles with different search methods.}
 \end{center}
 
-\begin{itemize}
-% TODO !!!
-\item ANALYSIS!!!!!
-\end{itemize}
 
+The first observation from these resulsts is that first fail is by far the worst search strategy and anti first fail is the best search strategy. Our own largest first strategy ends up being slightly slower than anti first fail. This is a very strange result. First fail selects the variables with the smallest domain first to minimize the amount of backtracks but in this case it has the exact opposite effect. 
+\\
+We believe that the fact that largest first and anti first fail are so closely matched is an important clue as to why this happens. Variables belonging to larger rectangles have a larger domain than those belonging to small rectangles. The width and height can each generally be any of the divisors of the area of the rectangle. Larger numbers have generally more divisors so the domains of these variables are generally larger. The possible coordinates for the top left corner are directly coupled to the size of the rectangle. A larger rectangle can be positioned in more ways around the value than a smaller rectangle, making the domain for the coordinates of the top left corner larger.
+\\
+This explains why largest first and anti first fail behave similarly, but not why they perform better. It is here that the insight given by figuring out why our CHR implementation was initially performing poorly helped us put these results into context. Our suspicion is that selecting larger rectangles limits the domains of other rectangles much more strongly because they are generally surrounded by more neighboring rectangles. Even though the large rectangles have a much larger domain themselves, the benefits of greatly reducing the domains of many other rectangles outweighs the downside of deeper backtracks as a result of selecting the larger domains first.
 
-
+\subsubsection{Adding a redundant constraint}
+We have also added a redundant constraint to our solver. This constraint explicitly prohibits rectangles from containing other values than the one for which they are defined. This can rule out many position/size combinations before the search begins, preventing unnecessary backtracks.
 \begin{center}
 \footnotesize
 \begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
@@ -211,11 +213,11 @@ p(2,4)		&	0.02	&	1056		&	7.01	&	570 537	&	0.01	&	128	&	0.00	& 	57	\\
 p(2,5)		&	0.02	&	258		&	0.03	&	643		&	0.01	&	35	&	0.01	& 	118	\\
 p(3,1)		&	0.04	&	1708		&	TO	&	TO		&	0.04	&	659	&	0.02	&	331	\\
 p(3,2)		&	0.01	&	51		&	TO	&	TO		&	0.01	&	64	&	0.01	& 	92	\\
-p(3,3)		&     430.24	&	17 847 417	&	TO	&	TO		&	0.03	&	579	&	0.12	& 	3753	\\
+p(3,3)		&     	TO	&	TO		&	TO	&	TO		&	0.03	&	579	&	0.12	& 	3753	\\ % 430.24	&	17 847 417    IO
 p(3,4)		&	0.19	&	7143		&	TO	&	TO		&	0.04	&	1698	&	0.15	& 	6343	\\
 p(3,5)		&	0.02	&	702		&	TO	&	TO		&	0.02	&	339	&	0.01	& 	224	\\
 p(4,1)		&	TO	&	TO		&	TO	&	TO		&	7.34	&   118 200	&	1.06	&    20 003	\\
-p(4,2)		&	???	&	???		&	TO	&	TO		&	0.36	&    7418	&	3.32	&   91 431	\\
+p(4,2)		&	TO	&	TO		&	TO	&	TO		&	0.36	&    7418	&	3.32	&   91 431	\\
 p(4,3)		&	TO	&	TO		&	TO	&	TO		&	0.01	&	317	&	0.16	&     6991	\\
 p(4,4)		&	TO	&	TO		&	TO	&	TO		&	0.18	&	4893	&	0.54	&     20 606	\\
 p(4,5)		&	TO	&	TO		&	TO	&	TO		&	0.09	&     1988	&	0.28	&     7936	\\
@@ -232,10 +234,7 @@ p(6,1)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	&	TO	\\
 \end{center}
 
 
-\begin{itemize}
-% TODO !!!
-\item ANALYSIS!!!!!
-\end{itemize}
+We see an almost unilateral improvement for the amount of backtracks among all search strategies, as expected. What we did not expect is that our largest first search method managed to solve  two puzzles where anti first fail did not even though anti first fail is stil faster for most other puzzles. We believe that due to the extra constraint, the assumption that variables belonging to a larger rectangle usually have a larger domain no longer holds. It is hard to draw conclusions from this limited set of data. However, we suspect that because this assumption is likely no longer true, the benefit of reducing the domains of other rectangles may no longer outweigh increased amount of backtracks when solving large puzzles. More domain-reducing optimizations would be needed to fully investigate this hypothesis. 
 \newpage
 \subsection{Shikaku in CHR}
 \subsubsection{Problem representation}
@@ -295,8 +294,9 @@ The search is very simple. It picks a temporary rectangle and tries every option
 
 
 \subsubsection{Additional optimizations}
+\paragraph{First optimization}
 \label{sec:CHR_opti}
-One additional constraint we came up with is ensuring that only a single value is contained within each rectangle. This constraint is already provided by the combination of having each rectangle contain the value in its definition and not allowing rectangles to overlap. The critical part here is that the solver can decide whether ot not a rectangle contains other values without the need to know about other rectangles. This observation allows the solver to limit the domains of each temporary rectangle even more before and prevents a large amount of backtracks. The way we implemented this is very similar to how the overlap between rectangles is handled. Since this is constraint proactively limits the search domain, it is also an active constraint.
+Just like with out ECLiPSe implementation, one additional constraint is that a rectangle may not contain any values other than the one for which it is combined. This constraint is already provided by the combination of having each rectangle contain the value in its definition and not allowing rectangles to overlap. The critical part here is that the solver can decide whether ot not a rectangle contains other values without the need to know about other rectangles. This observation allows the solver to limit the domains of each temporary rectangle even more before and prevents a large amount of backtracks. The way we implemented this is very similar to how the overlap between rectangles is handled. Since this is constraint proactively limits the search domain, it is also an active constraint.
 
 \begin{lstlisting}
 rect_temp(RefPoint,_) \ rect_temp(Point,OptionsList) <=>
@@ -353,11 +353,8 @@ p(6,1)		&	TO	&	TO			&	TO	&	TO			\\
 \captionof{table}{The execution time and number of inferences of the basic solver and the solver with an additional constraint}
 \end{center}
 
-\begin{itemize}
-% TODO !!!
-\item ANALYSIS!!!!!
-\end{itemize}
-
+Just like in our other implementation, the additional redundant constraint as a positive effect on performance. Where the basic solver struggles to solve the 15 by 15 puzzles, the improved solver solves all of the 15 by 15 puzzles and even managed to solve some of the 20 by 20 and 25 by 25 puzzles. The constraint clearly has significantly reduced the search space.
+\paragraph{Second optimization}
 Our second optimization is not a constraint, but instead it is a smarter search heuristic.Our first approach to searching did not define an order in which the temporary rectangles should be searched. During testing we observed that a small rectangle (for instance size 2) placed the wrong way early into the search process could make the solver take a really long time trying to fit all the other rectangles. The solver would often fail really deep into the search and have to backtrack all the way to the start. \\
  Another observation was the fact that the really large rectangles in the larger puzzles only had relatively few options compared to their size thanks to our previous optimization. Most options would get filtered out right away because they would contain other values. These large rectangles also had a very large effect on the domains of other temporary rectangles. A rectangle of size 2 can only affect at least one temporary rectangle, but a rectangle of size 30 or higher will have many neighbors. Our reasoning was that by trying to place the large rectangles first, the solver could significantly reduce the search domain going forward and limit the depth at which backtracking usually occurs.
  \begin{lstlisting}
@@ -420,8 +417,5 @@ p(6,1)		&	TO	&	TO			&      163.78	&	1 556 158 403		&	4.05	&	37 371 197		\\
 \captionof{table}{The execution time and number of inferences of the basic solver, the solver with an improved search selection order and the final solver with both optimizations combined.}
 \end{center}
 
-
-\begin{itemize}
-% TODO !!!
-\item ANALYSIS!!!!!
-\end{itemize}
+We can immediately see that for the first time on of our Shikaku solvers manages to solve the largest puzzle. At 30 by 40 this puzzle is now just barely solvable using the new search heuristic. Knowing this, it is no surprise that we can see significant improvements across the board when compared to the basic solver. We believe that selecting the large rectangles first significantly reduces the search domain of many other rectangles, just like in our ECLiPSe implementation. \\
+When combining those two optimizations, the solver becomes even faster. We expected some gains in performance but we were surprised by just how much faster it became. Even the hardest puzzles in the data set take no longer than a few second to solve. We also do not see any of the large peaks in the number of inferences required to solve certain puzzles. All puzzles of the same size now take roughly the same amount of inferences to solve.
