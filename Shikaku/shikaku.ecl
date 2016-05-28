@@ -14,15 +14,15 @@ solve(Name):-
 	problem(Name, W, H, Points),
 	writeln(Name),
 	time(solve(W, H, Points, Rects)),
-	%show(W, H, Points, Rects),
+	show(W, H, Points, Rects),
 	!.
-	
+
 quick_sort(List,Sorted):-quick_sort(List,[],Sorted).
 quick_sort([],Acc,Acc).
 quick_sort([Split|T],Acc,Sorted):-
 	pivot(Split,T,L1,L2),
 	quick_sort(L1,Acc,Sorted1),quick_sort(L2,[Split|Sorted1],Sorted).
-	
+
 pivot(_,[],[],[]).
 pivot(rect(P1,Q1,D1,S1),[rect(P2,Q2,D2,S2)|T],[rect(P2,Q2,D2,S2)|L],G):-S2=<S1,pivot(rect(P1,Q1,D1,S1),T,L,G).
 pivot(rect(P1,Q1,D1,S1),[rect(P2,Q2,D2,S2)|T],L,[rect(P2,Q2,D2,S2)|G]):-S2>S1,pivot(rect(P1,Q1,D1,S1),T,L,G).

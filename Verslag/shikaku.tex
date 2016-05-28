@@ -1,7 +1,7 @@
 \section{Task 2: Shikaku}\label{sec:shikaku}
 \subsection{Introduction}
 
-A shikaku is a puzzle consisting of a recangular grid where some positions on the grid are filled by a number. The goal of the puzzle is to paritition the grid into rectangles where each rectangle contains exactly one number and its area is equal to the value of that number. This a a fairly easy task to do manually, but it quickly gets more complicated as the puzzle gets larger. We have attempted to find a source which calculated the computational complexity of Shikaku puzzles. Sadly, we could only find references to a single article\cite{Takenaga}. This article claims that Shikaku puzzles are NP-Complete, but since we could not find a way to get a hold of the actual article itself we cannot verify its validity. \\
+A shikaku is a puzzle consisting of a recangular grid where some positions on the grid are filled by a number. The goal of the puzzle is to paritition the grid into rectangles where each rectangle contains exactly one number and its area is equal to the value of that number. This a a fairly easy task to do manually, but it quickly gets more complicated as the puzzle gets larger. We have attempted to find a source which calculated the computational complexity of Shikaku puzzles. Sadly, we could only find references to a single article \cite{Takenaga}. This article claims that Shikaku puzzles are NP-Complete, but since we could not find a way to get a hold of the actual article itself we cannot verify its validity. \\
 
 
 
@@ -66,17 +66,17 @@ A shikaku is a puzzle consisting of a recangular grid where some positions on th
 \end{figure}
 
 \subsection{Terminology}
-Because a Shikaku cannot easily be described as a matrix of values, we will introduce some terminology. To denote the value of number on the grid write $\upsilon(x,y)$, where $x$ denotes the column of the grid and $y$ denotes the row. Note that both coordinates start at $1$. For instance: $\upsilon(1,1) = 3$ and $\upsilon(4,2) = 5$ in the Shikaku shown in figure~\ref{fig:shikaku1}. 
-\\
-The field itself has certain dimensions. All dimensions are denoted as a pair $s(w,h)$, where $w$ is the width (the amount of columns) and $h$ is the height (the amount of rows). In the running example, the dimensions of the field are $s(7,7)$. 
-\\
-To uniquely define a rectangle we need both a position on the grid ( the top left corner) and a size. Positions are denoted in a similar way as sizes: $c(x,y)$ represents the grid position shared by column $x$ and row $y$. With this, we can define a rectangle like this: $rect(c(i,j),c(x,y),s(w,h))$. Here is $c(i,j)$ the number contained within the rectangle, $c(x,y)$ the top-left position of the rectangle and $s(w,h)$ the dimensions of the rectangle. We have decided to also put the position of the value contained by the rectangle in its definition to make the notation more analogous to our implemented code. As an example: $rect(c(7,1),c(4,1),s(4,1))$ is the rectangle in the top right corner of the solved puzzle in figure~\ref{fig:shikaku1b} 
-\\
-While the following concept seem obvious from the drawings of the game, we will still include their formal definitions for the sake of completeness. The first important concept is $contains(c(x,y), s(w,h),c(i,j))$. This implies that the grid position $c(i,j)$ lies inside the boundary of the rectangle $rect(p,c(x,y),s(w,h))$.
+Because a Shikaku cannot easily be described as a matrix of values, we will introduce some terminology. To denote the value of number on the grid write $\upsilon(x,y)$, where $x$ denotes the column of the grid and $y$ denotes the row. Note that both coordinates start at $1$. For instance: $\upsilon(1,1) = 3$ and $\upsilon(4,2) = 5$ in the Shikaku shown in figure~\ref{fig:shikaku1}.\\
+
+The field itself has certain dimensions. All dimensions are denoted as a pair $s(w,h)$, where $w$ is the width (the amount of columns) and $h$ is the height (the amount of rows). In the running example, the dimensions of the field are $s(7,7)$. \\
+
+To uniquely define a rectangle we need both a position on the grid (the top left corner) and a size. Positions are denoted in a similar way as sizes: $c(x,y)$ represents the grid position shared by column $x$ and row $y$. With this, we can define a rectangle like this: $rect(c(i,j),c(x,y),s(w,h))$. Here is $c(i,j)$ the number contained within the rectangle, $c(x,y)$ the top-left position of the rectangle and $s(w,h)$ the dimensions of the rectangle. We have decided to also put the position of the value contained by the rectangle in its definition to make the notation more analogous to our implemented code. As an example: $rect(c(7,1),c(4,1),s(4,1))$ is the rectangle in the top right corner of the solved puzzle in Figure \ref{fig:shikaku1b}. \\
+
+While the following concept seems obvious from the drawings of the game, we will still include their formal definitions for the sake of completeness. The first important concept is $contains(c(x,y), s(w,h),c(i,j))$. This implies that the grid position $c(i,j)$ lies inside the boundary of the rectangle $rect(p,c(x,y),s(w,h))$.
 \begin{equation}
 contains(c(x,y), s(w,h),c(i,j)) \iff i \in [x,x+w-1] \wedge j \in [y,y+h-1]
 \end{equation}
-Another important concept is when two rectangles overlap. Two rectangles overlap when they share at least 1 grid position. It is expressed as $overlap(c(x_a,y_a), s(w_a,h_a),c(x_b,y_b), s(w_b,h_b))$. This means that $rect(p_a, c(x_a,y_a), s(w_a,h_a))$ and $rect(p_b,c(x_b,y_b), s(w_b,h_b))$.
+Another important concept is when two rectangles overlap. Two rectangles overlap when they share at least 1 grid position. It is expressed as $overlap(c(x_a,y_a), s(w_a,h_a),c(x_b,y_b), s(w_b,h_b))$. For $rect(p_a, c(x_a,y_a), s(w_a,h_a))$ and $rect(p_b,c(x_b,y_b), s(w_b,h_b))$ this means:
 \begin{equation}
 \begin{split}
 overlap(c(x_a,y_a), s(w_a,h_a),c(x_b,y_b), s(w_b,h_b)) \iff x_a \leq x_b + w_b -1 \wedge x_b \leq x_a + w_a - 1  \\
@@ -86,10 +86,10 @@ overlap(c(x_a,y_a), s(w_a,h_a),c(x_b,y_b), s(w_b,h_b)) \iff x_a \leq x_b + w_b -
 
 \subsection{Shikaku in ECLiPSe}
 \subsubsection{Problem representation}
-For our ECLiPSe Shikaku representation we use make heavy use of libraries provided by the platform. We use the rect structure provided by the gfd library to represent the rectangles. This rectangle structure has fields for an $x$ and $y$ coordinate, as well as a $width$ and a $height$. The grid itself is not explicitely represented, it only comes forward in the constraints placed on the positions and sizes of the rectangles.
+For our \texttt{ECLiPSe} Shikaku representation we make heavy use of libraries provided by the platform. We use the rect structure provided by the \texttt{gfd library} to represent the rectangles. This rectangle structure has fields for an $x$ and $y$ coordinate, as well as a $width$ and a $height$. The grid itself is not explicitely represented, it only comes forward in the constraints placed on the positions and sizes of the rectangles.
 
 \subsubsection{Solver outline}
-As a first step, the solver generates all the variables needed to define the rectangles. \texttt{create\_rectangles} reads all the input values one by one and accumulates the constructed rectangles. \texttt{rectangle} actually takes the dimensions of the grid as well as the coordinates and value of the number on the grid and builds the variables of the rectangle with their constraints. The constraints make sure that the rectangle is the right size, fits on the grid and contains the given value. Note that this rectangle representation is not the structure from the gfd library.
+As a first step, the solver generates all of the variables needed to define the rectangles. \textsl{create\_rectangles} reads all the input values one by one and accumulates the constructed rectangles. \textsl{rectangle} actually takes the dimensions of the grid as well as the coordinates and value of the number on the grid and builds the variables of the rectangle with their constraints. The constraints make sure that the rectangle is the right size, fits on the grid and contains the given value. Note that this rectangle representation is not the structure from the \texttt{gfd library.}
 \begin{lstlisting}
 create_rectangles(_,_,[],_).
 create_rectangles(Width,Height,[(X,Y,Val)|Tail],[R|Rects]) :-
@@ -107,7 +107,7 @@ rectangle((I,J,N),Others,Width,Height,rect(c(I,J),c(X,Y),s(W,H))):-
         inside(c(X,Y),s(W,H),c(I,J)).
 \end{lstlisting}
 
-Once the list of rectangles in our notation has been generated, they are converted to the rect structure so we can use the \texttt{disjoint2} contstraint provided by the gfd library. The defining variables of all of the rectangles are then combined in a single flat list which is used to search for the solution.
+Once the list of rectangles in our notation has been generated, they are converted to the rect structure so we can use the \textsl{disjoint2} contstraint provided by the \texttt{gfd library}. The defining variables of all of the rectangles are then combined in a single flat list which is used to search for the solution.
 
 \begin{lstlisting}
 rect_to_struct(Rects,Structs),
@@ -122,7 +122,7 @@ disjoint2(Structs),
 %TODO !!!
 --- ADD SOURCE FOR INSIDE/OUTSIDES ---
 \subsubsection{Search strategies}
-We have also experimented with search strategies for the Shikaku puzzle. Just like with the Sudoku puzzle, we have measured the time and backtrack needed to solve each puzzle with several different search strategies. These strategies include input order, first fail and anti first fail. We have also implemented the search strategy we came up with the speed up our CHR Shikaku solver. This strategy will select the largest rectangles first. A full explanation of the reasoning behind this search strategy can be found in section~\ref{sec:CHR_opti} as the second additional optimization.
+We have also experimented with search strategies for the Shikaku puzzle. Just like with the Sudoku puzzle, we have measured the time and amount of backtracks needed to solve each puzzle with several different search strategies. These strategies include \texttt{input order}, \texttt{first fail} and \texttt{anti first fail}. We have also implemented a search strategy we came up with to the speed up our CHR Shikaku solver. This strategy will select the largest rectangles first. A full explanation of the reasoning behind this search strategy can be found in Section~\ref{sec:CHR_opti} as the second additional optimization.
 
 \begin{center}
 \footnotesize
@@ -175,10 +175,10 @@ p(6,1)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	&	TO	\\
 \end{center}
 
 
-The first observation from these resulsts is that first fail is by far the worst search strategy and anti first fail is the best search strategy. Our own largest first strategy ends up being slightly slower than anti first fail. This is a very strange result. First fail selects the variables with the smallest domain first to minimize the amount of backtracks but in this case it has the exact opposite effect. 
-\\
-We believe that the fact that largest first and anti first fail are so closely matched is an important clue as to why this happens. Variables belonging to larger rectangles have a larger domain than those belonging to small rectangles. The width and height can each generally be any of the divisors of the area of the rectangle. Larger numbers have generally more divisors so the domains of these variables are generally larger. The possible coordinates for the top left corner are directly coupled to the size of the rectangle. A larger rectangle can be positioned in more ways around the value than a smaller rectangle, making the domain for the coordinates of the top left corner larger.
-\\
+The first observation from these results is that \texttt{first fail} is by far the worst search strategy and \texttt{anti first fail} is the best search strategy. Our own largest first strategy ends up being slightly slower than \texttt{anti first fail}. This is a very strange result. First fail selects the variables with the smallest domain first to minimize the amount of backtracks but in this case it has the exact opposite effect. \\
+
+We believe that the fact that largest first and anti first fail are so closely matched is an important clue as to why this happens. Variables belonging to larger rectangles have a larger domain than those belonging to small rectangles. The width and height can each generally be any of the divisors of the area of the rectangle. Larger numbers have generally more divisors so the domains of these variables are generally larger. The possible coordinates for the top left corner are directly coupled to the size of the rectangle. A larger rectangle can be positioned in more ways around the value than a smaller rectangle, making the domain for the coordinates of the top left corner larger.\\
+
 This explains why largest first and anti first fail behave similarly, but not why they perform better. It is here that the insight given by figuring out why our CHR implementation was initially performing poorly helped us put these results into context. Our suspicion is that selecting larger rectangles limits the domains of other rectangles much more strongly because they are generally surrounded by more neighboring rectangles. Even though the large rectangles have a much larger domain themselves, the benefits of greatly reducing the domains of many other rectangles outweighs the downside of deeper backtracks as a result of selecting the larger domains first.
 
 \subsubsection{Adding a redundant constraint}
@@ -233,9 +233,9 @@ p(6,1)		&	TO	&	TO		&	TO	&	TO		&	TO	&	TO	&	TO	&	TO	\\
 \captionof{table}{The execution time and number of backtracks for all the puzzles with different search methods when the additional constraint is applied.}
 \end{center}
 
+We see an almost unilateral improvement for the amount of backtracks among all search strategies, as expected. What we did not expect is that our largest first search method managed to solve  two puzzles that the anti first fail was not able to solve. Although anti first fail is stil faster for most other puzzles. We believe that due to the extra constraint, the assumption that variables belonging to a larger rectangle usually have a larger domain no longer holds. It is hard to draw conclusions from this limited set of data. \\
+However, we suspect that because this assumption is likely no longer true, the benefit of reducing the domains of other rectangles may no longer outweigh increased amount of backtracks when solving large puzzles. More domain-reducing optimizations would be needed to fully investigate this hypothesis. 
 
-We see an almost unilateral improvement for the amount of backtracks among all search strategies, as expected. What we did not expect is that our largest first search method managed to solve  two puzzles where anti first fail did not even though anti first fail is stil faster for most other puzzles. We believe that due to the extra constraint, the assumption that variables belonging to a larger rectangle usually have a larger domain no longer holds. It is hard to draw conclusions from this limited set of data. However, we suspect that because this assumption is likely no longer true, the benefit of reducing the domains of other rectangles may no longer outweigh increased amount of backtracks when solving large puzzles. More domain-reducing optimizations would be needed to fully investigate this hypothesis. 
-\newpage
 \subsection{Shikaku in CHR}
 \subsubsection{Problem representation}
 The CHR implementation of our Shikaku solver makes less use of libraries than our ECLiPSe implementation. The first step is generating what we call temporary rectangles. These are rectangles which have not yet been defined fully defined. The goal of the solver is to fully define all these temporary rectangles while respecting the given constraints. This is the solution for the puzzle. The temporary rectangles consist of a grid locations corresponding to the location of the value it contains, and a list of tuples containing a grid location and dimensions each. Each tuple represents a possible top left corner of the rectangle and its size. 
@@ -243,7 +243,7 @@ The CHR implementation of our Shikaku solver makes less use of libraries than ou
 Many of the constraints can be checked without having to know about other rectangles. This makes it possible to completely apply these constraints without any backtracking at all. We do this by checking against these constraints when generating the list of tuples for each temporary rectangle. The constraints taken into account when generating the domain of possible rectangles in the first place are: Each rectangle needs to have an area equal to the value it contains, each rectangle needs to actually contain the value it claims to contain in its definition, and each rectangle needs to fully fit within the field. Because these constraints are applied proactively, they are active constraints.
 
 \subsubsection{Solver outline}
-In the code below,  \texttt{make\_domains} iteratively calls \texttt{generate\_options} for each of the values on the grid. With the resulting list of options, a \texttt{rect\_temp} CHR constraint is generated. \texttt{generate\_options} collects all the possible options generated by \texttt{generate\_single\_option} and returns them as a list. \texttt{generate\_single\_option} contains the constraints described above and will return all possible solutions satisfying those constraints one by one. 
+In the code below, \texttt{make\_domains} iteratively calls \texttt{generate\_options} for each of the values on the grid. With the resulting list of options, a \texttt{rect\_temp} CHR constraint is generated. \texttt{generate\_options} collects all the possible options generated by \texttt{generate\_single\_option} and returns them as a list. \texttt{generate\_single\_option} contains the constraints described above and will return all possible solutions satisfying those constraints one by one. 
 
 \begin{lstlisting}
 make_domains([],_) <=> true.
@@ -272,11 +272,10 @@ rect(_,Pos,Size) \ rect_temp(Point,OptionsList) <=>
 	| rect_temp(Point,NewList).
 	
 failure @ rect_temp(_,[]) <=> fail.
-
 \end{lstlisting}
 
+This constraint removes all overlapping options from the list of options of every temporary rectangle. If at some point there is a temporary rectangle with no options left, the search will backtrack. This constraint is also an active constraint because it proactively limits the domains of all other temporary rectangles as soon as a permanent rectangle is added.
 
-This constraint removes all overlapping options from the list of options of every temporary rectangle. If it some point there is a temporary rectangle with no options left, the search will backtrack. This constraint is also an active constraint because it proactively limits the domains of all other temporary rectangles as soon as a permanent rectangle is added.
 \begin{lstlisting}
 search, rect_temp(Point,OptionsList) <=>
 	try_option(Point,OptionsList),
@@ -290,9 +289,9 @@ try_option(Point,[(Pos,Size)|Options]):-
     try_option(Point,Options).
 \end{lstlisting}
 
-The search is very simple. It picks a temporary rectangle and tries every option in its list of options. This is done by constructing a permanent rectangle from the option and checking whether or not that leads to a failure. If a failure is found, backtracking happens and the next option is tried. In case not a single option succeeds, another failure is caused which will backtrack the search to its previous decision. Once a permanent rectangle is found that does not lead to a failure, the search starts over again with the next temporary rectangle.
+The search is very simple. It picks a temporary rectangle and tries every option in its list of options. This is done by constructing a permanent rectangle from the option and checking whether or not that leads to a failure. If a failure is found, backtracking happens and the next option is tried. In case that not a single option succeeds, another failure is caused which will backtrack the search to its last decision. Once a permanent rectangle is found that does not lead to a failure, the search starts over again with the next temporary rectangle.
 
-
+\newpage
 \subsubsection{Additional optimizations}
 \paragraph{First optimization}
 \label{sec:CHR_opti}
@@ -355,7 +354,7 @@ p(6,1)		&	TO	&	TO			&	TO	&	TO			\\
 
 Just like in our other implementation, the additional redundant constraint as a positive effect on performance. Where the basic solver struggles to solve the 15 by 15 puzzles, the improved solver solves all of the 15 by 15 puzzles and even managed to solve some of the 20 by 20 and 25 by 25 puzzles. The constraint clearly has significantly reduced the search space.
 \paragraph{Second optimization}
-Our second optimization is not a constraint, but instead it is a smarter search heuristic.Our first approach to searching did not define an order in which the temporary rectangles should be searched. During testing we observed that a small rectangle (for instance size 2) placed the wrong way early into the search process could make the solver take a really long time trying to fit all the other rectangles. The solver would often fail really deep into the search and have to backtrack all the way to the start. \\
+Our second optimization is not a constraint, but instead it is a smarter search heuristic. Our first approach to searching did not define an order in which the temporary rectangles should be searched. During testing we observed that a small rectangle (for instance size 2) placed the wrong way early into the search process could make the solver take a really long time trying to fit all the other rectangles. The solver would often fail really deep into the search and have to backtrack all the way to the start. \\
  Another observation was the fact that the really large rectangles in the larger puzzles only had relatively few options compared to their size thanks to our previous optimization. Most options would get filtered out right away because they would contain other values. These large rectangles also had a very large effect on the domains of other temporary rectangles. A rectangle of size 2 can only affect at least one temporary rectangle, but a rectangle of size 30 or higher will have many neighbors. Our reasoning was that by trying to place the large rectangles first, the solver could significantly reduce the search domain going forward and limit the depth at which backtracking usually occurs.
  \begin{lstlisting}
  search(N), rect_temp(Point,OptionsList) <=>
@@ -367,6 +366,9 @@ search(0) <=> true.
 search(N) <=> N1 is N - 1, search(N1).
 \end{lstlisting}
 The search constraint should be initialized with a value at least as large as the largest possible rectangle. For simiplicity we simply initialize it with the total area of the grid, but looking for the highest value on the grid will also work. In each search step, it will try to place rectangles of at least the current value. If no temporary rectangles of sufficient size are matched, the value for the search is decremented repeatedly until the next match. \\
+
+We can immediately see in Table \ref{table:last} that for the first time one of our Shikaku solvers manages to solve the largest puzzle. At 30 by 40 this puzzle is now just barely solvable using the new search heuristic. Knowing this, it is no surprise that we can see significant improvements across the board when compared to the basic solver. We believe that selecting the large rectangles first significantly reduces the search domain of many other rectangles, just like in our ECLiPSe implementation. \\
+When combining those two optimizations, the solver becomes even faster. We expected some gains in performance but we were surprised by just how much faster it became. Even the hardest puzzles in the data set take no longer than a few second to solve. We also do not see any of the large peaks in the number of inferences required to solve certain puzzles. All puzzles of the same size now take roughly the same amount of inferences to solve.
 
 \begin{center}
 \footnotesize
@@ -415,7 +417,5 @@ p(6,1)		&	TO	&	TO			&      163.78	&	1 556 158 403		&	4.05	&	37 371 197		\\
 \hline
 \end{tabu}
 \captionof{table}{The execution time and number of inferences of the basic solver, the solver with an improved search selection order and the final solver with both optimizations combined.}
+\label{table:last}
 \end{center}
-
-We can immediately see that for the first time on of our Shikaku solvers manages to solve the largest puzzle. At 30 by 40 this puzzle is now just barely solvable using the new search heuristic. Knowing this, it is no surprise that we can see significant improvements across the board when compared to the basic solver. We believe that selecting the large rectangles first significantly reduces the search domain of many other rectangles, just like in our ECLiPSe implementation. \\
-When combining those two optimizations, the solver becomes even faster. We expected some gains in performance but we were surprised by just how much faster it became. Even the hardest puzzles in the data set take no longer than a few second to solve. We also do not see any of the large peaks in the number of inferences required to solve certain puzzles. All puzzles of the same size now take roughly the same amount of inferences to solve.
