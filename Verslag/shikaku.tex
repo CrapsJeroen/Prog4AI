@@ -117,10 +117,8 @@ disjoint2(Structs),
 ),
   flatten(List,FlatList)
 \end{lstlisting}
-%TODO !!!
---- ACTIVE/PASSIVE???? --- \\\
-%TODO !!!
---- ADD SOURCE FOR INSIDE/OUTSIDES ---
+
+All of these constraints are active constraints by the very nature of the \texttt{gfd library}. Whenever a new constraint is applied, it immediately impacts the domains of the variables this constraint impacts.
 \subsubsection{Search strategies}
 We have also experimented with search strategies for the Shikaku puzzle. Just like with the Sudoku puzzle, we have measured the time and amount of backtracks needed to solve each puzzle with several different search strategies. These strategies include \texttt{input order}, \texttt{first fail} and \texttt{anti first fail}. We have also implemented a search strategy we came up with to the speed up our CHR Shikaku solver. This strategy will select the largest rectangles first. A full explanation of the reasoning behind this search strategy can be found in Section~\ref{sec:CHR_opti} as the second additional optimization.
 
@@ -182,7 +180,7 @@ We believe that the fact that largest first and anti first fail are so closely m
 This explains why largest first and anti first fail behave similarly, but not why they perform better. It is here that the insight given by figuring out why our CHR implementation was initially performing poorly helped us put these results into context. Our suspicion is that selecting larger rectangles limits the domains of other rectangles much more strongly because they are generally surrounded by more neighboring rectangles. Even though the large rectangles have a much larger domain themselves, the benefits of greatly reducing the domains of many other rectangles outweighs the downside of deeper backtracks as a result of selecting the larger domains first.
 
 \subsubsection{Adding a redundant constraint}
-We have also added a redundant constraint to our solver. This constraint explicitly prohibits rectangles from containing other values than the one for which they are defined. This can rule out many position/size combinations before the search begins, preventing unnecessary backtracks.
+We have also added a redundant constraint to our solver. This constraint explicitly prohibits rectangles from containing other values than the one for which they are defined. This can rule out many position/size combinations before the search begins, preventing unnecessary backtracks. Our implementation of this constraint was inspired by the experiments of H. Simonis \cite{Simonis}
 \begin{center}
 \footnotesize
 \begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
